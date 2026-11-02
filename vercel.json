@@ -5,6 +5,10 @@
   "trailingSlash": false,
   "rewrites": [
     {
+      "source": "/googlef2e73a6ff4e22311.html",
+      "destination": "/verificacao/googlef2e73a6ff4e22311.txt"
+    },
+    {
       "source": "/adote/:slug",
       "destination": "/animal.html"
     },
@@ -95,6 +99,15 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=604800, stale-while-revalidate=86400"
+        }
+      ]
+    },
+    {
+      "source": "/verificacao/(.*)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=utf-8"
         }
       ]
     }
