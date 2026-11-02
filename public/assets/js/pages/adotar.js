@@ -1,4 +1,4 @@
-import { requireAuth, observeReveal, pawBurst } from "../app.js";
+import { requireAuth, observeReveal } from "../app.js";
 import sb from "../sb.js";
 import { $, $$, esc, icons, L, slugFromPath, bindMasks, isValidCPF, digits, setFieldError, clearErrors, focusFirstError, withLoading, toast, ageFrom } from "../ui.js";
 import { photoUrl, coverPath, emptyState, errorState } from "../components.js";
@@ -62,7 +62,7 @@ async function main() {
       <h2 class="h3">1. Sua casa</h2>
       <fieldset class="field"><legend class="label">Tipo de moradia <span class="req">*</span></legend>
         <div class="choice-grid">
-          ${[["casa", "🏠", "Casa"], ["apartamento", "🏢", "Apartamento"], ["chacara_sitio", "🌳", "Chácara / sítio"], ["outro", "🏡", "Outro"]].map(([v, e, t]) =>
+          ${[["casa", "", "Casa"], ["apartamento", "", "Apartamento"], ["chacara_sitio", "", "Chácara / sítio"], ["outro", "", "Outro"]].map(([v, e, t]) =>
             `<div class="choice"><input type="radio" name="housing_type" id="ht-${v}" value="${v}" required><label for="ht-${v}"><span class="emoji">${e}</span>${t}</label></div>`).join("")}
         </div></fieldset>
       <fieldset class="field"><legend class="label">A moradia é <span class="req">*</span></legend>
@@ -111,7 +111,7 @@ async function main() {
     <div class="flex justify-between gap-1 wrap mt-2">
       <button class="btn btn-ghost" type="button" data-prev disabled>← Voltar</button>
       <button class="btn btn-azul" type="button" data-next>Continuar <span class="arrow">→</span></button>
-      <button class="btn btn-laranja hidden" type="submit" data-submit>Enviar pedido de adoção 🐾</button>
+      <button class="btn btn-laranja hidden" type="submit" data-submit>Enviar pedido de adoção</button>
     </div>
   </form>`;
   observeReveal(root);
@@ -234,14 +234,13 @@ function setupForm(animal, needsCpf, profile) {
 function celebrate(animal, id) {
   root.innerHTML = `<div class="empty" style="border-style:solid;box-shadow:var(--shadow-pop)">
     <div class="empty-art" style="background:var(--rosa)">${icons.heart}</div>
-    <h1 class="h2">Pedido enviado! 🎉</h1>
+    <h1 class="h2">Pedido enviado!</h1>
     <p>O responsável por <strong>${esc(animal.name)}</strong> recebeu suas respostas e vai entrar em contato pela plataforma. Você será avisado a cada etapa.</p>
     <div class="flex gap-1 wrap justify-center mt-2">
       ${id ? `<a class="btn btn-azul" href="/minha-conta/pedidos/${esc(id)}">Acompanhar pedido</a>` : ""}
       <a class="btn btn-branco" href="/blog/primeiros-30-dias-em-casa">Como preparar a casa</a>
     </div></div>`;
-  const r = root.getBoundingClientRect();
-  for (let k = 0; k < 5; k++) setTimeout(() => pawBurst(r.left + r.width * (0.15 + k * 0.175), r.top + 110), k * 160);
+  root.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 main();

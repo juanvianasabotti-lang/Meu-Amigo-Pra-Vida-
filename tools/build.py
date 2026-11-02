@@ -15,7 +15,7 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / "src"
 OUT = ROOT / "public"
-SITE = "Meu Amigo Pra Vida"
+SITE = "Meu Amigo pra Vida"
 
 META_RE = re.compile(r"<!--meta\s+(.*?)-->", re.S)
 ATTR_RE = re.compile(r'(\w+)="(.*?)"', re.S)

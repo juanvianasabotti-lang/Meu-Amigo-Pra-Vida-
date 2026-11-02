@@ -57,14 +57,14 @@ async function renderPerfil() {
   ${completing ? `<div class="notice mb-3">${icons.info}<p>Falta pouco! Precisamos de alguns dados para você ${p.account_type === "pessoa" ? "adotar ou anunciar" : "cadastrar sua organização"}.</p></div>` : ""}
   <form class="form card card-pad" novalidate data-form>
     <div class="flex items-center gap-2 wrap">
-      <div class="avatar" style="width:84px;height:84px;font-size:1.6rem;border:3px solid var(--preto)" data-avatar>${p.avatar_url ? `<img src="${esc(p.avatar_url)}" alt="" referrerpolicy="no-referrer">` : esc(initials(p.full_name || p.email))}</div>
+      <div class="avatar" style="width:84px;height:84px;font-size:1.6rem" data-avatar>${p.avatar_url ? `<img src="${esc(p.avatar_url)}" alt="" referrerpolicy="no-referrer">` : esc(initials(p.full_name || p.email))}</div>
       <label class="btn btn-sm btn-branco" style="position:relative">${icons.camera} Trocar foto<input type="file" accept="image/*" data-avatar-input class="sr-only"></label>
       ${p.avatar_url ? `<button class="btn btn-sm btn-ghost" type="button" data-avatar-remove>Remover</button>` : ""}
     </div>
     ${canChangeType && (completing || pendingType) ? `
     <fieldset class="field"><legend class="label">Como você vai participar? <span class="req">*</span></legend>
       <div class="choice-grid">
-        ${[["pessoa", "🙋", "Pessoa", "adotar e doar"], ["ong", "🐾", "ONG / Protetor", "resgatar e anunciar"], ["empresa", "🏪", "Empresa", "vitrine e eventos"]].map(([v, e, t, s]) =>
+        ${[["pessoa", "", "Pessoa", "adotar e doar"], ["ong", "", "ONG / Protetor", "resgatar e anunciar"], ["empresa", "", "Empresa", "vitrine e eventos"]].map(([v, e, t, s]) =>
           `<div class="choice"><input type="radio" name="account_type" id="at-${v}" value="${v}" ${(pendingType || p.account_type) === v ? "checked" : ""}><label for="at-${v}"><span class="emoji">${e}</span>${t}<small>${s}</small></label></div>`).join("")}
       </div></fieldset>` : ""}
     <div class="field"><label for="full_name">${p.account_type === "pessoa" ? "Nome completo" : "Nome do(a) responsável"} <span class="req">*</span></label><input class="input" id="full_name" name="full_name" value="${esc(p.full_name)}" maxlength="120" autocomplete="name"></div>
@@ -139,7 +139,7 @@ async function renderPerfil() {
         await sb.from("profiles").update(upd, { returning: false }).eq("id", p.id);
         if (v.cpf && digits(v.cpf) !== (priv?.cpf || "")) await sb.rpc("set_my_cpf", { p_cpf: digits(v.cpf) });
         ctx = await getContext({ force: true });
-        toast(completing ? "Cadastro concluído! Bem-vindo(a) 🐾" : "Perfil atualizado!", "ok");
+        toast(completing ? "Cadastro concluído! Bem-vindo(a)!" : "Perfil atualizado!", "ok");
         const next = qs("voltar");
         if (completing) {
           if (safePath(next)) location.replace(safePath(next));
@@ -162,7 +162,7 @@ async function renderPedidos() {
   ${data?.length ? `<div class="list">${data.map((a) => {
     const c = a.animals ? coverPath(a.animals) : null;
     return `<div class="list-item" data-reveal="up">
-      <div class="thumb">${c ? `<img src="${esc(photoUrl(c))}" alt="">` : "🐾"}</div>
+      <div class="thumb">${c ? `<img src="${esc(photoUrl(c))}" alt="">` : ""}</div>
       <div><h3>${esc(a.animals?.name || "Animal")}</h3><p>Enviado ${esc(timeAgo(a.created_at))} · atualizado ${esc(timeAgo(a.updated_at))}</p></div>
       <div class="actions">${statusPill(a.status, L.adoption)}<a class="btn btn-sm btn-azul" href="/minha-conta/pedidos/${esc(a.id)}">Abrir</a></div></div>`;
   }).join("")}</div>`
@@ -178,7 +178,7 @@ async function renderPedido(id) {
   const open = !["recusado", "cancelado", "concluido"].includes(a.status);
   view.innerHTML = `
   <a class="link small" href="/minha-conta#pedidos">← Meus pedidos</a>
-  <div class="dash-title mt-2"><div class="flex items-center gap-2"><div class="org-logo">${c ? `<img src="${esc(photoUrl(c))}" alt="">` : "🐾"}</div>
+  <div class="dash-title mt-2"><div class="flex items-center gap-2"><div class="org-logo">${c ? `<img src="${esc(photoUrl(c))}" alt="">` : ""}</div>
     <div><h1>${esc(a.animals.name)}</h1><p class="muted mb-0">Anunciado por ${esc(a.animals.publisher_name)} · ${esc(a.animals.city)} - ${esc(a.animals.state)}</p></div></div>
     ${statusPill(a.status, L.adoption)}</div>
   <div class="grid grid-2" style="align-items:start">
@@ -211,7 +211,7 @@ async function renderFavoritos() {
   const animals = (data || []).map((f) => f.animals).filter(Boolean);
   view.innerHTML = `<div class="dash-title"><h1>Meus favoritos</h1></div>
     ${animals.length ? `<div class="pets-grid">${animals.map((a) => petCard(a, { favorited: true })).join("")}</div>`
-      : emptyState({ title: "Nenhum favorito ainda", text: "Toque no ❤ dos animais que roubarem seu coração para encontrá-los aqui depois.", cta: `<a class="btn btn-laranja" href="/adote">Explorar animais</a>`, art: icons.heart })}`;
+      : emptyState({ title: "Nenhum favorito ainda", text: "Toque no coração dos animais que roubarem seu coração para encontrá-los aqui depois.", cta: `<a class="btn btn-laranja" href="/adote">Explorar animais</a>`, art: icons.heart })}`;
   if (animals.length) bindFavorites(view, animals.map((a) => a.id));
 }
 

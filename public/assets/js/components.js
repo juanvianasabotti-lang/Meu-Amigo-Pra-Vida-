@@ -21,7 +21,7 @@ export function petCard(a, { favorited = false } = {}) {
     ? `<img src="${esc(photoUrl(path))}" alt="Foto de ${esc(a.name)}" loading="lazy" decoding="async" width="480" height="600">`
     : `<div style="position:absolute;inset:0;display:grid;place-items:center;color:rgba(17,17,17,.35)"><div style="width:42%">${a.species === "gato" ? icons.cat : icons.dog}</div></div>`;
   const status = a.status === "em_processo" ? `<span class="status-ribbon">Em processo de adoção</span>`
-    : a.status === "adotado" ? `<span class="status-ribbon" style="background:var(--rosa);color:var(--preto)">Adotado 💛</span>` : "";
+    : a.status === "adotado" ? `<span class="status-ribbon" style="background:var(--rosa);color:var(--preto)">Adotado</span>` : "";
   const traits = (a.personality || []).slice(0, 3).map((t) => `<span class="chip chip-soft">${esc(t)}</span>`).join("");
   return `<article class="pet-card" data-reveal="up">
     <div class="pet-photo">
@@ -45,7 +45,7 @@ export function petCard(a, { favorited = false } = {}) {
   </article>`;
 }
 
-// Favoritos: liga os botões ❤ de uma lista
+// Favoritos: liga os botões de uma lista
 export async function bindFavorites(root, animalIds) {
   let favs = new Set();
   if (sb.auth.session && animalIds.length) {
@@ -75,7 +75,7 @@ export async function bindFavorites(root, animalIds) {
       try {
         if (on) await sb.from("favorites").insert({ user_id: sb.auth.user.id, animal_id: id }, { returning: false });
         else await sb.from("favorites").delete().eq("animal_id", id).eq("user_id", sb.auth.user.id);
-        toast(on ? "Salvo nos seus favoritos 💛" : "Removido dos favoritos.", "ok", 2200);
+        toast(on ? "Salvo nos seus favoritos" : "Removido dos favoritos.", "ok", 2200);
       } catch (err) {
         set(!on);
         toast(err.message, "bad");
@@ -84,12 +84,14 @@ export async function bindFavorites(root, animalIds) {
   });
 }
 
-const CAT_ART = { laranja: icons.heart, azul: icons.syringe, rosa: icons.megaphone, amarelo: icons.gift };
+// Sem capa: bloco de cor da categoria com um animal recortado da marca (como nas peças do PDF)
+const COVER_PETS = ["golden", "gato-rajado", "boiadeiro", "gato-laranja", "labrador", "gato-himalaio", "chihuahua", "gato-preto-branco"];
+const pickPet = (slug = "") => COVER_PETS[[...slug].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7) % COVER_PETS.length];
 export function postCard(p) {
   const color = p.blog_categories?.color || "laranja";
   const cover = p.cover_url
     ? `<img src="${esc(p.cover_url)}" alt="${esc(p.cover_alt || "")}" loading="lazy">`
-    : `<div class="post-art">${CAT_ART[color] || icons.paw}</div>`;
+    : `<img class="post-pet" src="/assets/img/animais/${pickPet(p.slug)}.webp" alt="" loading="lazy">`;
   return `<a class="post-card cat-${esc(color)}" href="/blog/${esc(p.slug)}" data-reveal="up">
     <div class="post-cover">${cover}</div>
     <div class="post-body">
@@ -139,13 +141,14 @@ export function pixBox(o) {
 }
 export function bindCopy(root = document) {
   $$("[data-copy]", root).forEach((b) => b.addEventListener("click", async () => {
-    try { await navigator.clipboard.writeText(b.dataset.copy); toast("Chave Pix copiada! Obrigado por ajudar 💛", "ok"); }
+    try { await navigator.clipboard.writeText(b.dataset.copy); toast("Chave Pix copiada! Obrigado por ajudar", "ok"); }
     catch { toast("Não foi possível copiar. Selecione o texto manualmente.", "bad"); }
   }));
 }
 
-export function emptyState({ title, text, cta = "", art = icons.paw }) {
-  return `<div class="empty" data-reveal="pop"><div class="empty-art">${art}</div><h3>${esc(title)}</h3><p>${esc(text)}</p>${cta}</div>`;
+const LOOP_ART = '<svg class="loop" viewBox="0 0 260 160" aria-hidden="true"><path d="M8 132c40 4 70-18 86-52 14-30 4-62-22-62-30 0-34 46-4 70 30 24 84 18 112-12 26-28 34-58 72-62"/></svg>';
+export function emptyState({ title, text, cta = "", art = null }) {
+  return `<div class="empty" data-reveal="pop"><div class="empty-art${art ? "" : " is-loop"}">${art || LOOP_ART}</div><h3>${esc(title)}</h3><p>${esc(text)}</p>${cta}</div>`;
 }
 export const skeletons = (n = 3, h = 420) => Array.from({ length: n }, () => `<div class="skeleton" style="min-height:${h}px"></div>`).join("");
 

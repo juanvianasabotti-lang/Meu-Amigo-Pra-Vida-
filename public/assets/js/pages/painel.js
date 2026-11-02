@@ -57,12 +57,12 @@ async function renderInicio() {
   }
   const orgBanner = isOrgAccount() ? orgStatusBanner(org) : "";
   view.innerHTML = `
-    <div class="dash-title"><h1>Olá, ${esc(p.display_name || "amigo(a)")}! 👋</h1></div>
+    <div class="dash-title"><h1>Olá, ${esc(p.display_name || "amigo(a)")}!</h1></div>
     ${orgBanner}
     ${canPostAnimals() ? `<div class="grid grid-3 mb-3">
       <div class="step step-laranja" style="min-height:0"><span class="step-num" style="font-size:3rem">${stats.animais}</span><h3 class="mt-1">anúncios ativos</h3><a class="link" href="#animais">Gerenciar →</a></div>
       <div class="step step-azul" style="min-height:0"><span class="step-num" style="font-size:3rem">${stats.pedidos}</span><h3 class="mt-1">pedidos em andamento</h3><a class="link" href="#pedidos">Responder →</a></div>
-      <div class="step step-rosa" style="min-height:0"><span class="step-num" style="font-size:3rem">${stats.adotados}</span><h3 class="mt-1">adoções concluídas</h3><span class="link">Que orgulho! 💛</span></div>
+      <div class="step step-rosa" style="min-height:0"><span class="step-num" style="font-size:3rem">${stats.adotados}</span><h3 class="mt-1">adoções concluídas</h3><span class="link">Que orgulho!</span></div>
     </div>
     <div class="card card-pad flex justify-between items-center wrap gap-2"><div><h2 class="h3 mb-0">Tem um amigo procurando um lar?</h2><p class="muted mb-0">Cadastre com fotos bonitas e informações honestas. Nossa equipe revisa rapidinho.</p></div>
       <a class="btn btn-laranja" href="#novo-animal">${icons.plus} Anunciar um animal</a></div>`
@@ -74,7 +74,7 @@ function orgStatusBanner(org) {
   if (!org) return `<div class="notice mb-3">${icons.info}<p><strong>Falta a etapa 2:</strong> cadastre os dados da sua ${ctx.profile.account_type === "ong" ? "ONG" : "empresa"} para que nossa equipe verifique. <a class="link" href="#organizacao">Completar agora</a></p></div>`;
   const map = {
     pendente: ["notice", "Seu cadastro está em análise pela nossa equipe. Você será avisado por aqui assim que for aprovado."],
-    aprovada: ["notice ok", "Organização verificada ✔ Sua página está pública."],
+    aprovada: ["notice ok", "Organização verificada. Sua página está pública."],
     rejeitada: ["notice bad", `O cadastro precisa de ajustes: ${org.review_note || "confira os dados"}. Corrija e reenvie para análise.`],
     suspensa: ["notice bad", `Organização suspensa: ${org.review_note || "fale com o suporte"}.`],
   };
@@ -265,7 +265,7 @@ async function renderOrganizacao() {
         await sb.from("organization_private").upsert(pr, { onConflict: "organization_id", returning: false });
         await reloadCtx();
         const reReview = org?.status === "aprovada" && ctx.org?.status === "pendente";
-        toast(!org ? "Cadastro enviado! Nossa equipe vai verificar e avisar você. 🐾"
+        toast(!org ? "Cadastro enviado! Nossa equipe vai verificar e avisar você."
           : reReview ? "Dados salvos e enviados para nova verificação (por causa da mudança de nome, Pix ou contato)."
           : "Dados salvos!", "ok", 7000);
         applyNav();
@@ -294,7 +294,7 @@ async function renderAnimais(mode) {
   ${data?.length ? `<div class="list">${data.map((a) => {
     const c = coverPath(a);
     return `<div class="list-item" data-id="${esc(a.id)}">
-      <div class="thumb">${c ? `<img src="${esc(photoUrl(c))}" alt="">` : (a.species === "gato" ? "🐱" : "🐶")}</div>
+      <div class="thumb">${c ? `<img src="${esc(photoUrl(c))}" alt="">` : ""}</div>
       <div><h3>${esc(a.name)}</h3><p>${statusPill(a.status, L.animalStatus)} · criado ${esc(timeAgo(a.created_at))}</p>
         ${a.status === "rejeitado" && a.review_note ? `<p class="small" style="color:var(--vermelho)">Moderação: ${esc(a.review_note)}</p>` : ""}
         ${!(a.animal_photos || []).length ? `<p class="small" style="color:var(--laranja-escuro)">Adicione pelo menos 1 foto para enviar à análise.</p>` : ""}</div>
@@ -315,7 +315,7 @@ async function renderAnimais(mode) {
     $$("[data-status]", row).forEach((b) => b.addEventListener("click", async () => {
       const st = b.dataset.status;
       if (st === "em_analise" && !(a.animal_photos || []).length) { toast("Adicione ao menos uma foto antes de enviar.", "bad"); animalForm(id); return; }
-      if (st === "adotado" && !(await confirmDialog({ title: `${a.name} foi adotado? 🎉`, message: "O anúncio sai da lista de adoção e entra para as nossas histórias felizes.", confirmText: "Sim, foi adotado!" }))) return;
+      if (st === "adotado" && !(await confirmDialog({ title: `${a.name} foi adotado?`, message: "O anúncio sai da lista de adoção e entra para as nossas histórias felizes.", confirmText: "Sim, foi adotado!" }))) return;
       if (st === "arquivado" && !(await confirmDialog({ title: "Arquivar anúncio?", message: "Ele deixa de aparecer no site. Você pode reenviar depois.", confirmText: "Arquivar" }))) return;
       try { await sb.from("animals").update({ status: st }, { returning: false }).eq("id", id); toast("Atualizado!", "ok"); renderAnimais(); }
       catch (er) { toast(er.message, "bad"); }
@@ -354,7 +354,7 @@ async function animalForm(id) {
         <div class="field"><label for="a-name">Nome <span class="req">*</span></label><input class="input" id="a-name" name="name" maxlength="60" value="${esc(a.name || "")}"></div>
         <div class="field"><label for="a-breed">Raça</label><input class="input" id="a-breed" name="breed" maxlength="60" value="${esc(a.breed || "SRD (vira-lata)")}"></div>
       </div>
-      <fieldset class="field"><legend class="label">Espécie <span class="req">*</span></legend><div class="choice-grid">${radio("species", [["cao", "🐶 Cão"], ["gato", "🐱 Gato"]], a.species)}</div></fieldset>
+      <fieldset class="field"><legend class="label">Espécie <span class="req">*</span></legend><div class="choice-grid">${radio("species", [["cao", "Cão"], ["gato", "Gato"]], a.species)}</div></fieldset>
       <fieldset class="field"><legend class="label">Sexo <span class="req">*</span></legend><div class="choice-grid">${radio("sex", [["macho", "Macho"], ["femea", "Fêmea"]], a.sex)}</div></fieldset>
       <fieldset class="field"><legend class="label">Porte <span class="req">*</span></legend><div class="choice-grid">${radio("size", [["pequeno", "Pequeno"], ["medio", "Médio"], ["grande", "Grande"]], a.size)}</div></fieldset>
       <fieldset class="field"><legend class="label">Idade <span class="req">*</span></legend><div class="choice-grid">${radio("age_group", [["filhote", "Filhote"], ["adulto", "Adulto"], ["idoso", "Idoso"]], a.age_group)}</div></fieldset>
@@ -487,7 +487,7 @@ async function animalForm(id) {
           await sb.from("animals").update(row, { returning: false }).eq("id", animalId);
         }
         if (!a.approved_at || a.status === "rejeitado") await sb.from("animals").update({ status: submitMode }, { returning: false }).eq("id", animalId);
-        let msg = submitMode === "rascunho" ? "Rascunho salvo." : "Enviado para análise! Avisaremos quando estiver no ar. 🐾";
+        let msg = submitMode === "rascunho" ? "Rascunho salvo." : "Enviado para análise! Avisaremos quando estiver no ar.";
         if (a.approved_at) {
           const { data: now } = await sb.from("animals").select("status").eq("id", animalId).maybeSingle();
           msg = now?.status === "em_analise" ? "Alterações salvas e enviadas para uma revisão rápida antes de voltar ao ar." : "Alterações salvas!";
@@ -519,7 +519,7 @@ async function renderPedidos() {
   const item = (a) => {
     const c = a.animals ? coverPath(a.animals) : null;
     const pp = byId[a.applicant_id];
-    return `<div class="list-item"><div class="thumb">${c ? `<img src="${esc(photoUrl(c))}" alt="">` : "🐾"}</div>
+    return `<div class="list-item"><div class="thumb">${c ? `<img src="${esc(photoUrl(c))}" alt="">` : ""}</div>
       <div><h3>${esc(pp?.full_name || "Candidato(a)")} → ${esc(a.animals?.name || "")}</h3><p>${pp ? `${esc(pp.city || "")} - ${esc(pp.state || "")} · ` : ""}recebido ${esc(timeAgo(a.created_at))}</p></div>
       <div class="actions">${statusPill(a.status, L.adoption)}<a class="btn btn-sm btn-azul" href="/painel/pedidos/${esc(a.id)}">Abrir</a></div></div>`;
   };

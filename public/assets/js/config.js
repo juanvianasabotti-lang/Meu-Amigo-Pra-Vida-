@@ -5,7 +5,7 @@
 export const CONFIG = {
   SUPABASE_URL: "https://phfeodwytcvrnesythiv.supabase.co",
   SUPABASE_ANON_KEY: "sb_publishable_yuxQ8ANpbcU5GSadZBKU-A_WfKPCnTh",
-  SITE_NAME: "Meu Amigo Pra Vida",
+  SITE_NAME: "Meu Amigo pra Vida",
   TERMS_VERSION: "1.0",
   PRIVACY_VERSION: "1.0",
   CONTACT_EMAIL: "diogo@agenciagryd.com",

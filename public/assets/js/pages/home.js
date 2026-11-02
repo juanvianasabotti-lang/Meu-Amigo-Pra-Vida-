@@ -1,33 +1,33 @@
 import "../app.js";
 import { observeReveal, countUp } from "../app.js";
 import sb from "../sb.js";
-import { $, $$, esc } from "../ui.js";
+import { $, $$, esc, ufOptions } from "../ui.js";
 import { ANIMAL_CARD_COLS, petCard, bindFavorites, postCard, eventCard, emptyState, skeletons, orgLogo } from "../components.js";
 
 // ---------------------------------------------------------------------------
-// Herói: troca de animais com entrada e saída animadas + cor de fundo da marca
+// Herói: troca de animal e cor da marca, com profundidade ao mover o cursor
 // ---------------------------------------------------------------------------
 const SLIDES = [
-  { theme: "laranja", word: "pra vida inteira", name: "Quer me levar pra casa??", sub: "Cada adoção muda duas vidas" },
-  { theme: "azul", word: "de quatro patas", name: "Miau! Me adota? 🐱", sub: "Gatos também são amigos pra vida" },
-  { theme: "rosa", word: "cheio de amor", name: "O melhor para o seu pet!!", sub: "Cuidado, carinho e respeito" },
-  { theme: "amarelo", word: "pra todas as horas", name: "Ronrono garantido", sub: "Adote, não compre" },
-  { theme: "azul", word: "pra vida inteira", name: "Me adota? 🥺", sub: "Prometo amor incondicional" },
-  { theme: "laranja", word: "de quatro patas", name: "Amor que abana o rabo", sub: "Castrado, vacinado e pronto pra te amar" },
-]
+  { theme: "laranja", name: "Me leva pra casa?", sub: "Prometo te esperar na porta" },
+  { theme: "azul", name: "Gato também é amigo pra vida", sub: "E adora uma janela com sol" },
+  { theme: "amarelo", name: "O melhor para o seu pet!!", sub: "Vacina, castração e muito carinho" },
+  { theme: "rosa", name: "Ronrono garantido", sub: "Adote, não compre" },
+  { theme: "azul", name: "Quer passear comigo?", sub: "Cachorro adulto também aprende" },
+  { theme: "laranja", name: "Pequeno no tamanho", sub: "Enorme no amor" },
+];
+const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
 function setupHero() {
   const stage = $("#hero");
   if (!stage) return;
   const pets = $$(".hero-pet", stage);
   const dots = $(".hero-dots", stage);
-  const tags = $(".hero-tags", stage);
-  const word = $("[data-hero-word]", stage);
   const nameBox = $(".hero-name", stage);
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let i = 0;
   let timer;
 
-  dots.innerHTML = SLIDES.map((_, k) => `<button type="button" role="tab" aria-label="Destaque ${k + 1}"></button>`).join("");
+  dots.innerHTML = SLIDES.map((_, k) => `<button type="button" role="tab" aria-label="Destaque ${k + 1} de ${SLIDES.length}"></button>`).join("");
   const dotBtns = $$("button", dots);
 
   const show = (n) => {
@@ -37,32 +37,108 @@ function setupHero() {
     if (prev && prev !== pets[i]) {
       prev.classList.remove("is-active");
       prev.classList.add("is-leaving");
-      setTimeout(() => prev.classList.remove("is-leaving"), 800);
+      setTimeout(() => prev.classList.remove("is-leaving"), 700);
     }
-    // carrega a imagem se ainda for lazy
     pets[i].loading = "eager";
-    setTimeout(() => pets[i].classList.add("is-active"), prev && prev !== pets[i] ? 260 : 0);
+    setTimeout(() => pets[i].classList.add("is-active"), prev && prev !== pets[i] ? 220 : 0);
     stage.dataset.theme = s.theme;
-    word.textContent = s.word;
-    word.className = `hl hero-word ${s.theme === "amarelo" || s.theme === "rosa" ? "hl-azul" : "hl-branco"}`;
     nameBox.classList.add("swap");
     setTimeout(() => {
       $("[data-hero-name]", nameBox).textContent = s.name;
       $("[data-hero-sub]", nameBox).textContent = s.sub;
       nameBox.classList.remove("swap");
-    }, 300);
+    }, 280);
     dotBtns.forEach((b, k) => b.setAttribute("aria-current", String(k === i)));
   };
   const next = () => show(i + 1);
-  const start = () => { if (!reduce) { clearInterval(timer); timer = setInterval(next, 5200); } };
+  const start = () => { if (!reduce) { clearInterval(timer); timer = setInterval(next, 5600); } };
   dotBtns.forEach((b, k) => b.addEventListener("click", () => { show(k); start(); }));
-  stage.addEventListener("mouseenter", () => clearInterval(timer));
-  stage.addEventListener("mouseleave", start);
+  stage.addEventListener("focusin", () => clearInterval(timer));
+  stage.addEventListener("focusout", start);
   document.addEventListener("visibilitychange", () => (document.hidden ? clearInterval(timer) : start()));
-
   show(0);
-  setTimeout(() => tags.classList.add("is-in"), 500);
   start();
+
+  // profundidade: animal, laço e palavra gigante se movem em camadas
+  if (!reduce && finePointer) {
+    let raf = 0;
+    stage.addEventListener("pointermove", (e) => {
+      const r = stage.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width - 0.5) * 22;
+      const y = ((e.clientY - r.top) / r.height - 0.5) * 14;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => { stage.style.setProperty("--px", `${x.toFixed(1)}px`); stage.style.setProperty("--py", `${y.toFixed(1)}px`); });
+    });
+    stage.addEventListener("pointerleave", () => { stage.style.setProperty("--px", "0px"); stage.style.setProperty("--py", "0px"); });
+  }
+
+  // busca rápida: estados
+  const uf = $("[data-qs-uf]");
+  if (uf) uf.innerHTML = ufOptions("").replace('<option value="">UF</option>', '<option value="">Todo o Brasil</option>');
+  $(".quick-search")?.addEventListener("submit", (e) => {
+    // não envia campos vazios (URL limpa em /adote)
+    e.preventDefault();
+    const q = new URLSearchParams();
+    new FormData(e.currentTarget).forEach((v, k) => { if (v) q.set(k, v); });
+    location.href = `/adote${q.toString() ? `?${q}` : ""}`;
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Como participar: foto do animal acompanha o cursor sobre cada linha
+// ---------------------------------------------------------------------------
+function setupHelpRows() {
+  const list = $("[data-help]");
+  if (!list || reduce || !finePointer) return;
+  const peek = document.createElement("div");
+  peek.className = "help-peek";
+  peek.setAttribute("aria-hidden", "true");
+  peek.innerHTML = '<img alt="" src="">';
+  document.body.append(peek);
+  const img = $("img", peek);
+  $$(".help-row", list).forEach((row) => {
+    const pre = new Image(); pre.src = row.dataset.peek;
+    row.addEventListener("pointerenter", () => { img.src = row.dataset.peek; peek.classList.add("on"); });
+    row.addEventListener("pointerleave", () => peek.classList.remove("on"));
+  });
+  list.addEventListener("pointermove", (e) => {
+    peek.style.setProperty("--x", `${e.clientX}px`);
+    peek.style.setProperty("--y", `${e.clientY}px`);
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Rolagem: faixa de texto gigante e linha do processo de adoção
+// ---------------------------------------------------------------------------
+function setupScrollEffects() {
+  const band = $("[data-scroll-type]");
+  const proc = $("[data-process]");
+  if (reduce) { proc?.querySelectorAll("li").forEach((li) => li.classList.add("is-reached")); proc?.style.setProperty("--progress", 1); return; }
+  const lines = band ? $$("p", band) : [];
+  const steps = proc ? $$("li", proc) : [];
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const vh = window.innerHeight;
+    if (band) {
+      const r = band.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < vh) {
+        const t = (vh - r.top) / (vh + r.height); // 0 → 1 enquanto atravessa a tela
+        lines.forEach((p) => { const dir = Number(p.dataset.dir) || -1; p.style.setProperty("--shift", ((t - 0.5) * 420 * dir).toFixed(1)); });
+      }
+    }
+    if (proc) {
+      const r = proc.getBoundingClientRect();
+      const t = Math.min(1, Math.max(0, (vh * 0.75 - r.top) / (r.height + vh * 0.25)));
+      proc.querySelector(".process-track span").style.setProperty("--progress", t.toFixed(3));
+      proc.style.setProperty("--progress", t.toFixed(3));
+      steps.forEach((li, k) => li.classList.toggle("is-reached", t >= (k / steps.length) + 0.02 || t >= 0.98));
+    }
+  };
+  const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  update();
 }
 
 // ---------------------------------------------------------------------------
@@ -146,6 +222,8 @@ async function loadPartners() {
 }
 
 setupHero();
+setupHelpRows();
+setupScrollEffects();
 loadPets();
 loadStats();
 loadPosts();

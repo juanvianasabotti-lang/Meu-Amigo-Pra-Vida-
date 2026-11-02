@@ -44,6 +44,18 @@ function bindPasswordUi(root) {
 }
 const strongEnough = (p) => p.length >= 8 && /[A-Za-z]/.test(p) && /\d/.test(p);
 
+// O botão do Google só aparece quando o provedor está ativo no Supabase (evita erro na tela)
+async function setupGoogle(root, onClick) {
+  const area = $("[data-google-area]", root);
+  const btn = $("[data-google]", root);
+  if (!area || !btn) return;
+  btn.addEventListener("click", onClick);
+  try {
+    const p = await sb.providers();
+    if (p.google) area.classList.remove("hidden");
+  } catch { /* sem conexão: mantém só o e-mail */ }
+}
+
 async function googleLogin() {
   if (!sb.isConfigured()) { toast("Login indisponível no momento.", "bad"); return; }
   rememberNext();
@@ -54,7 +66,7 @@ async function googleLogin() {
 // Cadastro
 // ---------------------------------------------------------------------------
 const TYPE_INFO = {
-  pessoa: { hint: "Para quem quer adotar, doar um animal ou acompanhar a causa.", name: "Nome completo", art: "Todo amigo pra vida começa com um cadastro" },
+  pessoa: { hint: "Para quem quer adotar, doar um animal ou acompanhar a causa.", name: "Nome completo", art: "Adote, anuncie e acompanhe tudo em um só lugar" },
   ong: { hint: "Etapa 1 de 2: crie a conta do(a) responsável. Em seguida você informa CNPJ (ou CPF, se for protetor independente), endereço e Pix da organização. A publicação acontece após a verificação da nossa equipe.", name: "Nome do(a) responsável", art: "Mais lares para quem você resgatou" },
   empresa: { hint: "Etapa 1 de 2: crie a conta do(a) responsável. Depois você informa CNPJ, endereço e serviços. Sua vitrine é publicada após a verificação da nossa equipe.", name: "Nome do(a) responsável", art: "Sua marca do lado certo da história" },
 };
@@ -83,7 +95,7 @@ function setupCadastro() {
   $$("[data-type]", root).forEach((b) => b.addEventListener("click", () => setType(b.dataset.type)));
   setType(type);
 
-  $("[data-google]", root).addEventListener("click", () => {
+  setupGoogle(root, () => {
     try { sessionStorage.setItem(TYPE_KEY, type); } catch { /* ignore */ }
     googleLogin();
   });
@@ -128,8 +140,8 @@ function setupCadastro() {
         if (session) { location.replace(type === "pessoa" ? (popNext() || "/minha-conta") : "/painel#organizacao"); return; }
         root.querySelector(".auth-card").innerHTML = `
           <div class="center">
-            <div class="empty-art" style="margin:0 auto 16px;width:120px;height:120px;border-radius:50%;background:var(--amarelo);border:3px solid var(--preto);display:grid;place-items:center"><span style="width:56px;height:56px;display:block">${icons.check}</span></div>
-            <h1>Confira seu e-mail 💌</h1>
+            <div class="empty-art" style="margin:0 auto 16px;width:120px;height:120px;border-radius:50%;background:var(--amarelo);display:grid;place-items:center"><span style="width:56px;height:56px;display:block">${icons.check}</span></div>
+            <h1>Confira seu e-mail</h1>
             <p>Enviamos um link de confirmação para <strong>${v.email.replace(/[<>&"]/g, "")}</strong>. Clique nele para ativar sua conta.</p>
             ${type !== "pessoa" ? `<p class="notice info" style="text-align:left">${icons.info}<span>Depois de confirmar, entre e complete os dados da sua ${type === "ong" ? "ONG" : "empresa"} no painel. Essa é a etapa 2 de 2.</span></p>` : ""}
             <p class="small muted">Não chegou? Verifique o spam ou <button class="link" type="button" data-resend style="background:none;border:0;cursor:pointer;padding:0">reenvie o e-mail</button>.</p>
@@ -155,7 +167,7 @@ function setupEntrar() {
   rememberNext();
   if (qs("confirmado")) { msg.className = "notice ok mb-2"; msg.innerHTML = `${icons.check}<p>E-mail confirmado! Agora é só entrar.</p>`; }
   if (sb.auth.session) { location.replace(popNext() || "/minha-conta"); return; }
-  $("[data-google]", root).addEventListener("click", googleLogin);
+  setupGoogle(root, googleLogin);
   $("[data-resend]", root).addEventListener("click", async () => {
     try { await sb.auth.resend(form.email.value.trim(), CALLBACK); toast("Enviamos um novo e-mail de confirmação.", "ok"); } catch (er) { toast(er.message, "bad"); }
   });

@@ -22,10 +22,10 @@ async function render() {
     a = r.data;
   } catch (e) { root.innerHTML = errorState(e); return; }
   if (!a) {
-    root.innerHTML = emptyState({ title: "Esse amigo não está mais disponível", text: "Ele pode já ter encontrado um lar 💛 ou o anúncio foi retirado. Que tal conhecer outros?", cta: `<a class="btn btn-laranja" href="/adote">Ver outros amigos</a>` });
+    root.innerHTML = emptyState({ title: "Esse amigo não está mais disponível", text: "Ele pode já ter encontrado um lar ou o anúncio foi retirado. Que tal conhecer outros?", cta: `<a class="btn btn-laranja" href="/adote">Ver outros amigos</a>` });
     return;
   }
-  document.title = `${a.name} · ${L.species[a.species]} para adoção · Meu Amigo Pra Vida`;
+  document.title = `${a.name} · ${L.species[a.species]} para adoção · Meu Amigo pra Vida`;
   document.querySelector('meta[name="description"]')?.setAttribute("content", `${a.name}, ${L.species[a.species].toLowerCase()} ${L.sex[a.sex].toLowerCase()} em ${a.city} - ${a.state}, está esperando um lar. Conheça e adote!`);
 
   const photos = (a.animal_photos || []).sort((x, y) => (y.is_cover - x.is_cover) || (x.position - y.position));
@@ -54,7 +54,7 @@ async function render() {
     <div class="sticky-cta" data-reveal="right">
       <div class="chips mb-2"><span class="chip chip-outline">${esc(L.species[a.species])}</span>
         ${a.status === "em_processo" ? `<span class="chip chip-azul">Em processo de adoção</span>` : ""}
-        ${a.status === "adotado" ? `<span class="chip chip-rosa">Adotado 💛</span>` : ""}</div>
+        ${a.status === "adotado" ? `<span class="chip chip-rosa">Adotado</span>` : ""}</div>
       <h1 class="display" style="font-size:clamp(2.6rem,6vw,4.6rem)">${esc(a.name)}</h1>
       <p class="lead" style="display:flex;gap:6px;align-items:center">${icons.pin} ${esc(a.city)} - ${esc(a.state)}</p>
       <div class="facts">
@@ -74,7 +74,7 @@ async function render() {
       <div class="card card-pad mt-3" style="box-shadow:var(--shadow-pop-sm)">
         <p class="small muted mb-0">Anunciado por</p>
         <p class="bold mb-0">${org ? `<a class="link" href="/organizacao/${esc(org.slug)}">${esc(org.trade_name)}</a> · ${esc(L.orgKind[org.kind])}` : esc(a.publisher_name)}</p>
-        ${org ? `<p class="small muted mb-0">Organização verificada pela nossa equipe ✔</p>` : `<p class="small muted mb-0">Anúncio de pessoa física revisado pela moderação.</p>`}
+        ${org ? `<p class="small muted mb-0">Organização verificada pela nossa equipe</p>` : `<p class="small muted mb-0">Anúncio de pessoa física revisado pela moderação.</p>`}
       </div>
     </div>
   </div>
@@ -105,7 +105,7 @@ async function render() {
   }));
   $("[data-share]", root)?.addEventListener("click", async () => {
     const data = { title: `Adote ${a.name}!`, text: `${a.name} está procurando um lar. Conheça:`, url: location.href };
-    try { if (navigator.share) await navigator.share(data); else { await navigator.clipboard.writeText(location.href); (await import("../ui.js")).toast("Link copiado! Compartilhe com quem pode adotar 💛", "ok"); } } catch { /* cancelado */ }
+    try { if (navigator.share) await navigator.share(data); else { await navigator.clipboard.writeText(location.href); (await import("../ui.js")).toast("Link copiado! Compartilhe com quem pode adotar", "ok"); } } catch { /* cancelado */ }
   });
   bindCopy(root);
   observeReveal(root);

@@ -13,7 +13,7 @@ export function setupChatFor(appId, myId, root) {
       const { data } = await sb.from("application_messages").select("id,sender_id,body,created_at,read_at").eq("application_id", appId).order("created_at");
       const atBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 40;
       box.innerHTML = data?.length ? data.map((m) => `<div class="msg ${m.sender_id === myId ? "me" : ""}">${esc(m.body)}<time>${esc(fmtDateTime(m.created_at))}</time></div>`).join("")
-        : `<p class="muted small center" style="margin:auto">Nenhuma mensagem ainda. Diga olá! 👋</p>`;
+        : `<p class="muted small center" style="margin:auto">Nenhuma mensagem ainda. Diga olá.</p>`;
       if (atBottom) box.scrollTop = box.scrollHeight;
       const unread = (data || []).filter((m) => m.sender_id !== myId && !m.read_at).map((m) => m.id);
       if (unread.length) await sb.from("application_messages").update({ read_at: new Date().toISOString() }, { returning: false }).in("id", unread);

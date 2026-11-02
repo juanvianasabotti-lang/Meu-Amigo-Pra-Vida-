@@ -91,7 +91,7 @@ async function animais() {
       ${a.adoption_requirements ? `<p class="small"><strong>Requisitos:</strong> ${esc(a.adoption_requirements)}</p>` : ""}
       <div class="flex gap-1 wrap mt-2"><button class="btn btn-sm btn-azul" type="button" data-ok>${icons.check} Aprovar e publicar</button><button class="btn btn-sm btn-branco" type="button" data-no>Pedir ajustes</button></div>
     </article>`;
-  }).join("") : emptyState({ title: "Fila vazia 🎉", text: "Nenhum anúncio aguardando análise.", art: icons.check })}`;
+  }).join("") : emptyState({ title: "Fila vazia", text: "Nenhum anúncio aguardando análise.", art: icons.check })}`;
   $$("[data-animal]", view).forEach((card) => {
     const id = card.dataset.animal;
     $("[data-ok]", card).addEventListener("click", async () => {
@@ -114,7 +114,7 @@ async function eventos() {
     <h2 class="h3 mt-2 mb-0">${esc(e.title)}</h2><p class="muted">${esc(L.eventKind[e.kind])} · ${esc(e.organizations?.trade_name || "")} · ${esc(fmtDateTime(e.starts_at))} · ${e.is_online ? "Online" : `${esc(e.city || "")} - ${esc(e.state || "")}`}</p>
     <p><strong>${esc(e.summary)}</strong></p>${e.description ? `<p class="small">${esc(e.description)}</p>` : ""}${e.external_url ? `<p class="small">Link: ${esc(e.external_url)}</p>` : ""}
     <div class="flex gap-1 wrap"><button class="btn btn-sm btn-azul" type="button" data-ok>Publicar</button><button class="btn btn-sm btn-branco" type="button" data-no>Pedir ajustes</button></div></article>`).join("")
-    : emptyState({ title: "Fila vazia 🎉", text: "Nenhum evento aguardando análise.", art: icons.check })}`;
+    : emptyState({ title: "Fila vazia", text: "Nenhum evento aguardando análise.", art: icons.check })}`;
   $$("[data-ev]", view).forEach((card) => {
     $("[data-ok]", card).addEventListener("click", async () => { try { await sb.rpc("moderate_event", { p_event: card.dataset.ev, p_approve: true, p_note: null }); refreshQueue(); eventos(); } catch (er) { toast(er.message, "bad"); } });
     $("[data-no]", card).addEventListener("click", async () => {
@@ -159,7 +159,7 @@ function postEditor(p, cats) {
       <div class="form-row"><div class="field"><label for="ps">Endereço (slug)</label><input class="input" id="ps" name="slug" maxlength="120" value="${esc(x.slug || "")}" placeholder="gerado a partir do título"></div>
         <div class="field"><label for="pc">Categoria</label><select class="select" id="pc" name="category_id"><option value="">Sem categoria</option>${(cats || []).map((c) => `<option value="${esc(c.id)}" ${x.category_id === c.id ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></div></div>
       <div class="field"><label for="pe">Resumo <span class="req">*</span></label><textarea class="textarea" id="pe" name="excerpt" maxlength="300" style="min-height:80px">${esc(x.excerpt || "")}</textarea></div>
-      <div class="field"><span class="label">Capa (16:10)</span><div class="flex gap-1 items-center wrap"><label class="btn btn-sm btn-branco">${icons.camera} Escolher imagem<input type="file" accept="image/*" class="sr-only" data-cover></label><span data-cover-prev class="small muted">${x.cover_url ? "Capa definida ✔" : "Sem capa (usa a arte da categoria)"}</span></div></div>
+      <div class="field"><span class="label">Capa (16:10)</span><div class="flex gap-1 items-center wrap"><label class="btn btn-sm btn-branco">${icons.camera} Escolher imagem<input type="file" accept="image/*" class="sr-only" data-cover></label><span data-cover-prev class="small muted">${x.cover_url ? "Capa definida" : "Sem capa (usa a arte da categoria)"}</span></div></div>
       <div class="field"><label for="pa">Texto alternativo da capa</label><input class="input" id="pa" name="cover_alt" maxlength="200" value="${esc(x.cover_alt || "")}"></div>
       <div class="field"><label for="ptags">Tags (separadas por vírgula)</label><input class="input" id="ptags" name="tags" value="${esc((x.tags || []).join(", "))}"></div>
     </div>
@@ -183,7 +183,7 @@ function postEditor(p, cats) {
   $("[data-cover]", view).addEventListener("change", async (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
-    try { cover = await processImage(f, { aspect: 16 / 10, width: 1600, title: "Capa do artigo" }); if (cover) $("[data-cover-prev]", view).textContent = "Nova capa pronta ✔"; } catch (er) { toast(er.message, "bad"); }
+    try { cover = await processImage(f, { aspect: 16 / 10, width: 1600, title: "Capa do artigo" }); if (cover) $("[data-cover-prev]", view).textContent = "Nova capa pronta"; } catch (er) { toast(er.message, "bad"); }
   });
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -280,7 +280,7 @@ async function auditoria() {
 (async () => {
   ctx = await requireAuth();
   if (!ctx) { view.innerHTML = errorState({ code: "not_configured" }); return; }
-  if (!isStaff(ctx)) { view.innerHTML = emptyState({ title: "Acesso restrito", text: "Esta área é exclusiva da equipe do Meu Amigo Pra Vida.", cta: `<a class="btn" href="/">Voltar ao início</a>`, art: icons.shield }); $("[data-dash-nav]").remove(); return; }
+  if (!isStaff(ctx)) { view.innerHTML = emptyState({ title: "Acesso restrito", text: "Esta área é exclusiva da equipe do Meu Amigo pra Vida.", cta: `<a class="btn" href="/">Voltar ao início</a>`, art: icons.shield }); $("[data-dash-nav]").remove(); return; }
   admin = isAdmin(ctx);
   if (!admin) $$("[data-admin-only]").forEach((a) => a.remove());
   window.addEventListener("hashchange", route);

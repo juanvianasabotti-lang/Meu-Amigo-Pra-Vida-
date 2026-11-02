@@ -63,5 +63,5 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 if __name__ == "__main__":
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8080
-    print(f"Meu Amigo Pra Vida rodando em http://localhost:{port}")
+    print(f"Meu Amigo pra Vida rodando em http://localhost:{port}")
     http.server.ThreadingHTTPServer(("", port), Handler).serve_forever()

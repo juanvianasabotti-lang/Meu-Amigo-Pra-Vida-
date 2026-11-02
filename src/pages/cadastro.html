@@ -1,8 +1,8 @@
-<!--meta title="Criar conta" description="Crie sua conta no Meu Amigo Pra Vida como pessoa, ONG/protetor ou empresa parceira." script="auth" robots="noindex,follow" -->
+<!--meta title="Criar conta" description="Crie sua conta no Meu Amigo pra Vida como pessoa, ONG/protetor ou empresa parceira." script="auth" robots="noindex,follow" -->
 <section class="container auth-wrap" data-auth="cadastro">
   <aside class="auth-art" aria-hidden="true">
-    <div class="sticker spin-slow" style="width:160px;height:160px;right:20px;top:20px;color:var(--amarelo)"><svg viewBox="0 0 200 200"><path fill="currentColor" d="M100 0l17 38 38-20-6 42 42 4-32 28 34 26-42 6 10 41-38-18-17 40-17-40-38 18 10-41-42-6 34-26L19 64l42-4-6-42 38 20z"/></svg></div>
-    <div><span class="eyebrow">Bem-vindo à família</span><h2 data-art-title>Todo amigo pra vida começa com um cadastro</h2></div>
+    <svg class="loop art-loop draw-on-view" viewBox="0 0 260 160" aria-hidden="true"><path d="M8 132c40 4 70-18 86-52 14-30 4-62-22-62-30 0-34 46-4 70 30 24 84 18 112-12 26-28 34-58 72-62"/></svg>
+    <div><span class="eyebrow">Bem-vindo à família</span><h2 data-art-title>Adote, anuncie e acompanhe tudo em um só lugar</h2></div>
     <img class="pet" src="/assets/img/animais/golden.webp" alt="" width="1400" height="1376" data-reveal="pet">
   </aside>
   <div class="auth-card" data-reveal="up">
@@ -14,8 +14,10 @@
       <button class="tab" role="tab" type="button" data-type="empresa" aria-selected="false">Empresa</button>
     </div>
     <p class="small notice info mb-3" data-type-hint></p>
-    <button class="btn google-btn btn-block" type="button" data-google>Continuar com o Google</button>
-    <div class="divider my-2" style="margin:18px 0">ou com e-mail</div>
+    <div class="hidden" data-google-area>
+      <button class="btn google-btn btn-block" type="button" data-google><svg class="icon" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg> Continuar com o Google</button>
+      <div class="divider" style="margin:18px 0">ou com e-mail</div>
+    </div>
     <form class="form" novalidate data-form autocomplete="on">
       <div class="field"><label for="full_name" data-name-label>Nome completo <span class="req">*</span></label><input class="input" id="full_name" name="full_name" autocomplete="name" maxlength="120" required></div>
       <div class="field"><label for="email">E-mail <span class="req">*</span></label><input class="input" id="email" name="email" type="email" autocomplete="email" maxlength="200" required></div>

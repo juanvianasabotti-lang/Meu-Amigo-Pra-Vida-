@@ -1,9 +1,9 @@
-# Meu Amigo Pra Vida 🐾
+# Meu Amigo pra Vida 🐾
 
 Plataforma de **conscientização, adoção e doação de cães e gatos**, uma ponte entre pessoas, ONGs/protetores e empresas do mundo animal.
 
 - **Site:** HTML, CSS e JavaScript próprios (sem framework e sem dependências de terceiros), hospedado no **Vercel**
-- **Banco, login e arquivos:** **Supabase** (projeto `Meu Amigo Pra Vida`, região São Paulo `sa-east-1`)
+- **Banco, login e arquivos:** **Supabase** (projeto `Meu Amigo pra Vida`, região São Paulo `sa-east-1`)
 - **LGPD:** dados pessoais ficam somente no Supabase, protegidos por políticas RLS em todas as tabelas, com consentimentos versionados, exportação, exclusão de conta e auditoria
 
 ---
@@ -54,6 +54,8 @@ Depois de editar algo em `src/pages` ou `src/partials`, rode `python3 tools/buil
 - *Redirect URLs*: `https://SEU-DOMINIO/auth/callback` (adicione também a URL do Vercel e `http://localhost:8080/auth/callback`)
 
 **Authentication → Providers → Google**
+
+> O botão "Continuar com o Google" só aparece no site quando este provedor está ativo (o site consulta `/auth/v1/settings`). Enquanto estiver desligado, o login e o cadastro funcionam normalmente por e-mail.
 1. No Google Cloud Console, crie um *OAuth Client ID* (tipo "Web application").
 2. *Authorized redirect URI*: `https://phfeodwytcvrnesythiv.supabase.co/auth/v1/callback`
 3. Cole o *Client ID* e o *Client Secret* no Supabase e ative o provedor.
@@ -115,7 +117,7 @@ São mais de 30 verificações de segurança: tentativas de autopromoção a adm
 
 ### Modelos de e-mail sugeridos (Supabase → Auth → Email Templates)
 
-**Confirmar cadastro**: assunto: `Confirme seu cadastro no Meu Amigo Pra Vida 🐾`
+**Confirmar cadastro**: assunto: `Confirme seu cadastro no Meu Amigo pra Vida 🐾`
 ```html
 <h2>Que alegria ter você com a gente!</h2>
 <p>Clique no botão abaixo para confirmar seu e-mail e ativar sua conta.</p>
@@ -123,14 +125,14 @@ São mais de 30 verificações de segurança: tentativas de autopromoção a adm
 <p>Se você não se cadastrou, ignore esta mensagem.</p>
 ```
 
-**Redefinir senha**: assunto: `Crie uma nova senha · Meu Amigo Pra Vida`
+**Redefinir senha**: assunto: `Crie uma nova senha · Meu Amigo pra Vida`
 ```html
 <h2>Esqueceu a senha? Acontece!</h2>
 <p><a href="{{ .ConfirmationURL }}">Criar uma nova senha</a></p>
 <p>Se não foi você, ignore este e-mail. Sua senha continua a mesma.</p>
 ```
 
-**Trocar e-mail**: assunto: `Confirme seu novo e-mail · Meu Amigo Pra Vida`
+**Trocar e-mail**: assunto: `Confirme seu novo e-mail · Meu Amigo pra Vida`
 ```html
 <p>Confirme a troca do seu e-mail de acesso:</p>
 <p><a href="{{ .ConfirmationURL }}">Confirmar novo e-mail</a></p>

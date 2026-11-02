@@ -219,6 +219,19 @@ const auth_ = {
     return this._save(data);
   },
 
+  // Provedores de login ativos no projeto (ex.: Google). Guardado por 10 min na sessão do navegador.
+  async providers() {
+    const KEY = "mapv.providers";
+    try {
+      const c = JSON.parse(sessionStorage.getItem(KEY) || "null");
+      if (c && Date.now() - c.t < 600000) return c.p;
+    } catch { /* ignore */ }
+    const { data } = await http(`${base()}/auth/v1/settings`, { auth: false });
+    const p = data?.external || {};
+    try { sessionStorage.setItem(KEY, JSON.stringify({ t: Date.now(), p })); } catch { /* ignore */ }
+    return p;
+  },
+
   async signInWithGoogle(redirectTo) {
     const pk = await newChallenge();
     const params = new URLSearchParams({ provider: "google", redirect_to: redirectTo, ...pk });

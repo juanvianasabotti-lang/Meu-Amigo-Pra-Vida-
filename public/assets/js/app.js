@@ -180,30 +180,69 @@ function setupRibbons() {
   });
 }
 
-// Patinhas que pulam ao clicar nos botões principais
-export function pawBurst(x, y) {
-  if (reduceMotion) return;
-  const colors = ["var(--laranja)", "var(--azul)", "var(--rosa)", "var(--amarelo)"];
-  for (let i = 0; i < 6; i++) {
-    const el = document.createElement("span");
-    el.className = "paw-burst";
-    el.innerHTML = icons.paw;
-    const ang = (Math.PI * 2 * i) / 6 + Math.random() * 0.6;
-    const dist = 50 + Math.random() * 40;
-    el.style.left = `${x - 11}px`;
-    el.style.top = `${y - 11}px`;
-    el.style.color = colors[i % colors.length];
-    el.style.setProperty("--dx", `${Math.cos(ang) * dist}px`);
-    el.style.setProperty("--dy", `${Math.sin(ang) * dist - 20}px`);
-    el.style.setProperty("--rot", `${Math.random() * 120 - 60}deg`);
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 950);
-  }
+// Títulos que entram palavra por palavra ([data-split])
+export function splitWords(root = document) {
+  $$("[data-split]", root).forEach((el) => {
+    if (el.dataset.splitDone) return;
+    el.dataset.splitDone = "1";
+    let i = 0;
+    const walk = (node) => {
+      [...node.childNodes].forEach((n) => {
+        if (n.nodeType === 3) {
+          const frag = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach((part) => {
+            if (!part) return;
+            if (/^\s+$/.test(part)) { frag.append(part); return; }
+            const w = document.createElement("span");
+            w.className = "w";
+            const inner = document.createElement("span");
+            inner.style.setProperty("--i", i++);
+            inner.textContent = part;
+            w.append(inner);
+            frag.append(w);
+          });
+          n.replaceWith(frag);
+        } else if (n.nodeType === 1) walk(n);
+      });
+    };
+    el.setAttribute("aria-label", el.textContent.trim());
+    walk(el);
+    [...el.children].forEach((c) => c.setAttribute("aria-hidden", "true"));
+  });
+  const els = $$("[data-split]:not(.is-split-in)", root);
+  if (reduceMotion || !("IntersectionObserver" in window)) { els.forEach((el) => el.classList.add("is-split-in")); return; }
+  const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (e.isIntersecting) { e.target.classList.add("is-split-in"); io.unobserve(e.target); }
+  }), { threshold: 0.3 });
+  els.forEach((el) => io.observe(el));
 }
+
+// Laços da marca que se desenham quando aparecem
+function drawLoops() {
+  const els = $$(".loop.draw-on-view");
+  if (reduceMotion || !("IntersectionObserver" in window)) { els.forEach((el) => el.classList.add("is-visible")); return; }
+  const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (e.isIntersecting) { e.target.classList.add("is-visible"); io.unobserve(e.target); }
+  }), { threshold: 0.4 });
+  els.forEach((el) => io.observe(el));
+}
+
+// Botões que acompanham levemente o cursor (só com mouse)
+function magnets() {
+  if (reduceMotion || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  $$(".magnet").forEach((el) => {
+    el.addEventListener("pointermove", (e) => {
+      const r = el.getBoundingClientRect();
+      const x = (e.clientX - r.left - r.width / 2) * 0.18;
+      const y = (e.clientY - r.top - r.height / 2) * 0.28;
+      el.style.transform = `translate(${x}px, ${y}px)`;
+    });
+    el.addEventListener("pointerleave", () => { el.style.transform = ""; });
+  });
+}
+
 document.addEventListener("click", (e) => {
-  if (e.target instanceof Element && e.target.closest("[data-reload]")) { location.reload(); return; }
-  const b = e.target instanceof Element && e.target.closest(".btn-laranja, .btn-rosa, .btn-amarelo, .btn-azul, [data-paws]");
-  if (b && e.clientX) pawBurst(e.clientX, e.clientY);
+  if (e.target instanceof Element && e.target.closest("[data-reload]")) location.reload();
 });
 
 // ---------------------------------------------------------------------------
@@ -213,10 +252,13 @@ sb.auth.onChange((event) => {
 
 setupHeader();
 setupRibbons();
+splitWords();
 observeReveal();
+drawLoops();
+magnets();
 renderUserArea();
 $$("[data-year]").forEach((el) => { el.textContent = new Date().getFullYear(); });
 
 if (!sb.isConfigured()) {
-  console.info("[Meu Amigo Pra Vida] Supabase ainda não configurado em assets/js/config.js — conteúdo dinâmico desativado.");
+  console.info("[Meu Amigo pra Vida] Supabase ainda não configurado em assets/js/config.js — conteúdo dinâmico desativado.");
 }

@@ -14,7 +14,7 @@ const root = $("[data-page]");
 const page = root?.dataset.page;
 const ONG = "(ong,protetor_independente)";
 const setMeta = (title, desc) => {
-  document.title = `${title} · Meu Amigo Pra Vida`;
+  document.title = `${title} · Meu Amigo pra Vida`;
   if (desc) document.querySelector('meta[name="description"]')?.setAttribute("content", desc.slice(0, 160));
 };
 const done = (el) => observeReveal(el || document);
@@ -71,7 +71,7 @@ async function orgPage() {
     <div class="page-hero ${isOng ? "azul" : "rosa"}">
       <div class="flex items-center gap-2 wrap" data-reveal="up">
         <div class="org-logo" style="width:110px;height:110px;border-radius:30px;font-size:2.4rem;background:var(--amarelo)">${orgLogo(o)}</div>
-        <div><span class="eyebrow" style="background:var(--branco);color:var(--preto);margin-bottom:.5rem">${esc(L.orgKind[o.kind])} · verificada ✔</span>
+        <div><span class="eyebrow" style="margin-bottom:.5rem">${esc(L.orgKind[o.kind])} · verificada</span>
           <h1 class="mb-0">${esc(o.trade_name)}</h1>${o.city ? `<p class="lead mb-0">${esc(o.city)} - ${esc(o.state)}${o.founded_year ? ` · desde ${esc(o.founded_year)}` : ""}</p>` : ""}</div>
       </div>
       ${o.tagline ? `<p class="lead mt-2" data-reveal="up">${esc(o.tagline)}</p>` : ""}
@@ -84,7 +84,7 @@ async function orgPage() {
           ${o.whatsapp ? `<a class="btn btn-sm btn-branco" href="https://wa.me/55${esc(o.whatsapp.replace(/^55/, ""))}" target="_blank" rel="noopener noreferrer">${icons.whatsapp} WhatsApp</a>` : ""}
           ${o.instagram ? `<a class="btn btn-sm btn-branco" href="https://instagram.com/${esc(o.instagram)}" target="_blank" rel="noopener noreferrer">${icons.instagram} @${esc(o.instagram)}</a>` : ""}
           ${o.website ? `<a class="btn btn-sm btn-branco" href="${esc(o.website)}" target="_blank" rel="noopener noreferrer">${icons.globe} Site</a>` : ""}
-          ${o.email ? `<a class="btn btn-sm btn-branco" href="mailto:${esc(o.email)}">✉ E-mail</a>` : ""}
+          ${o.email ? `<a class="btn btn-sm btn-branco" href="mailto:${esc(o.email)}"> E-mail</a>` : ""}
         </div>
         ${o.public_address ? `<p class="mt-2 mb-0" style="display:flex;gap:6px">${icons.pin} ${esc(o.public_address)}</p>` : ""}
         ${o.accepts_volunteers ? `<div class="notice ok mt-2">${icons.heart}<p>Aceita voluntários e lares temporários!</p></div>` : ""}
@@ -128,7 +128,7 @@ async function eventPage() {
     setMeta(e.title, e.summary);
     const where = e.is_online ? "Online" : [e.location_name, e.address, e.city && `${e.city} - ${e.state}`].filter(Boolean).join(" · ");
     box.innerHTML = `<a class="link small" href="/eventos">← Agenda</a>
-      ${e.cover_url ? `<img src="${esc(e.cover_url)}" alt="" class="mt-2" style="width:100%;border-radius:var(--radius-lg);border:3px solid var(--preto);aspect-ratio:16/9;object-fit:cover" data-reveal="up">` : ""}
+      ${e.cover_url ? `<img src="${esc(e.cover_url)}" alt="" class="mt-2" style="width:100%;border-radius:var(--radius-lg);aspect-ratio:16/9;object-fit:cover" data-reveal="up">` : ""}
       <span class="chip chip-amarelo mt-3" style="display:inline-flex">${esc(L.eventKind[e.kind])}</span>
       <h1 class="h1 mt-1">${esc(e.title)}</h1><p class="lead">${esc(e.summary)}</p>
       <div class="card card-pad mb-3"><p class="mb-1" style="display:flex;gap:8px">${icons.calendar} <strong>${esc(fmtDateTime(e.starts_at))}${e.ends_at ? ` até ${esc(fmtDateTime(e.ends_at))}` : ""}</strong></p>
@@ -178,7 +178,7 @@ async function postPage() {
       <header class="mt-3 mb-3" data-reveal="up">${p.blog_categories ? `<a class="chip chip-${esc(color)}" href="/blog?categoria=${esc(p.blog_categories.slug)}" style="text-decoration:none;border:2px solid var(--preto)">${esc(p.blog_categories.name)}</a>` : ""}
         <h1 class="h1 mt-2">${esc(p.title)}</h1><p class="lead">${esc(p.excerpt)}</p>
         <p class="small muted">${esc(fmtDateLong(p.published_at))} · ${esc(p.reading_minutes)} min de leitura</p></header>
-      ${p.cover_url ? `<img src="${esc(p.cover_url)}" alt="${esc(p.cover_alt || "")}" style="width:100%;border-radius:var(--radius-lg);border:3px solid var(--preto);margin-bottom:32px">` : ""}
+      ${p.cover_url ? `<img src="${esc(p.cover_url)}" alt="${esc(p.cover_alt || "")}" style="width:100%;border-radius:var(--radius-lg);margin-bottom:32px">` : ""}
       <div class="prose">${markdown(p.content_md, { allowExternal: true })}</div>
       ${p.tags?.length ? `<div class="chips mt-3">${p.tags.map((t) => `<span class="chip chip-soft">#${esc(t)}</span>`).join("")}</div>` : ""}
       <div class="card card-pad mt-4 flex justify-between items-center wrap gap-2" style="background:var(--amarelo)"><div><h2 class="h3 mb-0">Pronto para mudar uma vida?</h2><p class="mb-0">Conheça os amigos que esperam por um lar.</p></div><a class="btn" href="/adote">Ver animais <span class="arrow">→</span></a></div>`;
@@ -220,7 +220,7 @@ function contactPage() {
     await withLoading($('button[type="submit"]', form), async () => {
       try {
         await sb.from("contact_messages").insert({ name: form.name.value.trim(), email: form.email.value.trim().toLowerCase(), topic: form.topic.value, message: form.message.value.trim(), consent: true }, { returning: false });
-        form.innerHTML = `<div class="notice ok">${icons.check}<p>Mensagem enviada! Responderemos no seu e-mail em breve. 💛</p></div>`;
+        form.innerHTML = `<div class="notice ok">${icons.check}<p>Mensagem enviada! Responderemos no seu e-mail em breve.</p></div>`;
       } catch (er) { toast(er.message, "bad"); }
     });
   });
