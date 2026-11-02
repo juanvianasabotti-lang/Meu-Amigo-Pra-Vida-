@@ -1054,3 +1054,12 @@ details > summary { list-style-position: inside; }
 .blog-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
 .blog-list li { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid var(--linha, #e5dccf); border-radius: 12px; background: #fff; }
 .blog-list .actions { display: flex; gap: 6px; }
+
+/* Menu do usuário: ícones com tamanho fixo e textos em uma linha */
+.dropdown { min-width: 268px; max-width: calc(100vw - 32px); }
+.dropdown a, .dropdown button { white-space: nowrap; line-height: 1.25; padding: .7em .9em; }
+.dropdown a > svg, .dropdown button > svg, .dropdown a > .icon, .dropdown button > .icon { width: 20px; height: 20px; flex: none; }
+.dropdown .chip { margin-left: auto; }
+@media (max-width: 600px) {
+  .dropdown { right: -4px; min-width: 250px; }
+}
