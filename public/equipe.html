@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-BR" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Painel da equipe · Meu Amigo pra Vida</title>
+  <meta name="description" content="Indicadores internos do Meu Amigo pra Vida.">
+  <meta name="theme-color" content="#FA560A">
+  <meta name="robots" content="noindex,nofollow">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="Meu Amigo pra Vida">
+  <meta property="og:title" content="Painel da equipe · Meu Amigo pra Vida">
+  <meta property="og:description" content="Indicadores internos do Meu Amigo pra Vida.">
+  <meta property="og:image" content="/assets/img/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/fonts/poppins-bold.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="/assets/fonts/poppins-regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="stylesheet" href="/assets/css/main.css?v=4476d857a3">
+  <script type="module" src="/assets/js/pages/equipe.js"></script>
+</head>
+<body class="">
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="Meu Amigo pra Vida — página inicial">
+      <img src="/assets/brand/logo-preta.svg" alt="Meu Amigo pra Vida" width="150" height="77">
+    </a>
+    <nav class="main-nav" id="menu-principal" aria-label="Menu principal">
+      <a href="/adote">Adote</a>
+      <a href="/doar">Doe</a>
+      <a href="/ongs">ONGs</a>
+      <a href="/parceiros">Parceiros</a>
+      <a href="/eventos">Eventos</a>
+      <a href="/blog">Conscientização</a>
+      <a href="/sobre">Sobre</a>
+      <a class="mobile-only" href="/entrar">Entrar</a>
+    </nav>
+    <div class="header-actions">
+      <div class="header-actions" data-user-area>
+        <a class="btn btn-ghost btn-sm btn-entrar" href="/entrar">Entrar</a>
+        <a class="btn btn-laranja btn-sm" href="/cadastro">Cadastre-se</a>
+      </div>
+      <button class="nav-toggle" type="button" aria-controls="menu-principal" aria-expanded="false" aria-label="Abrir menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="nav-backdrop" aria-hidden="true"></div>
+</header>
+<main id="conteudo">
+<section class="container team" data-team>
+  <div class="poster poster-solo azul team-head">
+    <div class="poster-bg" aria-hidden="true"><span class="poster-word">equipe</span></div>
+    <div class="poster-copy">
+      <span class="eyebrow">Área interna</span>
+      <h1>Painel da equipe</h1>
+      <p class="lead" data-team-sub>Cadastros, visitas, animais e adoções em um só lugar.</p>
+      <div class="team-controls hidden" data-team-controls>
+        <div class="seg" role="radiogroup" aria-label="Período">
+          <input type="radio" name="periodo" id="p7" value="7"><label for="p7">7 dias</label>
+          <input type="radio" name="periodo" id="p30" value="30" checked><label for="p30">30 dias</label>
+          <input type="radio" name="periodo" id="p90" value="90"><label for="p90">90 dias</label>
+        </div>
+        <button class="btn btn-sm btn-branco" type="button" data-team-refresh>Atualizar</button>
+        <a class="btn btn-sm btn-amarelo hidden" href="/admin" data-team-admin>Moderação</a>
+      </div>
+    </div>
+  </div>
+  <div data-team-body><div class="loading-page"><span class="spinner" aria-label="Carregando"></span></div></div>
+</section>
+</main>
+<footer class="site-footer">
+  <div class="footer-peek" aria-hidden="true"><img src="/assets/img/animais/boiadeiro.webp" alt="" width="1289" height="1400" loading="lazy"></div>
+  <div class="container">
+    <div class="footer-cta">
+      <div>
+        <p class="eyebrow" style="--eyebrow-c:var(--amarelo)">Faça parte</p>
+        <h2>Adote, anuncie um animal ou cadastre sua ONG</h2>
+      </div>
+      <div class="footer-cta-actions">
+        <a class="btn btn-amarelo" href="/adote">Quero adotar <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn-ghost" href="/cadastro?tipo=ong">Cadastrar ONG</a>
+        <a class="btn btn-ghost" href="/cadastro?tipo=empresa">Ser empresa parceira</a>
+      </div>
+    </div>
+
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="/assets/brand/logo-branca.svg" alt="Meu Amigo pra Vida" width="170" height="87" loading="lazy">
+        <p>Plataforma brasileira de adoção e doação responsável de cães e gatos. Conectamos quem procura um amigo a ONGs, protetores e empresas verificadas.</p>
+        <div class="socials">
+          <a href="https://instagram.com/meuamigopravida" target="_blank" rel="noopener noreferrer" aria-label="Instagram do Meu Amigo pra Vida"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5v.5"/></svg></a>
+          <a class="footer-contact" href="mailto:ola@meuamigopravida.com.br">ola@meuamigopravida.com.br</a>
+        </div>
+      </div>
+      <nav aria-label="Adoção">
+        <h3>Adoção</h3>
+        <ul>
+          <li><a href="/adote">Animais para adoção</a></li>
+          <li><a href="/adote?especie=cao">Cães</a></li>
+          <li><a href="/adote?especie=gato">Gatos</a></li>
+          <li><a href="/#como-funciona">Como funciona</a></li>
+          <li><a href="/blog/10-perguntas-antes-de-adotar">Antes de adotar</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Doe e ajude">
+        <h3>Doe e ajude</h3>
+        <ul>
+          <li><a href="/doar">Doar um animal</a></li>
+          <li><a href="/ongs">ONGs verificadas</a></li>
+          <li><a href="/doar#ongs-pix">Pix solidário</a></li>
+          <li><a href="/eventos">Campanhas e eventos</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="ONGs e empresas">
+        <h3>ONGs e empresas</h3>
+        <ul>
+          <li><a href="/cadastro?tipo=ong">Cadastrar ONG ou protetor</a></li>
+          <li><a href="/cadastro?tipo=empresa">Seja empresa parceira</a></li>
+          <li><a href="/parceiros">Empresas parceiras</a></li>
+          <li><a href="/painel">Painel da organização</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Ajuda">
+        <h3>Ajuda</h3>
+        <ul>
+          <li><a href="/contato">Fale conosco</a></li>
+          <li><a href="/contato?assunto=denuncia_anuncio">Denunciar um anúncio</a></li>
+          <li><a href="/sobre">Sobre nós</a></li>
+          <li><a href="/blog">Conscientização</a></li>
+          <li><a href="/minha-conta#privacidade">Meus dados (LGPD)</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="footer-info">
+      <p><strong>Maus-tratos a animais é crime.</strong> Lei 9.605/1998, art. 32, com pena maior para cães e gatos (Lei 14.064/2020). Em flagrante, ligue 190.</p>
+      <p><strong>Doação é sempre gratuita.</strong> Venda de animais não é permitida. O Pix vai direto para a ONG, sem passar pela plataforma.</p>
+      <p><strong>Seus dados, sob seu controle.</strong> Tratamos dados pessoais conforme a LGPD. Você pode consultar, corrigir ou excluir os seus.</p>
+    </div>
+  </div>
+
+  <p class="footer-mark" aria-hidden="true">Meu Amigo pra Vida</p>
+
+  <div class="container footer-bottom">
+    <span>© <span data-year>2026</span> Meu Amigo pra Vida. Todos os direitos reservados.</span>
+    <nav class="footer-legal" aria-label="Documentos legais"><a href="/privacidade">Política de Privacidade</a><a href="/termos">Termos de Uso</a></nav>
+    <span>Meu Amigo pra Vida · Brasil</span>
+    <a class="to-top" href="#conteudo" data-to-top>Voltar ao topo <span aria-hidden="true">↑</span></a>
+  </div>
+</footer>
+</body>
+</html>

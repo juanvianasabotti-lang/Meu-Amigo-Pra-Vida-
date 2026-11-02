@@ -1,0 +1,21 @@
+<!--meta title="Painel da equipe" description="Indicadores internos do Meu Amigo pra Vida." script="equipe" robots="noindex,nofollow" -->
+<section class="container team" data-team>
+  <div class="poster poster-solo azul team-head">
+    <div class="poster-bg" aria-hidden="true"><span class="poster-word">equipe</span></div>
+    <div class="poster-copy">
+      <span class="eyebrow">Área interna</span>
+      <h1>Painel da equipe</h1>
+      <p class="lead" data-team-sub>Cadastros, visitas, animais e adoções em um só lugar.</p>
+      <div class="team-controls hidden" data-team-controls>
+        <div class="seg" role="radiogroup" aria-label="Período">
+          <input type="radio" name="periodo" id="p7" value="7"><label for="p7">7 dias</label>
+          <input type="radio" name="periodo" id="p30" value="30" checked><label for="p30">30 dias</label>
+          <input type="radio" name="periodo" id="p90" value="90"><label for="p90">90 dias</label>
+        </div>
+        <button class="btn btn-sm btn-branco" type="button" data-team-refresh>Atualizar</button>
+        <a class="btn btn-sm btn-amarelo hidden" href="/admin" data-team-admin>Moderação</a>
+      </div>
+    </div>
+  </div>
+  <div data-team-body><div class="loading-page"><span class="spinner" aria-label="Carregando"></span></div></div>
+</section>

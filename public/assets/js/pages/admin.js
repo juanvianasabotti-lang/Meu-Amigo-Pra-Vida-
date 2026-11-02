@@ -253,10 +253,10 @@ async function equipe() {
   const { data } = await sb.from("user_roles").select("role,created_at,profiles!user_roles_user_id_fkey(full_name,email)").order("created_at");
   view.innerHTML = `<div class="dash-title"><h1>Equipe</h1></div>
     <div class="list mb-3">${(data || []).map((r) => `<div class="list-item"><div class="thumb">${icons.user}</div><div><h3>${esc(r.profiles?.full_name || "")}</h3><p>${esc(r.profiles?.email || "")} · desde ${esc(fmtDate(r.created_at))}</p></div>
-      <div class="actions"><span class="chip ${r.role === "admin" ? "chip-laranja" : "chip-azul"}">${r.role === "admin" ? "Administrador" : "Moderador"}</span>${r.profiles?.email !== ctx.profile.email ? `<button class="btn btn-sm btn-ghost" type="button" data-rm="${esc(r.profiles?.email || "")}" data-role="${esc(r.role)}">Remover</button>` : ""}</div></div>`).join("")}</div>
+      <div class="actions"><span class="chip ${r.role === "admin" ? "chip-laranja" : r.role === "integrante" ? "chip-soft" : "chip-azul"}">${r.role === "admin" ? "Administrador" : r.role === "integrante" ? "Integrante" : "Moderador"}</span>${r.profiles?.email !== ctx.profile.email ? `<button class="btn btn-sm btn-ghost" type="button" data-rm="${esc(r.profiles?.email || "")}" data-role="${esc(r.role)}">Remover</button>` : ""}</div></div>`).join("")}</div>
     <form class="card card-pad form" data-role-form novalidate><h2 class="h3">Adicionar pessoa à equipe</h2><p class="small muted mb-0">A pessoa precisa ter uma conta criada no site.</p>
       <div class="form-row"><div class="field"><label for="re">E-mail</label><input class="input" id="re" name="email" type="email"></div>
-      <div class="field"><label for="rr">Papel</label><select class="select" id="rr" name="role"><option value="moderador">Moderador (modera anúncios, ONGs e eventos)</option><option value="admin">Administrador (tudo, inclusive blog e equipe)</option></select></div></div>
+      <div class="field"><label for="rr">Papel</label><select class="select" id="rr" name="role"><option value="integrante">Integrante (vê só os números do painel da equipe)</option><option value="moderador">Moderador (modera anúncios, ONGs e eventos)</option><option value="admin">Administrador (tudo, inclusive blog e equipe)</option></select></div></div>
       <button class="btn btn-azul" type="submit">Conceder acesso</button></form>`;
   const form = $("[data-role-form]", view);
   form.addEventListener("submit", async (e) => {

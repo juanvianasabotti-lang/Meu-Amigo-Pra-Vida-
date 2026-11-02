@@ -33,6 +33,7 @@ export function getContext({ force = false } = {}) {
 }
 export const isStaff = (ctx) => ctx.roles?.includes("admin") || ctx.roles?.includes("moderador");
 export const isAdmin = (ctx) => ctx.roles?.includes("admin");
+export const isTeam = (ctx) => (ctx.roles?.length || 0) > 0;
 
 // Exige login; devolve o contexto ou redireciona
 export async function requireAuth({ onboarding = true } = {}) {
@@ -115,7 +116,8 @@ async function renderUserArea() {
         ${p.account_type === "pessoa" ? `<a role="menuitem" href="/minha-conta#pedidos">${icons.heart} Meus pedidos de adoção</a>` : ""}
         <a role="menuitem" href="/painel">${icons.home} ${p.account_type === "pessoa" ? "Meus anúncios" : "Painel da organização"}</a>
         ${managesAnimals ? `<a role="menuitem" href="/painel#novo-animal">${icons.plus} Anunciar um animal</a>` : ""}
-        ${isStaff(ctx) ? `<hr><a role="menuitem" href="/admin">${icons.shield} Administração</a>` : ""}
+        ${isTeam(ctx) ? `<hr><a role="menuitem" href="/equipe">${icons.shield} Painel da equipe</a>` : ""}
+        ${isStaff(ctx) ? `<a role="menuitem" href="/admin">${icons.shield} Moderação</a>` : ""}
         <hr><button role="menuitem" type="button" data-logout>${icons.logout} Sair</button>
       </div>
     </div>`;
@@ -314,6 +316,19 @@ function footerFx() {
   io.observe(foot);
 }
 
+// Contador de visitas próprio: só página e dia, sem cookies e sem identificar ninguém.
+function trackVisit() {
+  if (!sb.isConfigured() || navigator.globalPrivacyControl || navigator.doNotTrack === "1") return;
+  let path = location.pathname.replace(/\.html$/, "").replace(/\/+$/, "") || "/";
+  if (/^\/(admin|equipe|painel|minha-conta|auth|nova-senha)/.test(path)) return;
+  path = path.replace(/^\/(adote|blog|eventos|organizacao|adotar)\/.+$/, "/$1/*").toLowerCase();
+  if (!/^\/[a-z0-9/*_-]{0,79}$/.test(path)) return;
+  let fresh = false;
+  try { fresh = !sessionStorage.getItem("mapv.v"); sessionStorage.setItem("mapv.v", "1"); } catch { /* ignore */ }
+  const mobile = window.matchMedia("(max-width: 760px)").matches;
+  sb.rpc("track_visit", { p_path: path, p_new_session: fresh, p_mobile: mobile }).catch(() => {});
+}
+
 document.addEventListener("click", (e) => {
   if (e.target instanceof Element && e.target.closest("[data-reload]")) location.reload();
 });
@@ -331,6 +346,7 @@ drawLoops();
 magnets();
 posters();
 footerFx();
+trackVisit();
 renderUserArea();
 $$("[data-year]").forEach((el) => { el.textContent = new Date().getFullYear(); });
 
