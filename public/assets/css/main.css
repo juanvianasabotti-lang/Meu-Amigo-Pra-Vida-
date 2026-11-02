@@ -1131,9 +1131,12 @@ details > summary { list-style-position: inside; }
 @media (max-width: 1100px) {
   .main-nav {
     background: var(--preto);
-    padding: 104px 18px 28px;
+    padding: 104px 18px 40px;
     gap: 10px;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     display: flex;
   }
   .main-nav::before, .main-nav::after {
