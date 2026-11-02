@@ -1063,3 +1063,26 @@ details > summary { list-style-position: inside; }
 @media (max-width: 600px) {
   .dropdown { right: -4px; min-width: 250px; }
 }
+
+/* ---------- Artigos: cabeçalho colorido e texto com ritmo visual ---------- */
+.article-head { background: var(--post-bg, var(--laranja)); color: var(--preto); border-radius: var(--radius-lg); padding: clamp(24px, 4vw, 48px); position: relative; overflow: hidden; box-shadow: 10px 10px 0 var(--preto); }
+.article-head::after { content: ""; position: absolute; right: -60px; bottom: -60px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255,255,255,.18); pointer-events: none; }
+.article-head h1 { color: var(--preto); font-size: clamp(2.1rem, 5vw, 3.4rem); line-height: 1.05; }
+.article-head .lead { color: rgba(17,17,17,.85); font-weight: 600; }
+.article-head .chip { background: var(--branco); }
+.article-meta { font-weight: 700; margin: 14px 0 0; color: rgba(17,17,17,.8); }
+.article-body { font-size: 1.12rem; line-height: 1.8; color: #1d1d1d; }
+.article-body > p:first-of-type::first-letter { float: left; font-size: 4.2em; line-height: .9; font-weight: 800; color: var(--laranja); padding: 6px 10px 0 0; }
+.article-body > p { margin: 0 0 1.1em; }
+.prose h2 { position: relative; padding-left: 18px; border-left: 8px solid var(--laranja); line-height: 1.15; }
+.prose h2::before { content: none; }
+.cat-azul .prose h2, .prose h2.azul { border-left-color: var(--azul); }
+.prose h3 { color: var(--azul); }
+.prose ul { list-style: none; padding-left: 0; }
+.prose ul li { position: relative; padding-left: 34px; }
+.prose ul li::before { content: "✓"; position: absolute; left: 0; top: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--amarelo); display: grid; place-items: center; font-size: .8rem; font-weight: 900; color: var(--preto); }
+.prose ul li::marker { content: ""; }
+.prose blockquote { border-left: 10px solid var(--preto); background: var(--amarelo); border-radius: var(--radius-lg); box-shadow: 6px 6px 0 var(--preto); padding: 22px 26px; font-size: 1.1rem; }
+.prose hr { border-top: 3px dashed var(--laranja); }
+.article-body img { border-radius: var(--radius-lg); box-shadow: 8px 8px 0 var(--preto); }
+@media (max-width: 600px) { .article-head { box-shadow: 6px 6px 0 var(--preto); } .article-body { font-size: 1.04rem; } }

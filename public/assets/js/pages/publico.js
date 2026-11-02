@@ -178,11 +178,11 @@ async function postPage() {
     setMeta(p.title, p.excerpt);
     const color = p.blog_categories?.color || "laranja";
     box.innerHTML = `<a class="link small" href="/blog">← Conscientização</a>
-      <header class="mt-3 mb-3" data-reveal="up">${p.blog_categories ? `<a class="chip chip-${esc(color)}" href="/blog?categoria=${esc(p.blog_categories.slug)}" style="text-decoration:none;border:2px solid var(--preto)">${esc(p.blog_categories.name)}</a>` : ""}
+      <header class="article-head cat-${esc(color)} mt-3 mb-3" data-reveal="up">${p.blog_categories ? `<a class="chip chip-${esc(color)}" href="/blog?categoria=${esc(p.blog_categories.slug)}" style="text-decoration:none;border:2px solid var(--preto)">${esc(p.blog_categories.name)}</a>` : ""}
         <h1 class="h1 mt-2">${esc(p.title)}</h1><p class="lead">${esc(p.excerpt)}</p>
-        <p class="small muted">${esc(fmtDateLong(p.published_at))} · ${esc(p.reading_minutes)} min de leitura</p></header>
+        <p class="article-meta">${esc(fmtDateLong(p.published_at))} · ${esc(p.reading_minutes)} min de leitura</p></header>
       ${p.cover_url ? `<img src="${esc(p.cover_url)}" alt="${esc(p.cover_alt || "")}" style="width:100%;border-radius:var(--radius-lg);margin-bottom:32px">` : ""}
-      <div class="prose">${markdown(p.content_md, { allowExternal: true })}</div>
+      <div class="prose article-body">${markdown(p.content_md, { allowExternal: true })}</div>
       ${p.tags?.length ? `<div class="chips mt-3">${p.tags.map((t) => `<span class="chip chip-soft">#${esc(t)}</span>`).join("")}</div>` : ""}
       <div class="card card-pad mt-4 flex justify-between items-center wrap gap-2" style="background:var(--amarelo)"><div><h2 class="h3 mb-0">Pronto para mudar uma vida?</h2><p class="mb-0">Conheça os amigos que esperam por um lar.</p></div><a class="btn" href="/adote">Ver animais <span class="arrow">→</span></a></div>`;
     const { data: more } = await sb.from("blog_posts").select("slug,title,excerpt,cover_url,cover_alt,published_at,reading_minutes,blog_categories(name,color)")
