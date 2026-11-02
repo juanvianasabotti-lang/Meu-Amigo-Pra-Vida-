@@ -1,7 +1,7 @@
 import { observeReveal, getContext } from "../app.js";
 import sb from "../sb.js";
 import { $, $$, esc, icons, L, slugFromPath, fmtDate, markdown } from "../ui.js";
-import { ANIMAL_CARD_COLS, petCard, bindFavorites, photoUrl, errorState, emptyState, pixBox, bindCopy } from "../components.js";
+import { ANIMAL_CARD_COLS, ANIMAL_PUBLIC_COLS, petCard, bindFavorites, photoUrl, errorState, emptyState, pixBox, bindCopy } from "../components.js";
 
 const root = $("[data-animal]");
 const slug = slugFromPath("adote");
@@ -17,7 +17,7 @@ async function render() {
   let a;
   try {
     const r = await sb.from("animals")
-      .select("*,animal_photos(id,storage_path,is_cover,position,alt_text),organizations(slug,trade_name,kind,city,state,pix_key,pix_key_type,logo_url)")
+      .select(`${ANIMAL_PUBLIC_COLS}${sb.auth.session ? ",owner_id" : ""},animal_photos(id,storage_path,is_cover,position,alt_text),organizations(slug,trade_name,kind,city,state,pix_key,pix_key_type,logo_url)`)
       .eq("slug", slug).maybeSingle();
     a = r.data;
   } catch (e) { root.innerHTML = errorState(e); return; }
@@ -30,7 +30,7 @@ async function render() {
 
   const photos = (a.animal_photos || []).sort((x, y) => (y.is_cover - x.is_cover) || (x.position - y.position));
   const ctx = await getContext();
-  const isOwner = ctx.profile?.id === a.owner_id;
+  const isOwner = Boolean(a.owner_id) && ctx.profile?.id === a.owner_id;
   const canApply = ["disponivel", "em_processo"].includes(a.status) && !isOwner;
   const traits = (a.personality || []).map((t) => `<span class="chip chip-amarelo">${esc(t)}</span>`).join("");
   const comp = [

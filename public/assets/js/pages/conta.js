@@ -3,7 +3,7 @@ import sb from "../sb.js";
 import { CONFIG } from "../config.js";
 import {
   $, $$, esc, icons, L, toast, bindMasks, ufOptions, withLoading, setFieldError, clearErrors, focusFirstError,
-  isValidPhone, isValidCPF, isValidEmail, ageFrom, digits, masks, safeUrl, fmtDate, fmtDateTime, timeAgo, statusPill, confirmDialog, qs, initials,
+  isValidPhone, isValidCPF, isValidEmail, ageFrom, digits, masks, safeUrl, safePath, fmtDate, fmtDateTime, timeAgo, statusPill, confirmDialog, qs, initials,
 } from "../ui.js";
 import { ANIMAL_CARD_COLS, petCard, bindFavorites, emptyState, errorState, photoUrl, coverPath } from "../components.js";
 import { processImage } from "../image.js";
@@ -137,12 +137,12 @@ async function renderPerfil() {
         };
         if (v.account_type && canChangeType) upd.account_type = v.account_type;
         await sb.from("profiles").update(upd, { returning: false }).eq("id", p.id);
-        if (v.cpf) await sb.from("profile_private").upsert({ user_id: p.id, cpf: digits(v.cpf) }, { onConflict: "user_id", returning: false });
+        if (v.cpf && digits(v.cpf) !== (priv?.cpf || "")) await sb.rpc("set_my_cpf", { p_cpf: digits(v.cpf) });
         ctx = await getContext({ force: true });
         toast(completing ? "Cadastro concluído! Bem-vindo(a) 🐾" : "Perfil atualizado!", "ok");
         const next = qs("voltar");
         if (completing) {
-          if (next && /^\/(?!\/)/.test(next)) location.replace(next);
+          if (safePath(next)) location.replace(safePath(next));
           else if (ctx.profile.account_type !== "pessoa") location.replace("/painel#organizacao");
           else { history.replaceState(null, "", "/minha-conta#perfil"); renderPerfil(); }
         } else renderPerfil();

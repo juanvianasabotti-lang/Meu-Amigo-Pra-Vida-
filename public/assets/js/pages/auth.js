@@ -3,7 +3,7 @@ import sb from "../sb.js";
 import { CONFIG } from "../config.js";
 import {
   $, $$, icons, toast, bindMasks, ufOptions, withLoading, setFieldError, clearErrors, focusFirstError,
-  isValidEmail, isValidPhone, ageFrom, passwordScore, digits, qs,
+  isValidEmail, isValidPhone, ageFrom, passwordScore, digits, qs, safePath,
 } from "../ui.js";
 
 const page = $("[data-auth]")?.dataset.auth;
@@ -13,7 +13,7 @@ const TYPE_KEY = "mapv.pendingType";
 
 function safeNext(v) {
   // só aceita caminhos internos (evita redirecionamento aberto)
-  return v && /^\/(?!\/)[\w\-./?=&#%]*$/.test(v) ? v : null;
+  return safePath(v);
 }
 function rememberNext() {
   const n = safeNext(qs("voltar"));
@@ -193,7 +193,7 @@ function setupRecuperar() {
     if (!isValidEmail(form.email.value)) { setFieldError(form.email, "Informe um e-mail válido."); return; }
     await withLoading($('button[type="submit"]', form), async () => {
       try {
-        await sb.auth.resetPassword(form.email.value.trim().toLowerCase(), CALLBACK);
+        await sb.auth.resetPassword(form.email.value.trim().toLowerCase(), `${CALLBACK}?tipo=recuperacao`);
       } catch { /* não revela se o e-mail existe */ }
       form.innerHTML = `<div class="notice ok">${icons.check}<p>Se houver uma conta com esse e-mail, você receberá um link em instantes. Confira também a caixa de spam.</p></div>`;
     });
@@ -228,7 +228,8 @@ async function setupCallback() {
     const r = await sb.auth.handleCallback();
     history.replaceState(null, "", location.pathname);
     if (r.type === "recovery") { location.replace("/nova-senha"); return; }
-    if (!sb.auth.session) { location.replace("/entrar?confirmado=1"); return; }
+    if (r.type === "recovery_other_browser") throw new Error("Abra o link de redefinição no mesmo navegador em que você pediu a nova senha, ou peça um novo link.");
+    if (r.type === "confirmed_other_browser" || !sb.auth.session) { location.replace("/entrar?confirmado=1"); return; }
     const ctx = await getContext({ force: true });
     let pending = null;
     try { pending = sessionStorage.getItem(TYPE_KEY); sessionStorage.removeItem(TYPE_KEY); } catch { /* ignore */ }

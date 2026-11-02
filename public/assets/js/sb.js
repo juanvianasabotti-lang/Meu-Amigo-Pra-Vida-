@@ -130,6 +130,12 @@ function randomVerifier() {
   crypto.getRandomValues(a);
   return b64url(a);
 }
+// O verificador fica no localStorage para funcionar quando o link do e-mail abre em outra aba
+async function newChallenge() {
+  const verifier = randomVerifier();
+  store.set(VERIFIER_KEY, verifier);
+  return { code_challenge: await challengeOf(verifier), code_challenge_method: "s256" };
+}
 async function challengeOf(verifier) {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier));
   return b64url(new Uint8Array(digest));
@@ -196,7 +202,7 @@ const auth_ = {
   async signUp({ email, password, data = {}, redirectTo }) {
     const q = redirectTo ? `?redirect_to=${encodeURIComponent(redirectTo)}` : "";
     const { data: body } = await http(`${base()}/auth/v1/signup${q}`, {
-      method: "POST", auth: false, body: { email, password, data },
+      method: "POST", auth: false, body: { email, password, data, ...(await newChallenge()) },
     });
     // Se a confirmação de e-mail estiver desligada, o Supabase já devolve a sessão.
     if (body?.access_token) this._save(body);
@@ -214,48 +220,39 @@ const auth_ = {
   },
 
   async signInWithGoogle(redirectTo) {
-    const verifier = randomVerifier();
-    store.set(VERIFIER_KEY, verifier, "session");
-    const challenge = await challengeOf(verifier);
-    const params = new URLSearchParams({
-      provider: "google",
-      redirect_to: redirectTo,
-      code_challenge: challenge,
-      code_challenge_method: "s256",
-    });
+    const pk = await newChallenge();
+    const params = new URLSearchParams({ provider: "google", redirect_to: redirectTo, ...pk });
     window.location.assign(`${base()}/auth/v1/authorize?${params}`);
   },
 
-  // Trata o retorno do Google (PKCE ?code=) e dos links de e-mail (#access_token=)
+  // Trata o retorno do Google e dos links de e-mail. Só o fluxo PKCE (?code=) cria sessão:
+  // tokens entregues no "#" da URL são ignorados para impedir login forçado em conta alheia.
   async handleCallback() {
     const url = new URL(window.location.href);
     const hash = new URLSearchParams(url.hash.replace(/^#/, ""));
     const errDesc = url.searchParams.get("error_description") || hash.get("error_description");
     if (errDesc) throw new SbError(decodeURIComponent(errDesc.replace(/\+/g, " ")));
+    const recovery = url.searchParams.get("tipo") === "recuperacao";
 
     const code = url.searchParams.get("code");
     if (code) {
-      const verifier = store.get(VERIFIER_KEY, "session");
-      store.del(VERIFIER_KEY, "session");
-      if (!verifier) throw new SbError("Não foi possível concluir o login. Tente entrar novamente neste mesmo navegador.");
-      const { data } = await http(`${base()}/auth/v1/token?grant_type=pkce`, {
-        method: "POST", auth: false, body: { auth_code: code, code_verifier: verifier },
-      });
-      this._save(data);
-      return { type: "oauth" };
-    }
-    const at = hash.get("access_token");
-    if (at) {
-      const s = this._save({
-        access_token: at,
-        refresh_token: hash.get("refresh_token"),
-        expires_in: Number(hash.get("expires_in")) || 3600,
-        expires_at: Number(hash.get("expires_at")) || undefined,
-      });
-      if (s) {
-        try { await this.getUser(); } catch { /* ignore */ }
+      const verifier = store.get(VERIFIER_KEY);
+      store.del(VERIFIER_KEY);
+      if (!verifier) return { type: recovery ? "recovery_other_browser" : "confirmed_other_browser" };
+      try {
+        const { data } = await http(`${base()}/auth/v1/token?grant_type=pkce`, {
+          method: "POST", auth: false, body: { auth_code: code, code_verifier: verifier },
+        });
+        this._save(data);
+      } catch (e) {
+        if (recovery) throw e;
+        return { type: "confirmed_other_browser" };
       }
-      return { type: hash.get("type") || "magiclink" };
+      return { type: recovery ? "recovery" : "pkce" };
+    }
+    if (hash.get("access_token")) {
+      // e-mail já foi confirmado no servidor; a pessoa só precisa entrar com a própria senha
+      return { type: hash.get("type") === "recovery" ? "recovery_other_browser" : "confirmed_other_browser" };
     }
     return { type: null };
   },
@@ -269,19 +266,20 @@ const auth_ = {
   },
 
   async updateUser(attrs) {
-    const { data } = await http(`${base()}/auth/v1/user`, { method: "PUT", body: attrs });
+    const body = attrs.email ? { ...attrs, ...(await newChallenge()) } : attrs;
+    const { data } = await http(`${base()}/auth/v1/user`, { method: "PUT", body });
     if (this.session) { this.session.user = data; store.set(STORAGE_KEY, this.session); this._emit("USER_UPDATED"); }
     return data;
   },
 
   async resetPassword(email, redirectTo) {
     const q = redirectTo ? `?redirect_to=${encodeURIComponent(redirectTo)}` : "";
-    await http(`${base()}/auth/v1/recover${q}`, { method: "POST", auth: false, body: { email } });
+    await http(`${base()}/auth/v1/recover${q}`, { method: "POST", auth: false, body: { email, ...(await newChallenge()) } });
   },
 
   async resend(email, redirectTo) {
     const q = redirectTo ? `?redirect_to=${encodeURIComponent(redirectTo)}` : "";
-    await http(`${base()}/auth/v1/resend${q}`, { method: "POST", auth: false, body: { type: "signup", email } });
+    await http(`${base()}/auth/v1/resend${q}`, { method: "POST", auth: false, body: { type: "signup", email, ...(await newChallenge()) } });
   },
 
   async signOut() {

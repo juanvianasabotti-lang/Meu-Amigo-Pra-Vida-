@@ -103,6 +103,7 @@ async function renderOrganizacao() {
   <div class="dash-title"><h1>${org ? (isOng ? "Minha ONG" : "Minha empresa") : `Cadastro da ${isOng ? "ONG" : "empresa"} · etapa 2 de 2`}</h1>
     ${org?.status === "aprovada" ? `<a class="btn btn-sm btn-ghost" href="/organizacao/${esc(org.slug)}">Ver página pública</a>` : ""}</div>
   ${orgStatusBanner(org)}
+  ${org?.status === "aprovada" ? `<div class="notice info mb-3">${icons.shield}<p>Por segurança, alterar <strong>nome, tipo, chave Pix, logo, site ou WhatsApp</strong> envia a organização para uma nova verificação rápida pela nossa equipe.</p></div>` : ""}
   <form class="form" novalidate data-org-form>
     <div class="card card-pad form">
       <h2 class="h3">Informações públicas</h2>
@@ -131,6 +132,7 @@ async function renderOrganizacao() {
       ${isOng ? `<h3 class="mt-2" style="font-size:1.1rem">Doações via Pix <span class="muted small">(opcional, exibido na sua página)</span></h3>
       <div class="form-row"><div class="field"><label for="pix_key_type">Tipo de chave</label><select class="select" id="pix_key_type" name="pix_key_type"><option value="">Sem Pix</option>${Object.entries(L.pix).map(([k, v]) => `<option value="${k}" ${o.pix_key_type === k ? "selected" : ""}>${v}</option>`).join("")}</select></div>
         <div class="field"><label for="pix_key">Chave Pix</label><input class="input" id="pix_key" name="pix_key" maxlength="140" value="${esc(o.pix_key || "")}"></div></div>
+      <p class="small muted">${icons.info} A chave fica visível para todos. Para proteger seus dados, prefira chave <strong>aleatória</strong> ou <strong>e-mail</strong> em vez de CPF ou telefone pessoal.</p>
       <label class="check"><input type="checkbox" name="accepts_volunteers" ${o.accepts_volunteers ? "checked" : ""}> Aceitamos voluntários e lares temporários</label>` : ""}
       <label class="check"><input type="checkbox" name="show_address" ${o.show_address ? "checked" : ""}> Mostrar o endereço completo na página pública (se não marcar, mostramos só cidade e UF)</label>
     </div>
@@ -261,8 +263,11 @@ async function renderOrganizacao() {
         if (!docLocked) Object.assign(pr, { document_type: docIsCpf ? "cpf" : "cnpj", document: docIsCpf ? digits(v.document) : v.document, legal_name: v.legal_name.trim() });
         else Object.assign(pr, { document_type: priv.document_type, document: priv.document, legal_name: priv.legal_name });
         await sb.from("organization_private").upsert(pr, { onConflict: "organization_id", returning: false });
-        toast(org ? "Dados salvos!" : "Cadastro enviado! Nossa equipe vai verificar e avisar você. 🐾", "ok", 6000);
         await reloadCtx();
+        const reReview = org?.status === "aprovada" && ctx.org?.status === "pendente";
+        toast(!org ? "Cadastro enviado! Nossa equipe vai verificar e avisar você. 🐾"
+          : reReview ? "Dados salvos e enviados para nova verificação (por causa da mudança de nome, Pix ou contato)."
+          : "Dados salvos!", "ok", 7000);
         applyNav();
         renderOrganizacao();
       } catch (er) { toast(er.message, "bad", 7000); }
@@ -340,7 +345,7 @@ async function animalForm(id) {
   <form class="form" novalidate data-animal-form>
     <div class="card card-pad form">
       <h2 class="h3">Fotos <span class="muted small">(até 8, a primeira é a capa)</span></h2>
-      <p class="small muted">Dicas: luz natural, na altura dos olhos do animal, fundo limpo. Você ajusta o enquadramento antes de enviar e todas ficam no mesmo padrão.</p>
+      <p class="small muted">Dicas: luz natural, na altura dos olhos do animal, fundo limpo. Você ajusta o enquadramento antes de enviar e todas ficam no mesmo padrão.${a.approved_at ? " Novas fotos passam por uma revisão rápida antes de aparecer." : ""}</p>
       <div class="photo-grid" data-photos></div>
     </div>
     <div class="card card-pad form mt-3">
@@ -482,7 +487,12 @@ async function animalForm(id) {
           await sb.from("animals").update(row, { returning: false }).eq("id", animalId);
         }
         if (!a.approved_at || a.status === "rejeitado") await sb.from("animals").update({ status: submitMode }, { returning: false }).eq("id", animalId);
-        toast(submitMode === "rascunho" ? "Rascunho salvo." : a.approved_at ? "Alterações salvas!" : "Enviado para análise! Avisaremos quando estiver no ar. 🐾", "ok", 5000);
+        let msg = submitMode === "rascunho" ? "Rascunho salvo." : "Enviado para análise! Avisaremos quando estiver no ar. 🐾";
+        if (a.approved_at) {
+          const { data: now } = await sb.from("animals").select("status").eq("id", animalId).maybeSingle();
+          msg = now?.status === "em_analise" ? "Alterações salvas e enviadas para uma revisão rápida antes de voltar ao ar." : "Alterações salvas!";
+        }
+        toast(msg, "ok", 6000);
         const same = location.hash === "#animais";
         location.hash = "#animais";
         if (same) route();

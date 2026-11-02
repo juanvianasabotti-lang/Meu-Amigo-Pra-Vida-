@@ -55,9 +55,9 @@ end $$;
 -- Pessoa: CPF e perfil
 -- ---------------------------------------------------------------------------
 select pg_temp.as_user('00000000-0000-0000-0000-0000000000a1');
-select pg_temp.expect_error($$insert into public.profile_private (user_id, cpf) values ('00000000-0000-0000-0000-0000000000a1', '111.111.111-11')$$, 'CPF inválido');
-insert into public.profile_private (user_id, cpf) values ('00000000-0000-0000-0000-0000000000a1', '529.982.247-25');
-select pg_temp.expect_error($$insert into public.profile_private (user_id, cpf) values ('00000000-0000-0000-0000-0000000000a2', '390.533.447-05')$$, 'CPF de outra pessoa');
+select pg_temp.expect_error($$select public.set_my_cpf('111.111.111-11')$$, 'CPF inválido');
+select pg_temp.expect_error($$insert into public.profile_private (user_id, cpf) values (auth.uid(), '52998224725')$$, 'gravação direta de CPF (sem a função)');
+select public.set_my_cpf('529.982.247-25');
 select pg_temp.expect_error($$update public.profiles set birth_date = '2012-01-01' where id = auth.uid()$$, 'menor de 18');
 update public.profiles set email = 'hack@x.com', bio = 'Amo gatos' where id = auth.uid();
 do $$ begin assert (select email::text from public.profiles where id = auth.uid()) = 'maria@mapv.test', 'email protegido'; end $$;
@@ -67,7 +67,8 @@ select pg_temp.expect_error($$select public.set_user_role('maria@mapv.test', 'ad
 reset role;
 
 select pg_temp.as_user('00000000-0000-0000-0000-0000000000a2');
-insert into public.profile_private (user_id, cpf) values ('00000000-0000-0000-0000-0000000000a2', '39053344705');
+select pg_temp.expect_error($$select public.set_my_cpf('529.982.247-25')$$, 'CPF já usado por outra pessoa (mensagem genérica)');
+select public.set_my_cpf('39053344705');
 do $$ begin assert (select count(*) from public.profile_private) = 1, 'só vê o próprio CPF'; end $$;
 reset role;
 
@@ -247,6 +248,41 @@ do $$ begin assert exists (select 1 from public.blog_posts where slug = 'como-se
 select public.set_user_role('joao@mapv.test', 'moderador', true);
 reset role;
 
+
+-- ---------------------------------------------------------------------------
+-- Endurecimento (revisão de segurança)
+-- ---------------------------------------------------------------------------
+-- ONG aprovada troca Pix -> volta para análise
+select pg_temp.as_user('00000000-0000-0000-0000-0000000000b1');
+update public.organizations set pix_key = 'golpe@x.com' where owner_id = auth.uid();
+do $$ begin assert (select status from public.organizations where owner_id = auth.uid()) = 'pendente', 'Pix alterado volta para análise'; end $$;
+reset role;
+-- anon não vê colunas internas
+select pg_temp.as_anon();
+select pg_temp.expect_error($$select owner_id from public.animals$$, 'anon lendo owner_id');
+select pg_temp.expect_error($$select review_note from public.organizations$$, 'anon lendo nota de moderação');
+reset role;
+-- evento: dono não "encerra" para publicar sem moderação
+select pg_temp.as_user('00000000-0000-0000-0000-0000000000c1');
+select pg_temp.expect_error($$update public.events set status = 'encerrado'$$, 'encerrar evento não publicado');
+reset role;
+-- moderador não modera o próprio conteúdo
+select pg_temp.as_user('00000000-0000-0000-0000-00000000000a');
+select public.set_user_role('ong@mapv.test', 'moderador', true);
+reset role;
+select pg_temp.as_user('00000000-0000-0000-0000-0000000000b1');
+select pg_temp.expect_error($$select public.moderate_organization((select id from public.organizations where owner_id = auth.uid()), 'aprovada')$$, 'moderar a própria organização');
+reset role;
+-- nova foto em anúncio aprovado volta para análise; texto alterado também
+select pg_temp.as_user('00000000-0000-0000-0000-00000000000a');
+select public.moderate_animal((select id from public.animals where name = 'Mimi'), true, null);
+reset role;
+select pg_temp.as_user('00000000-0000-0000-0000-0000000000a2');
+insert into public.animal_photos (animal_id, storage_path) select id, auth.uid() || '/' || id || '/nova.webp' from public.animals where name = 'Mimi';
+do $$ begin assert (select status from public.animals where name = 'Mimi') = 'em_analise', 'foto nova volta para análise'; end $$;
+-- tipo de conta travado após anúncios
+select pg_temp.expect_error($$update public.profiles set account_type = 'empresa' where id = auth.uid()$$, 'trocar tipo de conta com anúncios');
+reset role;
 -- ---------------------------------------------------------------------------
 -- Eliminação de conta (LGPD)
 -- ---------------------------------------------------------------------------

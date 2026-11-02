@@ -217,7 +217,7 @@ function setupForm(animal, needsCpf, profile) {
     await withLoading($("[data-submit]", form), async () => {
       try {
         if (needsCpf) {
-          await sb.from("profile_private").upsert({ user_id: profile.id, cpf: digits(val("cpf")) }, { onConflict: "user_id", returning: false });
+          await sb.rpc("set_my_cpf", { p_cpf: digits(val("cpf")) });
           needsCpf = false;
         }
         const { data } = await sb.from("adoption_applications").insert(row).select("id");

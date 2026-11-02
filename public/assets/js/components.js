@@ -4,6 +4,9 @@
 import sb from "./sb.js";
 import { esc, icons, stickers, L, fmtDate, initials, toast, $$ } from "./ui.js";
 
+export const ANIMAL_PUBLIC_COLS = "id,organization_id,publisher_name,name,slug,species,sex,size,age_group,breed,coat_color,weight_kg,description,personality,good_with_children,good_with_dogs,good_with_cats,neutered,vaccinated,dewormed,microchipped,special_needs,special_needs_notes,health_notes,adoption_requirements,city,state,status,is_urgent,approved_at,adopted_at,created_at";
+export const ORG_PUBLIC_COLS = "id,kind,status,trade_name,slug,tagline,description,services,email,whatsapp,website,instagram,logo_url,cover_url,city,state,public_address,pix_key,pix_key_type,accepts_volunteers,founded_year,partner_since";
+export const EVENT_PUBLIC_COLS = "id,organization_id,kind,title,slug,summary,description,cover_url,starts_at,ends_at,is_online,location_name,address,city,state,external_url,status";
 export const ANIMAL_CARD_COLS = "id,slug,name,species,sex,size,age_group,breed,city,state,status,is_urgent,personality,publisher_name,animal_photos(storage_path,is_cover,position)";
 
 export function coverPath(animal) {

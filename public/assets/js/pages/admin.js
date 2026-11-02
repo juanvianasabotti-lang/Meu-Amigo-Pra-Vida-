@@ -177,7 +177,7 @@ function postEditor(p, cats) {
   </form>`;
   const form = $("[data-post-form]", view);
   const prev = $("[data-preview]", view);
-  const upd = () => { prev.innerHTML = markdown(form.content_md.value); };
+  const upd = () => { prev.innerHTML = markdown(form.content_md.value, { allowExternal: true }); };
   form.content_md.addEventListener("input", upd); upd();
   let cover = null;
   $("[data-cover]", view).addEventListener("change", async (e) => {

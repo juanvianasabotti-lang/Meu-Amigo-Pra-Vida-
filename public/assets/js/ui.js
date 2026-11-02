@@ -66,9 +66,11 @@ export const stickers = {
 // ---------- Segurança: escape de HTML ----------
 const ESC = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;", "`": "&#96;" };
 export const esc = (v) => String(v ?? "").replace(/[&<>"'`]/g, (c) => ESC[c]);
+// Caminho interno seguro para redirecionamentos (evita //site e /\\site)
+export const safePath = (v) => (typeof v === "string" && /^\/(?![\/\\])[\w\-./?=&#%]*$/.test(v) ? v : null);
 export const safeUrl = (u) => {
   const s = String(u || "").trim();
-  if (/^(https?:\/\/|\/(?!\/)|#|mailto:)/i.test(s)) return s;
+  if (/^(https?:\/\/|\/(?![\/\\])|#|mailto:)/i.test(s) && !/[\s\\]/.test(s.replace(/^https?:\/\//i, ""))) return s;
   return "#";
 };
 
@@ -342,7 +344,7 @@ export function timeAgo(d) {
 export const initials = (name) => String(name || "?").trim().split(/\s+/).slice(0, 2).map((p) => p[0]).join("").toUpperCase() || "?";
 
 // ---------- Markdown seguro (subset) ----------
-function inline(md) {
+function inline(md, allowExternal = false) {
   let s = esc(md);
   s = s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
   s = s.replace(/(^|[^*])\*(?!\s)(.+?)\*(?!\*)/g, "$1<em>$2</em>");
@@ -350,11 +352,12 @@ function inline(md) {
   s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, text, url) => {
     const u = safeUrl(url.replace(/&amp;/g, "&"));
     const ext = /^https?:/i.test(u);
+    if (ext && !allowExternal) return text;
     return `<a href="${esc(u)}"${ext ? ' target="_blank" rel="noopener noreferrer"' : ""}>${text}</a>`;
   });
   return s;
 }
-export function markdown(md) {
+export function markdown(md, { allowExternal = false } = {}) {
   const lines = String(md || "").replace(/\r\n?/g, "\n").split("\n");
   const out = [];
   let i = 0;
@@ -362,21 +365,21 @@ export function markdown(md) {
     const line = lines[i];
     if (!line.trim()) { i++; continue; }
     let m;
-    if ((m = line.match(/^(#{2,4})\s+(.*)$/))) { const n = m[1].length; out.push(`<h${n}>${inline(m[2])}</h${n}>`); i++; continue; }
+    if ((m = line.match(/^(#{2,4})\s+(.*)$/))) { const n = m[1].length; out.push(`<h${n}>${inline(m[2], allowExternal)}</h${n}>`); i++; continue; }
     if (/^---+\s*$/.test(line)) { out.push("<hr>"); i++; continue; }
     if (/^>\s?/.test(line)) {
       const buf = [];
       while (i < lines.length && /^>\s?/.test(lines[i])) { buf.push(lines[i].replace(/^>\s?/, "")); i++; }
-      out.push(`<blockquote><p>${inline(buf.join(" "))}</p></blockquote>`); continue;
+      out.push(`<blockquote><p>${inline(buf.join(" "), allowExternal)}</p></blockquote>`); continue;
     }
     if (/^\s*[-*]\s+/.test(line)) {
       const buf = [];
-      while (i < lines.length && /^\s*[-*]\s+/.test(lines[i])) { buf.push(`<li>${inline(lines[i].replace(/^\s*[-*]\s+/, ""))}</li>`); i++; }
+      while (i < lines.length && /^\s*[-*]\s+/.test(lines[i])) { buf.push(`<li>${inline(lines[i].replace(/^\s*[-*]\s+/, ""), allowExternal)}</li>`); i++; }
       out.push(`<ul>${buf.join("")}</ul>`); continue;
     }
     if (/^\s*\d+[.)]\s+/.test(line)) {
       const buf = [];
-      while (i < lines.length && /^\s*\d+[.)]\s+/.test(lines[i])) { buf.push(`<li>${inline(lines[i].replace(/^\s*\d+[.)]\s+/, ""))}</li>`); i++; }
+      while (i < lines.length && /^\s*\d+[.)]\s+/.test(lines[i])) { buf.push(`<li>${inline(lines[i].replace(/^\s*\d+[.)]\s+/, ""), allowExternal)}</li>`); i++; }
       out.push(`<ol>${buf.join("")}</ol>`); continue;
     }
     if (/^\|.*\|\s*$/.test(line)) {
@@ -385,12 +388,12 @@ export function markdown(md) {
       const cells = (r) => r.trim().replace(/^\||\|$/g, "").split("|").map((c) => c.trim());
       const head = cells(rows[0]);
       const body = rows.slice(rows[1] && /^[\s|:-]+$/.test(rows[1]) ? 2 : 1);
-      out.push(`<table><thead><tr>${head.map((c) => `<th>${inline(c)}</th>`).join("")}</tr></thead><tbody>${body.map((r) => `<tr>${cells(r).map((c) => `<td>${inline(c)}</td>`).join("")}</tr>`).join("")}</tbody></table>`);
+      out.push(`<table><thead><tr>${head.map((c) => `<th>${inline(c, allowExternal)}</th>`).join("")}</tr></thead><tbody>${body.map((r) => `<tr>${cells(r).map((c) => `<td>${inline(c, allowExternal)}</td>`).join("")}</tr>`).join("")}</tbody></table>`);
       continue;
     }
     const buf = [];
     while (i < lines.length && lines[i].trim() && !/^(#{2,4}\s|>|\s*[-*]\s|\s*\d+[.)]\s|\||---)/.test(lines[i])) { buf.push(lines[i]); i++; }
-    if (buf.length) out.push(`<p>${inline(buf.join(" "))}</p>`); else i++;
+    if (buf.length) out.push(`<p>${inline(buf.join(" "), allowExternal)}</p>`); else i++;
   }
   return out.join("\n");
 }

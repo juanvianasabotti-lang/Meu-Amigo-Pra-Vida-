@@ -7,7 +7,7 @@ import {
 } from "../ui.js";
 import {
   orgCard, bindCopy, pixBox, orgLogo, eventCard, postCard, petCard, bindFavorites, ANIMAL_CARD_COLS,
-  emptyState, errorState, skeletons,
+  emptyState, errorState, skeletons, ORG_PUBLIC_COLS, EVENT_PUBLIC_COLS,
 } from "../components.js";
 
 const root = $("[data-page]");
@@ -59,7 +59,7 @@ async function orgPage() {
   const box = $("[data-org]");
   const slug = slugFromPath("organizacao");
   try {
-    const { data: o } = await sb.from("organizations").select("*").eq("slug", slug).eq("status", "aprovada").maybeSingle();
+    const { data: o } = await sb.from("organizations").select(ORG_PUBLIC_COLS).eq("slug", slug).eq("status", "aprovada").maybeSingle();
     if (!o) { box.innerHTML = emptyState({ title: "Organização não encontrada", text: "Ela pode não estar mais ativa.", cta: `<a class="btn" href="/ongs">Ver ONGs</a>` }); return; }
     const isOng = ["ong", "protetor_independente"].includes(o.kind);
     setMeta(o.trade_name, o.tagline || o.description || "");
@@ -123,7 +123,7 @@ async function eventPage() {
   const box = $("[data-event]");
   const slug = slugFromPath("eventos");
   try {
-    const { data: e } = await sb.from("events").select("*,organizations(slug,trade_name,logo_url,kind)").eq("slug", slug).maybeSingle();
+    const { data: e } = await sb.from("events").select(`${EVENT_PUBLIC_COLS},organizations(slug,trade_name,logo_url,kind)`).eq("slug", slug).maybeSingle();
     if (!e || !["publicado", "encerrado"].includes(e.status)) { box.innerHTML = emptyState({ title: "Evento não encontrado", text: "Confira a agenda completa.", cta: `<a class="btn" href="/eventos">Ver eventos</a>` }); return; }
     setMeta(e.title, e.summary);
     const where = e.is_online ? "Online" : [e.location_name, e.address, e.city && `${e.city} - ${e.state}`].filter(Boolean).join(" · ");
@@ -179,7 +179,7 @@ async function postPage() {
         <h1 class="h1 mt-2">${esc(p.title)}</h1><p class="lead">${esc(p.excerpt)}</p>
         <p class="small muted">${esc(fmtDateLong(p.published_at))} · ${esc(p.reading_minutes)} min de leitura</p></header>
       ${p.cover_url ? `<img src="${esc(p.cover_url)}" alt="${esc(p.cover_alt || "")}" style="width:100%;border-radius:var(--radius-lg);border:3px solid var(--preto);margin-bottom:32px">` : ""}
-      <div class="prose">${markdown(p.content_md)}</div>
+      <div class="prose">${markdown(p.content_md, { allowExternal: true })}</div>
       ${p.tags?.length ? `<div class="chips mt-3">${p.tags.map((t) => `<span class="chip chip-soft">#${esc(t)}</span>`).join("")}</div>` : ""}
       <div class="card card-pad mt-4 flex justify-between items-center wrap gap-2" style="background:var(--amarelo)"><div><h2 class="h3 mb-0">Pronto para mudar uma vida?</h2><p class="mb-0">Conheça os amigos que esperam por um lar.</p></div><a class="btn" href="/adote">Ver animais <span class="arrow">→</span></a></div>`;
     const { data: more } = await sb.from("blog_posts").select("slug,title,excerpt,cover_url,cover_alt,published_at,reading_minutes,blog_categories(name,color)")
@@ -198,7 +198,7 @@ async function legalPage() {
       .not("published_at", "is", "null").order("published_at", { ascending: false }).limit(1);
     const d = data?.[0];
     if (!d) throw new Error("Documento indisponível no momento.");
-    box.innerHTML = `<span class="eyebrow">Versão ${esc(d.version)}</span><h1 class="h1">${esc(d.title)}</h1><div class="prose mt-3">${markdown(d.content_md)}</div>`;
+    box.innerHTML = `<span class="eyebrow">Versão ${esc(d.version)}</span><h1 class="h1">${esc(d.title)}</h1><div class="prose mt-3">${markdown(d.content_md, { allowExternal: true })}</div>`;
   } catch (e) { box.innerHTML = errorState(e); }
   done(box);
 }
