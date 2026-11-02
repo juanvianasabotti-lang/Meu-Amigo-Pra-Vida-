@@ -4,6 +4,7 @@
 // =============================================================================
 import sb from "../sb.js";
 import { $, $$, esc, toast, withLoading, confirmDialog, markdown, icons } from "../ui.js";
+import { processImage } from "../image.js";
 
 const slugify = (t) => t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
@@ -52,7 +53,12 @@ async function editor(el, p, cats) {
     <div class="field"><label for="bm">Conteúdo (Markdown) *</label><textarea class="textarea" id="bm" name="content_md" style="min-height:320px;font-family:ui-monospace,monospace">${esc(x.content_md || "")}</textarea>
       <p class="small muted">Use ## para subtítulos, **negrito**, - listas, [texto](https://link).</p></div>
     <div class="field"><label for="bp">Pré-visualização</label><div class="prose" data-b-preview></div></div>
-    <div class="field"><label for="bh">URL da imagem de capa (opcional)</label><input class="input" id="bh" name="cover_url" value="${esc(x.cover_url || "")}" placeholder="https://..."></div>
+    <div class="field"><span class="label">Imagem de capa (16:10)</span>
+      <div class="flex gap-1 items-center wrap"><label class="btn btn-sm btn-branco">Escolher imagem<input type="file" accept="image/*" class="sr-only" data-b-cover></label>
+      <span class="small muted" data-b-cover-msg>${x.cover_url ? "Capa atual salva" : "Sem capa"}</span></div>
+      ${x.cover_url ? `<img src="${esc(x.cover_url)}" alt="" style="margin-top:8px;max-width:260px;border-radius:12px">` : ""}
+    </div>
+    <div class="field"><label for="bh">Texto alternativo da capa</label><input class="input" id="bh" name="cover_alt" maxlength="200" value="${esc(x.cover_alt || "")}"></div>
     <div class="field"><label for="bg">Tags (separadas por vírgula)</label><input class="input" id="bg" name="tags" value="${esc((x.tags || []).join(", "))}"></div>
     <label class="check"><input type="checkbox" name="featured" ${x.featured ? "checked" : ""}> Destaque na página inicial</label>
     <div class="flex gap-2 wrap items-center mt-2">
@@ -64,6 +70,15 @@ async function editor(el, p, cats) {
   const prev = $("[data-b-preview]", el);
   const upd = () => { prev.innerHTML = markdown(form.content_md.value, { allowExternal: true }); };
   form.content_md.addEventListener("input", upd); upd();
+  let cover = null;
+  $("[data-b-cover]", el).addEventListener("change", async (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    try {
+      cover = await processImage(f, { aspect: 16 / 10, width: 1600, title: "Capa do artigo" });
+      if (cover) $("[data-b-cover-msg]", el).textContent = "Nova capa pronta (será salva ao publicar)";
+    } catch (er) { toast(er.message, "bad"); }
+  });
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -79,11 +94,16 @@ async function editor(el, p, cats) {
       category_id: v.category_id || null,
       status: v.status,
       featured: !!form.featured.checked,
-      cover_url: (v.cover_url || "").trim() || null,
+      cover_alt: (v.cover_alt || "").trim() || null,
       tags: (v.tags || "").split(",").map((t) => t.trim()).filter(Boolean).slice(0, 10),
     };
     await withLoading($('button[type="submit"]', form), async () => {
       try {
+        if (cover) {
+          const path = `artigos/blog-${Date.now()}.webp`;
+          await sb.storage.upload("blog-media", path, cover, { contentType: cover.type });
+          row.cover_url = sb.storage.publicUrl("blog-media", path);
+        }
         const q = p ? sb.from("blog_posts").update(row).eq("id", p.id) : sb.from("blog_posts").insert(row);
         const { error } = await q;
         if (error) throw error;
