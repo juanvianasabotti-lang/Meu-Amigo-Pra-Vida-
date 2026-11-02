@@ -169,6 +169,38 @@ async function blogPage() {
   } catch (e) { box.style.display = "block"; box.innerHTML = errorState(e); }
 }
 
+const ART_PETS = ["boiadeiro", "chihuahua", "gato-himalaio", "gato-laranja", "gato-preto-branco", "gato-rajado", "golden", "labrador"];
+const artPet = (seed = "", n = 0) => ART_PETS[([...seed].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) + n) % ART_PETS.length];
+const CAPTIONS = ["Quem espera por você tem pressa de ser feliz.", "Um lar é uma decisão que dura anos.", "Adotar é mudar duas vidas de uma vez."];
+
+// Barra de leitura no topo: mostra o quanto do texto já foi lido.
+function readProgress() {
+  const bar = $(".read-progress");
+  const main = $(".art-main");
+  if (!bar || !main) return;
+  const on = () => {
+    const r = main.getBoundingClientRect();
+    const total = r.height - window.innerHeight * 0.5;
+    const done = Math.min(1, Math.max(0, -r.top / Math.max(1, total)));
+    bar.style.transform = `scaleX(${done})`;
+  };
+  window.addEventListener("scroll", on, { passive: true });
+  on();
+}
+
+// Insere fotos de animais entre as seções do texto (a cada 2 subtítulos).
+function interleaveImages(main, seed) {
+  const h2s = [...main.querySelectorAll("h2")];
+  h2s.forEach((h, i) => {
+    if (i === 0 || i % 2 !== 0) return;
+    const k = Math.floor(i / 2) - 1;
+    const fig = document.createElement("figure");
+    fig.className = "art-inline";
+    fig.innerHTML = `<img src="/assets/img/animais/${artPet(seed, k + 1)}.webp" alt="" loading="lazy"><figcaption>${esc(CAPTIONS[k % CAPTIONS.length])}</figcaption>`;
+    h.before(fig);
+  });
+}
+
 async function postPage() {
   const box = $("[data-post]");
   const slug = slugFromPath("blog");
@@ -177,14 +209,42 @@ async function postPage() {
     if (!p) { box.innerHTML = emptyState({ title: "Artigo não encontrado", text: "Veja os outros conteúdos.", cta: `<a class="btn" href="/blog">Ver artigos</a>` }); return; }
     setMeta(p.title, p.excerpt);
     const color = p.blog_categories?.color || "laranja";
-    box.innerHTML = `<a class="link small" href="/blog">← Conscientização</a>
-      <header class="article-head cat-${esc(color)} mt-3 mb-3" data-reveal="up">${p.blog_categories ? `<a class="chip chip-${esc(color)}" href="/blog?categoria=${esc(p.blog_categories.slug)}" style="text-decoration:none;border:2px solid var(--preto)">${esc(p.blog_categories.name)}</a>` : ""}
-        <h1 class="h1 mt-2">${esc(p.title)}</h1><p class="lead">${esc(p.excerpt)}</p>
-        <p class="article-meta">${esc(fmtDateLong(p.published_at))} · ${esc(p.reading_minutes)} min de leitura</p></header>
-      ${p.cover_url ? `<img src="${esc(p.cover_url)}" alt="${esc(p.cover_alt || "")}" style="width:100%;border-radius:var(--radius-lg);margin-bottom:32px">` : ""}
-      <div class="prose article-body">${markdown(p.content_md, { allowExternal: true })}</div>
-      ${p.tags?.length ? `<div class="chips mt-3">${p.tags.map((t) => `<span class="chip chip-soft">#${esc(t)}</span>`).join("")}</div>` : ""}
-      <div class="card card-pad mt-4 flex justify-between items-center wrap gap-2" style="background:var(--amarelo)"><div><h2 class="h3 mb-0">Pronto para mudar uma vida?</h2><p class="mb-0">Conheça os amigos que esperam por um lar.</p></div><a class="btn" href="/adote">Ver animais <span class="arrow">→</span></a></div>`;
+    const seed = p.slug || "x";
+    const hero = p.cover_url || `/assets/img/animais/${artPet(seed)}.webp`;
+    box.innerHTML = `
+      <div class="read-progress" aria-hidden="true"></div>
+      <header class="art-hero cat-${esc(color)}" data-reveal="up">
+        <div class="art-hero-copy">
+          <a class="link small" href="/blog">← Conscientização</a>
+          ${p.blog_categories ? `<p class="art-kicker"><a href="/blog?categoria=${esc(p.blog_categories.slug)}">${esc(p.blog_categories.name)}</a></p>` : ""}
+          <h1>${esc(p.title)}</h1>
+          <p class="art-deck">${esc(p.excerpt)}</p>
+          <p class="art-byline"><span>${esc(fmtDateLong(p.published_at))}</span><span>${esc(p.reading_minutes)} min de leitura</span></p>
+        </div>
+        <figure class="art-hero-media"><img src="${esc(hero)}" alt="${esc(p.cover_alt || "")}"></figure>
+      </header>
+      <div class="art-layout">
+        <article class="art-main prose article-body">${markdown(p.content_md, { allowExternal: true })}</article>
+        <aside class="art-side">
+          <div class="art-cta-card">
+            <img src="/assets/img/animais/${artPet(seed, 3)}.webp" alt="">
+            <h2>Um amigo está esperando por você</h2>
+            <p>Veja quem está pronto para ir para casa e envie seu pedido de adoção em poucos minutos.</p>
+            <a class="btn btn-laranja btn-block" href="/adote">Quero adotar <span class="arrow">→</span></a>
+            <a class="link small" href="/doar">Ou doe um animal ou ajude uma ONG</a>
+          </div>
+        </aside>
+      </div>
+      ${p.tags?.length ? `<div class="chips art-tags">${p.tags.map((t) => `<span class="chip chip-soft">#${esc(t)}</span>`).join("")}</div>` : ""}
+      <section class="art-final">
+        <div class="art-final-copy"><p class="art-kicker">Próximo passo</p><h2>Transforme esta leitura em um lar</h2>
+          <p>Cada adoção muda duas vidas: a do animal e a de quem o recebe.</p>
+          <a class="btn btn-branco" href="/adote">Ver animais para adoção <span class="arrow">→</span></a></div>
+        <img src="/assets/img/animais/${artPet(seed, 5)}.webp" alt="">
+      </section>`;
+    const main = $(".art-main", box);
+    interleaveImages(main, seed);
+    readProgress();
     const { data: more } = await sb.from("blog_posts").select("slug,title,excerpt,cover_url,cover_alt,published_at,reading_minutes,blog_categories(name,color)")
       .eq("status", "publicado").neq("id", p.id).order("published_at", { ascending: false }).limit(3);
     if (more?.length) { $("[data-more]").innerHTML = more.map(postCard).join(""); $("[data-more-wrap]").classList.remove("hidden"); }
