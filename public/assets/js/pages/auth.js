@@ -7,7 +7,7 @@ import {
 } from "../ui.js";
 
 const page = $("[data-auth]")?.dataset.auth;
-const CALLBACK = `${location.origin}/auth/callback`;
+const CALLBACK = `${location.origin}/auth-callback`;
 const NEXT_KEY = "mapv.next";
 const TYPE_KEY = "mapv.pendingType";
 
