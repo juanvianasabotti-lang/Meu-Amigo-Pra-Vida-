@@ -17,7 +17,7 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/assets/fonts/poppins-bold.woff" as="font" type="font/woff" crossorigin>
   <link rel="preload" href="/assets/fonts/poppins-regular.woff" as="font" type="font/woff" crossorigin>
-  <link rel="stylesheet" href="/assets/css/main.css?v=f962ebc4cd">
+  <link rel="stylesheet" href="/assets/css/main.css?v=5db714be8e">
   <script type="module" src="/assets/js/pages/auth.js"></script>
 </head>
 <body class="">
@@ -61,51 +61,83 @@
 </section>
 </main>
 <footer class="site-footer">
-  <svg class="loop footer-loop" viewBox="0 0 260 160" aria-hidden="true"><path d="M8 132c40 4 70-18 86-52 14-30 4-62-22-62-30 0-34 46-4 70 30 24 84 18 112-12 26-28 34-58 72-62"/></svg>
+  <div class="footer-peek" aria-hidden="true"><img src="/assets/img/animais/boiadeiro.webp" alt="" width="1289" height="1400" loading="lazy"></div>
   <div class="container">
+    <div class="footer-cta">
+      <div>
+        <p class="eyebrow" style="--eyebrow-c:var(--amarelo)">Faça parte</p>
+        <h2>Adote, anuncie um animal ou cadastre sua ONG</h2>
+      </div>
+      <div class="footer-cta-actions">
+        <a class="btn btn-amarelo" href="/adote">Quero adotar <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn-ghost" href="/cadastro?tipo=ong">Cadastrar ONG</a>
+        <a class="btn btn-ghost" href="/cadastro?tipo=empresa">Ser empresa parceira</a>
+      </div>
+    </div>
+
     <div class="footer-grid">
       <div class="footer-brand">
         <img src="/assets/brand/logo-branca.svg" alt="Meu Amigo pra Vida" width="170" height="87" loading="lazy">
-        <p>Conscientização, adoção e doação de cães e gatos. Uma ponte entre quem precisa de um lar, quem tem amor pra dar, ONGs e empresas do mundo animal.</p>
+        <p>Plataforma brasileira de adoção e doação responsável de cães e gatos. Conectamos quem procura um amigo a ONGs, protetores e empresas verificadas.</p>
         <div class="socials">
           <a href="https://instagram.com/meuamigopravida" target="_blank" rel="noopener noreferrer" aria-label="Instagram do Meu Amigo pra Vida"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5v.5"/></svg></a>
+          <a class="footer-contact" href="/contato">Fale com a equipe</a>
         </div>
       </div>
-      <div>
-        <h3>Adote &amp; doe</h3>
+      <nav aria-label="Adoção">
+        <h3>Adoção</h3>
         <ul>
-          <li><a href="/adote">Encontrar um amigo</a></li>
-          <li><a href="/adote?especie=gato">Gatos para adoção</a></li>
-          <li><a href="/adote?especie=cao">Cães para adoção</a></li>
+          <li><a href="/adote">Animais para adoção</a></li>
+          <li><a href="/adote?especie=cao">Cães</a></li>
+          <li><a href="/adote?especie=gato">Gatos</a></li>
+          <li><a href="/#como-funciona">Como funciona</a></li>
+          <li><a href="/blog/10-perguntas-antes-de-adotar">Antes de adotar</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Doe e ajude">
+        <h3>Doe e ajude</h3>
+        <ul>
           <li><a href="/doar">Doar um animal</a></li>
-          <li><a href="/ongs">Ajudar uma ONG</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>Comunidade</h3>
-        <ul>
-          <li><a href="/cadastro?tipo=ong">Cadastrar minha ONG</a></li>
-          <li><a href="/cadastro?tipo=empresa">Seja uma empresa parceira</a></li>
+          <li><a href="/ongs">ONGs verificadas</a></li>
+          <li><a href="/doar#ongs-pix">Pix solidário</a></li>
           <li><a href="/eventos">Campanhas e eventos</a></li>
-          <li><a href="/blog">Conscientização</a></li>
-          <li><a href="/sobre">Sobre nós</a></li>
         </ul>
-      </div>
-      <div>
+      </nav>
+      <nav aria-label="ONGs e empresas">
+        <h3>ONGs e empresas</h3>
+        <ul>
+          <li><a href="/cadastro?tipo=ong">Cadastrar ONG ou protetor</a></li>
+          <li><a href="/cadastro?tipo=empresa">Seja empresa parceira</a></li>
+          <li><a href="/parceiros">Empresas parceiras</a></li>
+          <li><a href="/painel">Painel da organização</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Ajuda">
         <h3>Ajuda</h3>
         <ul>
           <li><a href="/contato">Fale conosco</a></li>
           <li><a href="/contato?assunto=denuncia_anuncio">Denunciar um anúncio</a></li>
-          <li><a href="/privacidade">Política de Privacidade</a></li>
-          <li><a href="/termos">Termos de Uso</a></li>
+          <li><a href="/sobre">Sobre nós</a></li>
+          <li><a href="/blog">Conscientização</a></li>
           <li><a href="/minha-conta#privacidade">Meus dados (LGPD)</a></li>
         </ul>
-      </div>
+      </nav>
     </div>
-    <div class="footer-bottom">
-      <span>© <span data-year>2026</span> Meu Amigo pra Vida. Feito com amor por quem tem quatro patas.</span>
-      <span>Maus-tratos a animais são crime. Denuncie: <strong>190</strong></span>
+
+    <div class="footer-info">
+      <p><strong>Maus-tratos a animais é crime.</strong> Lei 9.605/1998, art. 32, com pena maior para cães e gatos (Lei 14.064/2020). Em flagrante, ligue 190.</p>
+      <p><strong>Doação é sempre gratuita.</strong> Venda de animais não é permitida. O Pix vai direto para a ONG, sem passar pela plataforma.</p>
+      <p><strong>Seus dados, sob seu controle.</strong> Tratamos dados pessoais conforme a LGPD. Você pode consultar, corrigir ou excluir os seus.</p>
     </div>
+  </div>
+
+  <p class="footer-mark" aria-hidden="true">Meu Amigo pra Vida</p>
+
+  <div class="container footer-bottom">
+    <span>© <span data-year>2026</span> Meu Amigo pra Vida. Todos os direitos reservados.</span>
+    <nav class="footer-legal" aria-label="Documentos legais"><a href="/privacidade">Política de Privacidade</a><a href="/termos">Termos de Uso</a></nav>
+    <span>Meu Amigo pra Vida · Brasil</span>
+    <a class="to-top" href="#conteudo" data-to-top>Voltar ao topo <span aria-hidden="true">↑</span></a>
   </div>
 </footer>
 </body>

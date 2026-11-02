@@ -68,13 +68,16 @@ async function orgPage() {
       sb.from("events").select("slug,title,summary,kind,starts_at,is_online,location_name,city,state").eq("organization_id", o.id).eq("status", "publicado").gte("starts_at", new Date(Date.now() - 86400000).toISOString()).order("starts_at").limit(6),
     ]);
     box.innerHTML = `
-    <div class="page-hero ${isOng ? "azul" : "rosa"}">
+    <div class="poster poster-solo ${isOng ? "azul" : "rosa"}">
+      <div class="poster-bg" aria-hidden="true"><span class="poster-word">${isOng ? "resgate" : "parceira"}</span></div>
+      <div class="poster-copy">
       <div class="flex items-center gap-2 wrap" data-reveal="up">
         <div class="org-logo" style="width:110px;height:110px;border-radius:30px;font-size:2.4rem;background:var(--amarelo)">${orgLogo(o)}</div>
         <div><span class="eyebrow" style="margin-bottom:.5rem">${esc(L.orgKind[o.kind])} · verificada</span>
           <h1 class="mb-0">${esc(o.trade_name)}</h1>${o.city ? `<p class="lead mb-0">${esc(o.city)} - ${esc(o.state)}${o.founded_year ? ` · desde ${esc(o.founded_year)}` : ""}</p>` : ""}</div>
       </div>
       ${o.tagline ? `<p class="lead mt-2" data-reveal="up">${esc(o.tagline)}</p>` : ""}
+      </div>
     </div>
     <div class="grid grid-2 section" style="align-items:start;padding-block:40px">
       <div class="card card-pad" data-reveal="up"><h2 class="h3">Sobre</h2><div class="prose">${o.description ? markdown(o.description) : "<p class='muted'>Em breve mais informações.</p>"}</div>

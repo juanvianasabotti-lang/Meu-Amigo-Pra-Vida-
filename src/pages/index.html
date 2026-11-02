@@ -12,9 +12,9 @@
           <input type="radio" name="especie" id="qs-gato" value="gato"><label for="qs-gato">Gatos</label>
         </div>
         <label class="sr-only" for="qs-porte">Porte</label>
-        <select class="select" id="qs-porte" name="porte"><option value="">Qualquer porte</option><option value="pequeno">Pequeno</option><option value="medio">Médio</option><option value="grande">Grande</option></select>
+        <select class="select" id="qs-porte" name="porte"><option value="">Porte</option><option value="pequeno">Pequeno</option><option value="medio">Médio</option><option value="grande">Grande</option></select>
         <label class="sr-only" for="qs-uf">Estado</label>
-        <select class="select" id="qs-uf" name="uf" data-qs-uf><option value="">Todo o Brasil</option></select>
+        <select class="select" id="qs-uf" name="uf" data-qs-uf><option value="">Estado</option></select>
         <button class="btn btn-preto magnet" type="submit">Buscar</button>
       </form>
       <p class="hero-alt" data-reveal="up" style="--delay:.55s">Precisa encontrar um lar para um animal? <a href="/doar">Anuncie com segurança</a></p>
@@ -25,7 +25,7 @@
       <svg class="hero-loop loop" viewBox="0 0 260 160"><path d="M8 132c40 4 70-18 86-52 14-30 4-62-22-62-30 0-34 46-4 70 30 24 84 18 112-12 26-28 34-58 72-62"/></svg>
       <div class="hero-pets">
         <img class="hero-pet" data-slide="0" src="/assets/img/animais/golden.webp" alt="" width="1400" height="1376" fetchpriority="high">
-        <img class="hero-pet" data-slide="1" src="/assets/img/animais/gato-rajado.webp" alt="" width="1237" height="1267" loading="lazy">
+        <img class="hero-pet" data-slide="1" src="/assets/img/animais/gato-rajado.webp" alt="" width="1042" height="1267" loading="lazy">
         <img class="hero-pet" data-slide="2" src="/assets/img/animais/boiadeiro.webp" alt="" width="1289" height="1400" loading="lazy">
         <img class="hero-pet hero-pet-wide" data-slide="3" src="/assets/img/animais/gato-laranja.webp" alt="" width="1097" height="879" loading="lazy">
         <img class="hero-pet" data-slide="4" src="/assets/img/animais/labrador.webp" alt="" width="1037" height="1400" loading="lazy">
@@ -106,8 +106,8 @@
 </section>
 
 <div class="scroll-type" aria-hidden="true" data-scroll-type>
-  <p data-dir="-1">adote <span class="dot">•</span> castre <span class="dot">•</span> vacine <span class="dot">•</span> adote <span class="dot">•</span> castre <span class="dot">•</span> vacine</p>
-  <p data-dir="1">não abandone • não compre • denuncie • não abandone • não compre • denuncie</p>
+  <div class="st-row" data-dir="-1"><p class="st-chunk"><span class="w">adote</span> <span class="dot">•</span> <span class="w">castre</span> <span class="dot">•</span> <span class="w">vacine</span> <span class="dot">•</span> </p></div>
+  <div class="st-row st-outline" data-dir="1"><p class="st-chunk"><span class="w">não abandone</span> <span class="dot">•</span> <span class="w">não compre</span> <span class="dot">•</span> <span class="w">denuncie</span> <span class="dot">•</span> </p></div>
 </div>
 
 <section class="section container" id="como-funciona" aria-labelledby="processo-titulo">
@@ -118,6 +118,20 @@
     </div>
     <a class="btn btn-ghost btn-sm" href="/blog/10-perguntas-antes-de-adotar" data-reveal="up">10 perguntas antes de adotar</a>
   </div>
+  <figure class="film" data-film>
+    <div class="film-frame">
+      <video class="film-video" muted loop playsinline controls preload="none" width="1280" height="720" poster="/assets/video/como-funciona.jpg" aria-describedby="film-legenda">
+        <source src="/assets/video/como-funciona.mp4" type="video/mp4">
+        <source src="/assets/video/como-funciona.webm" type="video/webm">
+      </video>
+      <button class="film-toggle" type="button" data-film-toggle hidden>
+        <svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>
+        <svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.2-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
+        <span class="sr-only" data-film-label>Pausar vídeo</span>
+      </button>
+    </div>
+    <figcaption id="film-legenda">Vídeo sem som, de 19 segundos, com os quatro passos da adoção descritos logo abaixo.</figcaption>
+  </figure>
   <div class="process-wrap" data-process>
   <div class="process-track" aria-hidden="true"><span></span></div>
   <ol class="process">
@@ -131,19 +145,25 @@
 
 <section class="section container" aria-label="Para ONGs e empresas" style="padding-top:0">
   <div class="cta-split">
-    <article class="cta-panel bg-azul" data-reveal="left">
-      <p class="eyebrow" style="--eyebrow-c:var(--amarelo)">Para ONGs e protetores</p>
-      <h2>Mais lares para quem você resgatou</h2>
-      <p>Cadastre sua ONG, publique os animais, receba pedidos com questionário completo e mostre sua chave Pix para doações.</p>
-      <a class="btn btn-amarelo" href="/cadastro?tipo=ong">Cadastrar minha ONG <span class="arrow" aria-hidden="true">→</span></a>
-      <img class="cta-pet" src="/assets/img/animais/labrador.webp" alt="" loading="lazy" data-reveal="pet" data-reveal-repeat width="1037" height="1400">
+    <article class="poster azul" data-poster data-depth-area>
+      <div class="poster-bg" aria-hidden="true"><span class="poster-word" data-drift>lares</span></div>
+      <div class="poster-copy">
+        <p class="eyebrow">Para ONGs e protetores</p>
+        <h2>Mais lares para quem você resgatou</h2>
+        <p>Cadastre sua ONG, publique os animais, receba pedidos com questionário completo e mostre sua chave Pix para doações.</p>
+        <a class="btn btn-amarelo" href="/cadastro?tipo=ong">Cadastrar minha ONG <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+      <div class="poster-art" aria-hidden="true"><img class="poster-pet" src="/assets/img/animais/gato-preto-branco.webp" alt="" loading="lazy" width="701" height="1303" data-pet></div>
     </article>
-    <article class="cta-panel bg-rosa" data-reveal="right">
-      <p class="eyebrow" style="--eyebrow-c:var(--preto)">Para empresas</p>
-      <h2>Sua marca do lado certo da história</h2>
-      <p>Pet shops, clínicas, hotéis e marcas ganham vitrine para quem ama animais e divulgam campanhas e eventos.</p>
-      <a class="btn btn-preto" href="/cadastro?tipo=empresa">Ser parceiro <span class="arrow" aria-hidden="true">→</span></a>
-      <img class="cta-pet" src="/assets/img/animais/golden.webp" alt="" loading="lazy" data-reveal="pet" data-reveal-repeat width="1400" height="1376">
+    <article class="poster rosa" data-poster data-depth-area>
+      <div class="poster-bg" aria-hidden="true"><span class="poster-word" data-drift>marca</span></div>
+      <div class="poster-copy">
+        <p class="eyebrow">Para empresas</p>
+        <h2>Sua marca do lado certo da história</h2>
+        <p>Pet shops, clínicas, hotéis e marcas ganham vitrine para quem ama animais e divulgam campanhas e eventos.</p>
+        <a class="btn btn-branco" href="/cadastro?tipo=empresa">Ser parceiro <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+      <div class="poster-art" aria-hidden="true"><img class="poster-pet" src="/assets/img/animais/chihuahua.webp" alt="" loading="lazy" width="706" height="1388" data-pet></div>
     </article>
   </div>
 </section>
@@ -176,13 +196,16 @@
 </section>
 
 <section class="container" aria-labelledby="final-titulo">
-  <div class="final-cta" data-reveal="up">
-    <div class="copy">
+  <div class="poster azul" data-poster data-depth-area>
+    <div class="poster-bg" aria-hidden="true"><span class="poster-word" data-drift>casa</span><svg class="loop poster-loop draw-on-view" viewBox="0 0 260 160" aria-hidden="true"><path d="M8 132c40 4 70-18 86-52 14-30 4-62-22-62-30 0-34 46-4 70 30 24 84 18 112-12 26-28 34-58 72-62"/></svg></div>
+    <div class="poster-copy">
       <h2 class="big" id="final-titulo">Quer me levar pra <span class="hl hl-amarelo">casa??</span></h2>
-      <p class="lead" style="color:rgba(255,255,255,.92)">Tem um amigo esperando exatamente por você. O pedido leva poucos minutos.</p>
+      <p class="lead">Tem um amigo esperando exatamente por você. O pedido leva poucos minutos.</p>
       <div class="hero-ctas"><a class="btn btn-amarelo magnet" href="/adote">Encontrar meu amigo <span class="arrow" aria-hidden="true">→</span></a><a class="btn btn-branco" href="/blog/10-perguntas-antes-de-adotar">Estou pronto?</a></div>
     </div>
-    <svg class="loop draw-on-view final-loop" viewBox="0 0 260 160" aria-hidden="true" data-reveal-loop><path d="M8 132c40 4 70-18 86-52 14-30 4-62-22-62-30 0-34 46-4 70 30 24 84 18 112-12 26-28 34-58 72-62"/></svg>
-    <img class="pet" src="/assets/img/animais/chihuahua.webp" alt="" loading="lazy" data-reveal="pet" data-reveal-repeat width="706" height="1388">
+    <div class="poster-art" aria-hidden="true">
+      <img class="poster-pet" src="/assets/img/animais/labrador.webp" alt="" loading="lazy" width="1037" height="1400" data-pet>
+      <p class="poster-tag">Adulto também aprende<small>e ama do mesmo jeito</small></p>
+    </div>
   </div>
 </section>

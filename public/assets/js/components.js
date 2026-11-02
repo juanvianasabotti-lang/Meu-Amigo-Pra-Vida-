@@ -21,7 +21,7 @@ export function petCard(a, { favorited = false } = {}) {
     ? `<img src="${esc(photoUrl(path))}" alt="Foto de ${esc(a.name)}" loading="lazy" decoding="async" width="480" height="600">`
     : `<div style="position:absolute;inset:0;display:grid;place-items:center;color:rgba(17,17,17,.35)"><div style="width:42%">${a.species === "gato" ? icons.cat : icons.dog}</div></div>`;
   const status = a.status === "em_processo" ? `<span class="status-ribbon">Em processo de adoção</span>`
-    : a.status === "adotado" ? `<span class="status-ribbon" style="background:var(--rosa);color:var(--preto)">Adotado</span>` : "";
+    : a.status === "adotado" ? `<span class="status-ribbon" style="background:var(--rosa);color:var(--branco)">Adotado</span>` : "";
   const traits = (a.personality || []).slice(0, 3).map((t) => `<span class="chip chip-soft">${esc(t)}</span>`).join("");
   return `<article class="pet-card" data-reveal="up">
     <div class="pet-photo">

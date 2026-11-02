@@ -1,9 +1,9 @@
-import { observeReveal, getContext } from "../app.js";
+import { observeReveal, getContext, setPosterWord } from "../app.js";
 import sb from "../sb.js";
 import { CONFIG } from "../config.js";
 import {
   $, $$, icons, toast, bindMasks, ufOptions, withLoading, setFieldError, clearErrors, focusFirstError,
-  isValidEmail, isValidPhone, ageFrom, passwordScore, digits, qs, safePath,
+  isValidEmail, isValidPhone, ageFrom, passwordScore, digits, qs, safePath, esc,
 } from "../ui.js";
 
 const page = $("[data-auth]")?.dataset.auth;
@@ -66,10 +66,33 @@ async function googleLogin() {
 // Cadastro
 // ---------------------------------------------------------------------------
 const TYPE_INFO = {
-  pessoa: { hint: "Para quem quer adotar, doar um animal ou acompanhar a causa.", name: "Nome completo", art: "Adote, anuncie e acompanhe tudo em um só lugar" },
-  ong: { hint: "Etapa 1 de 2: crie a conta do(a) responsável. Em seguida você informa CNPJ (ou CPF, se for protetor independente), endereço e Pix da organização. A publicação acontece após a verificação da nossa equipe.", name: "Nome do(a) responsável", art: "Mais lares para quem você resgatou" },
-  empresa: { hint: "Etapa 1 de 2: crie a conta do(a) responsável. Depois você informa CNPJ, endereço e serviços. Sua vitrine é publicada após a verificação da nossa equipe.", name: "Nome do(a) responsável", art: "Sua marca do lado certo da história" },
+  pessoa: { hint: "Para quem quer adotar, doar um animal ou acompanhar a causa.", name: "Nome completo", art: "Adote, anuncie e acompanhe tudo em um só lugar",
+    c: "rosa", pet: "golden", word: "amigo", tag: ["Cadastro gratuito", "em poucos minutos"],
+    list: ["Favorite animais e envie pedidos de adoção", "Anuncie um animal para doação sem expor seu telefone", "Acompanhe cada etapa pela sua conta"] },
+  ong: { hint: "Etapa 1 de 2: crie a conta do(a) responsável. Em seguida você informa CNPJ (ou CPF, se for protetor independente), endereço e Pix da organização. A publicação acontece após a verificação da nossa equipe.", name: "Nome do(a) responsável", art: "Mais lares para quem você resgatou",
+    c: "azul", pet: "labrador", word: "resgate", tag: ["Perfil verificado", "pela nossa equipe"],
+    list: ["Publique os animais que você resgatou", "Receba pedidos com questionário completo", "Mostre sua chave Pix para doações"] },
+  empresa: { hint: "Etapa 1 de 2: crie a conta do(a) responsável. Depois você informa CNPJ, endereço e serviços. Sua vitrine é publicada após a verificação da nossa equipe.", name: "Nome do(a) responsável", art: "Sua marca do lado certo da história",
+    c: "preto", pet: "boiadeiro", word: "parceria", tag: ["Vitrine verificada", "pela nossa equipe"],
+    list: ["Vitrine para quem ama animais", "Divulgue campanhas e eventos", "Apareça entre as empresas parceiras"] },
 };
+
+// Painel lateral do cadastro muda de cor, animal e texto conforme o tipo de conta.
+function paintArt(info) {
+  const art = $("[data-art]");
+  if (!art) return;
+  art.classList.remove("rosa", "azul", "preto", "laranja");
+  art.classList.add(info.c);
+  $("[data-art-title]", art).textContent = info.art;
+  setPosterWord($("[data-art-word]", art), info.word);
+  $("[data-art-list]", art).innerHTML = info.list.map((t) => `<li>${esc(t)}</li>`).join("");
+  $("[data-art-tag]", art).innerHTML = `${esc(info.tag[0])}<small>${esc(info.tag[1])}</small>`;
+  const img = $("[data-pet]", art);
+  const src = `/assets/img/animais/${info.pet}.webp`;
+  if (img.getAttribute("src") === src) return;
+  img.classList.add("is-swapping");
+  setTimeout(() => { img.src = src; img.onload = () => img.classList.remove("is-swapping"); }, 260);
+}
 
 function setupCadastro() {
   const root = $("[data-auth]");
@@ -89,7 +112,7 @@ function setupCadastro() {
     $$("[data-type]", root).forEach((b) => b.setAttribute("aria-selected", String(b.dataset.type === t)));
     $("[data-type-hint]", root).textContent = TYPE_INFO[t].hint;
     $("[data-name-label]", root).innerHTML = `${TYPE_INFO[t].name} <span class="req">*</span>`;
-    $("[data-art-title]").textContent = TYPE_INFO[t].art;
+    paintArt(TYPE_INFO[t]);
     history.replaceState(null, "", `?tipo=${t}`);
   };
   $$("[data-type]", root).forEach((b) => b.addEventListener("click", () => setType(b.dataset.type)));

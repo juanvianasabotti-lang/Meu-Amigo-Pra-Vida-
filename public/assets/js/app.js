@@ -241,6 +241,79 @@ function magnets() {
   });
 }
 
+// Palavra gigante em faixa contínua: duas metades iguais deslizando sem parar.
+export function setPosterWord(el, text, reps = 3) {
+  if (!el) return;
+  const word = String(text ?? el.textContent).trim();
+  el.textContent = "";
+  const track = document.createElement("span");
+  track.className = "pw-track";
+  for (let i = 0; i < reps * 2; i++) { const s = document.createElement("span"); s.textContent = word; track.appendChild(s); }
+  el.appendChild(track);
+}
+
+// Cartazes: a cor entra de baixo para cima, o animal sobe para dentro da moldura,
+// a palavra gigante desliza com a rolagem e as camadas seguem o cursor (só mouse).
+function posters() {
+  $$(".poster-word").forEach((w, i) => { setPosterWord(w); if (i % 2) w.closest(".poster")?.classList.add("pw-rev"); });
+  const list = $$("[data-poster]");
+  if (!list.length) return;
+  if (reduceMotion || !("IntersectionObserver" in window)) { list.forEach((el) => el.classList.add("is-in", "is-settled")); return; }
+  const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add("is-in");
+    setTimeout(() => e.target.classList.add("is-settled"), 1500);
+    io.unobserve(e.target);
+  }), { threshold: 0.18 });
+  list.forEach((el) => io.observe(el));
+
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const vh = window.innerHeight;
+    list.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.bottom < -100 || r.top > vh + 100) return;
+      const p = Math.max(-1, Math.min(1, (r.top + r.height / 2 - vh / 2) / vh));
+      el.style.setProperty("--sx", (-p * 160).toFixed(1));
+      el.style.setProperty("--sy", (Math.max(0, p) * 70).toFixed(1));
+    });
+  };
+  const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  update();
+
+  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  $$("[data-depth-area]").forEach((el) => {
+    el.addEventListener("pointermove", (e) => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty("--dx", `${(((e.clientX - r.left) / r.width) - 0.5) * 28}px`);
+      el.style.setProperty("--dy", `${(((e.clientY - r.top) / r.height) - 0.5) * 18}px`);
+    });
+    el.addEventListener("pointerleave", () => { el.style.setProperty("--dx", "0px"); el.style.setProperty("--dy", "0px"); });
+  });
+}
+
+// Rodapé: o cachorro espia por cima da borda e a assinatura gigante entra letra a letra.
+function footerFx() {
+  const foot = $(".site-footer");
+  if (!foot) return;
+  const mark = $(".footer-mark", foot);
+  if (mark && !mark.dataset.split) {
+    mark.dataset.split = "1";
+    let i = 0;
+    mark.innerHTML = [...mark.textContent].map((ch) => ch === " " ? " " : `<span style="--i:${i++}">${ch}</span>`).join("");
+  }
+  const top = $("[data-to-top]", foot);
+  top?.addEventListener("click", (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" }); });
+  if (reduceMotion || !("IntersectionObserver" in window)) { foot.classList.add("is-in"); return; }
+  const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+    foot.classList.toggle("is-in", e.isIntersecting);
+  }), { threshold: 0.08 });
+  io.observe(foot);
+}
+
 document.addEventListener("click", (e) => {
   if (e.target instanceof Element && e.target.closest("[data-reload]")) location.reload();
 });
@@ -256,6 +329,8 @@ splitWords();
 observeReveal();
 drawLoops();
 magnets();
+posters();
+footerFx();
 renderUserArea();
 $$("[data-year]").forEach((el) => { el.textContent = new Date().getFullYear(); });
 

@@ -233,7 +233,7 @@ function setupForm(animal, needsCpf, profile) {
 
 function celebrate(animal, id) {
   root.innerHTML = `<div class="empty" style="border-style:solid;box-shadow:var(--shadow-pop)">
-    <div class="empty-art" style="background:var(--rosa)">${icons.heart}</div>
+    <div class="empty-art" style="background:var(--rosa);color:var(--branco)">${icons.heart}</div>
     <h1 class="h2">Pedido enviado!</h1>
     <p>O responsável por <strong>${esc(animal.name)}</strong> recebeu suas respostas e vai entrar em contato pela plataforma. Você será avisado a cada etapa.</p>
     <div class="flex gap-1 wrap justify-center mt-2">

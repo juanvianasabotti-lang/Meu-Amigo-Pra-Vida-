@@ -1,5 +1,5 @@
 import "../app.js";
-import { observeReveal, countUp } from "../app.js";
+import { observeReveal, countUp, setPosterWord } from "../app.js";
 import sb from "../sb.js";
 import { $, $$, esc, ufOptions } from "../ui.js";
 import { ANIMAL_CARD_COLS, petCard, bindFavorites, postCard, eventCard, emptyState, skeletons, orgLogo } from "../components.js";
@@ -10,7 +10,7 @@ import { ANIMAL_CARD_COLS, petCard, bindFavorites, postCard, eventCard, emptySta
 const SLIDES = [
   { theme: "laranja", name: "Me leva pra casa?", sub: "Prometo te esperar na porta" },
   { theme: "azul", name: "Gato também é amigo pra vida", sub: "E adora uma janela com sol" },
-  { theme: "amarelo", name: "O melhor para o seu pet!!", sub: "Vacina, castração e muito carinho" },
+  { theme: "preto", name: "O melhor para o seu pet!!", sub: "Vacina, castração e muito carinho" },
   { theme: "rosa", name: "Ronrono garantido", sub: "Adote, não compre" },
   { theme: "azul", name: "Quer passear comigo?", sub: "Cachorro adulto também aprende" },
   { theme: "laranja", name: "Pequeno no tamanho", sub: "Enorme no amor" },
@@ -21,6 +21,7 @@ const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matc
 function setupHero() {
   const stage = $("#hero");
   if (!stage) return;
+  setPosterWord($(".hero-giant", stage), "amigo", 4);
   const pets = $$(".hero-pet", stage);
   const dots = $(".hero-dots", stage);
   const nameBox = $(".hero-name", stage);
@@ -74,7 +75,7 @@ function setupHero() {
 
   // busca rápida: estados
   const uf = $("[data-qs-uf]");
-  if (uf) uf.innerHTML = ufOptions("").replace('<option value="">UF</option>', '<option value="">Todo o Brasil</option>');
+  if (uf) uf.innerHTML = ufOptions("").replace('<option value="">UF</option>', '<option value="">Estado</option>');
   $(".quick-search")?.addEventListener("submit", (e) => {
     // não envia campos vazios (URL limpa em /adote)
     e.preventDefault();
@@ -111,22 +112,14 @@ function setupHelpRows() {
 // Rolagem: faixa de texto gigante e linha do processo de adoção
 // ---------------------------------------------------------------------------
 function setupScrollEffects() {
-  const band = $("[data-scroll-type]");
   const proc = $("[data-process]");
+  const film = $(".film-frame");
   if (reduce) { proc?.querySelectorAll("li").forEach((li) => li.classList.add("is-reached")); proc?.style.setProperty("--progress", 1); return; }
-  const lines = band ? $$("p", band) : [];
   const steps = proc ? $$("li", proc) : [];
   let ticking = false;
   const update = () => {
     ticking = false;
     const vh = window.innerHeight;
-    if (band) {
-      const r = band.getBoundingClientRect();
-      if (r.bottom > 0 && r.top < vh) {
-        const t = (vh - r.top) / (vh + r.height); // 0 → 1 enquanto atravessa a tela
-        lines.forEach((p) => { const dir = Number(p.dataset.dir) || -1; p.style.setProperty("--shift", ((t - 0.5) * 420 * dir).toFixed(1)); });
-      }
-    }
     if (proc) {
       const r = proc.getBoundingClientRect();
       const t = Math.min(1, Math.max(0, (vh * 0.75 - r.top) / (r.height + vh * 0.25)));
@@ -134,11 +127,85 @@ function setupScrollEffects() {
       proc.style.setProperty("--progress", t.toFixed(3));
       steps.forEach((li, k) => li.classList.toggle("is-reached", t >= (k / steps.length) + 0.02 || t >= 0.98));
     }
+    if (film) {
+      // o vídeo "abre" de 0,9 para 1 enquanto chega ao centro da tela
+      const r = film.getBoundingClientRect();
+      const t = Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.75)));
+      film.style.setProperty("--film-s", (0.9 + 0.1 * t).toFixed(4));
+    }
   };
   const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", onScroll);
   update();
+}
+
+// Faixa de palavras gigantes: corre sem parar, acelera e muda de sentido com a rolagem.
+function setupMarquee() {
+  const band = $("[data-scroll-type]");
+  if (!band) return;
+  const rows = $$(".st-row", band).map((row) => ({ row, dir: Number(row.dataset.dir) || -1, x: 0, w: 0 }));
+  const fill = () => rows.forEach((r) => {
+    const chunks = $$(".st-chunk", r.row);
+    chunks.slice(1).forEach((c) => c.remove());
+    r.w = chunks[0].getBoundingClientRect().width || 1;
+    const copies = Math.ceil((window.innerWidth * 2) / r.w) + 1;
+    for (let k = 0; k < copies; k++) r.row.appendChild(chunks[0].cloneNode(true));
+    r.x = r.dir < 0 ? 0 : -r.w;
+    r.row.style.transform = `translate3d(${r.x}px,0,0)`;
+  });
+  (document.fonts?.ready || Promise.resolve()).then(fill);
+  if (reduce) return;
+  let last = 0, lastY = window.scrollY, boost = 0, sign = 1, visible = false, raf = 0;
+  const tick = (now) => {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    const y = window.scrollY, dy = y - lastY; lastY = y;
+    if (dy) { sign = dy > 0 ? 1 : -1; boost = Math.min(900, boost + Math.abs(dy) * 7); }
+    boost *= Math.pow(0.05, dt);
+    rows.forEach((r) => {
+      r.x += (70 + boost) * r.dir * sign * dt;
+      if (r.x <= -r.w) r.x += r.w; else if (r.x > 0) r.x -= r.w;
+      r.row.style.transform = `translate3d(${r.x.toFixed(2)}px,0,0)`;
+    });
+    raf = visible ? requestAnimationFrame(tick) : 0;
+  };
+  new IntersectionObserver(([e]) => {
+    visible = e.isIntersecting;
+    if (visible && !raf) { last = performance.now(); lastY = window.scrollY; raf = requestAnimationFrame(tick); }
+  }, { rootMargin: "120px 0px" }).observe(band);
+  let rt;
+  window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(fill, 200); });
+}
+
+// Vídeo "Como funciona": toca sozinho (sem som) quando aparece, pausa fora da tela
+// e acende na lista abaixo o passo que está passando no vídeo.
+const FILM_STEPS = [3.6, 7.4, 11.2, 15.0];
+function setupFilm() {
+  const fig = $("[data-film]");
+  if (!fig) return;
+  const v = $("video", fig), btn = $("[data-film-toggle]", fig), label = $("[data-film-label]", fig);
+  const steps = $$("[data-process] li");
+  v.removeAttribute("controls");
+  btn.hidden = false;
+  let userPaused = reduce;
+  const sync = () => {
+    const playing = !v.paused;
+    fig.classList.toggle("is-playing", playing);
+    btn.setAttribute("aria-label", playing ? "Pausar vídeo" : "Reproduzir vídeo");
+    label.textContent = playing ? "Pausar vídeo" : "Reproduzir vídeo";
+    const t = v.currentTime;
+    const idx = !playing ? -1 : FILM_STEPS.reduce((acc, s, k) => (t >= s ? k : acc), -1);
+    steps.forEach((li, k) => li.classList.toggle("is-current", k === idx));
+  };
+  btn.addEventListener("click", () => {
+    if (v.paused) { userPaused = false; v.play().catch(() => {}); } else { userPaused = true; v.pause(); }
+  });
+  ["play", "pause", "timeupdate"].forEach((ev) => v.addEventListener(ev, sync));
+  new IntersectionObserver(([e]) => {
+    if (e.isIntersecting && !userPaused) v.play().catch(() => {});
+    else if (!e.isIntersecting && !v.paused) v.pause();
+  }, { threshold: 0.35 }).observe(v);
+  sync();
 }
 
 // ---------------------------------------------------------------------------
@@ -222,6 +289,8 @@ async function loadPartners() {
 }
 
 setupHero();
+setupMarquee();
+setupFilm();
 setupHelpRows();
 setupScrollEffects();
 loadPets();
