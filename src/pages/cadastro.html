@@ -1,0 +1,42 @@
+<!--meta title="Criar conta" description="Crie sua conta no Meu Amigo Pra Vida como pessoa, ONG/protetor ou empresa parceira." script="auth" robots="noindex,follow" -->
+<section class="container auth-wrap" data-auth="cadastro">
+  <aside class="auth-art" aria-hidden="true">
+    <div class="sticker spin-slow" style="width:160px;height:160px;right:20px;top:20px;color:var(--amarelo)"><svg viewBox="0 0 200 200"><path fill="currentColor" d="M100 0l17 38 38-20-6 42 42 4-32 28 34 26-42 6 10 41-38-18-17 40-17-40-38 18 10-41-42-6 34-26L19 64l42-4-6-42 38 20z"/></svg></div>
+    <div><span class="eyebrow">Bem-vindo à família</span><h2 data-art-title>Todo amigo pra vida começa com um cadastro</h2></div>
+    <img class="pet" src="/assets/img/animais/golden.webp" alt="" width="1400" height="1376" data-reveal="pet">
+  </aside>
+  <div class="auth-card" data-reveal="up">
+    <h1>Criar conta</h1>
+    <p class="muted">Escolha como você quer participar:</p>
+    <div class="tabs mb-3" role="tablist" aria-label="Tipo de conta">
+      <button class="tab" role="tab" type="button" data-type="pessoa" aria-selected="true">🙋 Pessoa</button>
+      <button class="tab" role="tab" type="button" data-type="ong" aria-selected="false">🐾 ONG / Protetor</button>
+      <button class="tab" role="tab" type="button" data-type="empresa" aria-selected="false">🏪 Empresa</button>
+    </div>
+    <p class="small notice info mb-3" data-type-hint></p>
+    <button class="btn google-btn btn-block" type="button" data-google>Continuar com o Google</button>
+    <div class="divider my-2" style="margin:18px 0">ou com e-mail</div>
+    <form class="form" novalidate data-form autocomplete="on">
+      <div class="field"><label for="full_name" data-name-label>Nome completo <span class="req">*</span></label><input class="input" id="full_name" name="full_name" autocomplete="name" maxlength="120" required></div>
+      <div class="field"><label for="email">E-mail <span class="req">*</span></label><input class="input" id="email" name="email" type="email" autocomplete="email" maxlength="200" required></div>
+      <div class="form-row">
+        <div class="field"><label for="phone">Celular (WhatsApp) <span class="req">*</span></label><input class="input" id="phone" name="phone" inputmode="tel" autocomplete="tel-national" data-mask="phone" placeholder="(11) 98888-7777" required></div>
+        <div class="field"><label for="birth_date">Data de nascimento <span class="req">*</span></label><input class="input" id="birth_date" name="birth_date" type="date" autocomplete="bday" required></div>
+      </div>
+      <div class="form-row form-row-3" style="grid-template-columns:2fr 1fr">
+        <div class="field"><label for="city">Cidade <span class="req">*</span></label><input class="input" id="city" name="city" autocomplete="address-level2" maxlength="80" required></div>
+        <div class="field"><label for="state">UF <span class="req">*</span></label><select class="select" id="state" name="state" autocomplete="address-level1" required data-uf></select></div>
+      </div>
+      <div class="field"><label for="password">Senha <span class="req">*</span></label>
+        <div class="password-wrap"><input class="input" id="password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="72" required>
+          <button class="password-toggle" type="button" aria-label="Mostrar senha" data-toggle-pass></button></div>
+        <div class="strength" aria-hidden="true"><span></span></div>
+        <span class="hint">Mínimo de 8 caracteres, com letras e números.</span></div>
+      <div class="field"><label for="password2">Confirme a senha <span class="req">*</span></label><input class="input" id="password2" name="password2" type="password" autocomplete="new-password" maxlength="72" required></div>
+      <label class="check"><input type="checkbox" name="terms" required> <span>Li e aceito os <a class="link" href="/termos" target="_blank">Termos de Uso</a> e a <a class="link" href="/privacidade" target="_blank">Política de Privacidade</a>. Tenho 18 anos ou mais. <span class="req">*</span></span></label>
+      <label class="check"><input type="checkbox" name="marketing"> <span>Quero receber novidades, campanhas e dicas de cuidado por e-mail (opcional, você pode cancelar quando quiser).</span></label>
+      <button class="btn btn-laranja btn-block" type="submit">Criar minha conta <span class="arrow">→</span></button>
+      <p class="small center muted mb-0">Já tem conta? <a class="link" href="/entrar">Entrar</a></p>
+    </form>
+  </div>
+</section>

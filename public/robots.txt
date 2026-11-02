@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /minha-conta
+Disallow: /painel
+Disallow: /admin
+Disallow: /adotar/
+Disallow: /auth/

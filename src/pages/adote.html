@@ -1,0 +1,36 @@
+<!--meta title="Adote um cão ou gato" description="Cães e gatos de ONGs, protetores e doadores verificados esperando um lar. Filtre por espécie, porte, idade e cidade." script="adote" -->
+<section class="container">
+  <div class="page-hero">
+    <div class="sticker spin-slow" style="width:180px;height:180px;right:28%;top:-50px;color:var(--amarelo)"><svg viewBox="0 0 200 200" aria-hidden="true"><path fill="currentColor" d="M100 0l17 38 38-20-6 42 42 4-32 28 34 26-42 6 10 41-38-18-17 40-17-40-38 18 10-41-42-6 34-26L19 64l42-4-6-42 38 20z"/></svg></div>
+    <img class="ph-pet" src="/assets/img/animais/boiadeiro.webp" alt="" width="1289" height="1400" data-reveal="pet">
+    <span class="eyebrow" data-reveal="down">Adote</span>
+    <h1 data-reveal="up">Seu novo melhor amigo está <span class="hl hl-amarelo">aqui</span></h1>
+    <p class="lead" data-reveal="up" style="--delay:.1s">Todos os anúncios passam por moderação. Encontre, apaixone-se e envie seu pedido de adoção responsável.</p>
+  </div>
+</section>
+
+<section class="section container" style="padding-top:40px">
+  <form class="filters" data-filters role="search" aria-label="Filtrar animais">
+    <div class="seg" role="radiogroup" aria-label="Espécie">
+      <input type="radio" name="especie" id="f-todos" value="" checked><label for="f-todos">Todos</label>
+      <input type="radio" name="especie" id="f-cao" value="cao"><label for="f-cao">🐶 Cães</label>
+      <input type="radio" name="especie" id="f-gato" value="gato"><label for="f-gato">🐱 Gatos</label>
+    </div>
+    <label class="sr-only" for="f-porte">Porte</label>
+    <select class="select" id="f-porte" name="porte" style="width:auto;min-height:44px"><option value="">Qualquer porte</option><option value="pequeno">Pequeno</option><option value="medio">Médio</option><option value="grande">Grande</option></select>
+    <label class="sr-only" for="f-idade">Idade</label>
+    <select class="select" id="f-idade" name="idade" style="width:auto;min-height:44px"><option value="">Qualquer idade</option><option value="filhote">Filhote</option><option value="adulto">Adulto</option><option value="idoso">Idoso</option></select>
+    <label class="sr-only" for="f-sexo">Sexo</label>
+    <select class="select" id="f-sexo" name="sexo" style="width:auto;min-height:44px"><option value="">Macho ou fêmea</option><option value="macho">Macho</option><option value="femea">Fêmea</option></select>
+    <label class="sr-only" for="f-uf">Estado</label>
+    <select class="select" id="f-uf" name="uf" style="width:auto;min-height:44px" data-uf></select>
+    <div class="search" style="position:relative">
+      <label class="sr-only" for="f-busca">Buscar por nome, raça ou cidade</label>
+      <input class="input" id="f-busca" name="q" type="search" placeholder="Buscar por nome, raça ou cidade" style="min-height:44px" maxlength="80">
+    </div>
+    <button class="btn btn-sm btn-laranja" type="submit">Buscar</button>
+  </form>
+  <p class="muted small mb-2" aria-live="polite" data-count></p>
+  <div class="pets-grid" data-results></div>
+  <div class="center mt-4"><button class="btn btn-branco hidden" type="button" data-more>Carregar mais amigos</button></div>
+</section>

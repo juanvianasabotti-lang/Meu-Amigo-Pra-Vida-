@@ -1,0 +1,24 @@
+<!--meta title="Entrar" description="Acesse sua conta no Meu Amigo Pra Vida." script="auth" robots="noindex,follow" -->
+<section class="container auth-wrap" data-auth="entrar">
+  <aside class="auth-art" aria-hidden="true" style="background:var(--azul);color:var(--branco)">
+    <div class="sticker float" style="width:150px;height:80px;right:30px;top:30px;color:var(--rosa)"><svg viewBox="0 0 220 120"><path d="M10 90c25-60 45-60 50-25s-35 40-20 5 55-55 65-20-30 45-15 15 60-60 70-25-20 40-5 20 40-45 55-30" fill="none" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div><span class="eyebrow" style="background:var(--amarelo);color:var(--preto)">Que bom te ver</span><h2>Seus amigos de quatro patas sentiram sua falta</h2></div>
+    <img class="pet" src="/assets/img/animais/labrador.webp" alt="" width="1037" height="1400" data-reveal="pet">
+  </aside>
+  <div class="auth-card" data-reveal="up">
+    <h1>Entrar</h1>
+    <p class="muted">Acesse para acompanhar pedidos, favoritos e anúncios.</p>
+    <div class="notice hidden mb-2" data-msg></div>
+    <button class="btn google-btn btn-block" type="button" data-google>Continuar com o Google</button>
+    <div class="divider" style="margin:18px 0">ou com e-mail</div>
+    <form class="form" novalidate data-form>
+      <div class="field"><label for="email">E-mail</label><input class="input" id="email" name="email" type="email" autocomplete="email" required></div>
+      <div class="field"><label for="password">Senha</label>
+        <div class="password-wrap"><input class="input" id="password" name="password" type="password" autocomplete="current-password" required>
+          <button class="password-toggle" type="button" aria-label="Mostrar senha" data-toggle-pass></button></div></div>
+      <div class="flex justify-between wrap gap-1 small"><a class="link" href="/recuperar-senha">Esqueci minha senha</a><button class="link hidden" type="button" data-resend style="background:none;border:0;cursor:pointer;padding:0">Reenviar e-mail de confirmação</button></div>
+      <button class="btn btn-azul btn-block" type="submit">Entrar <span class="arrow">→</span></button>
+      <p class="small center muted mb-0">Ainda não tem conta? <a class="link" href="/cadastro">Cadastre-se</a></p>
+    </form>
+  </div>
+</section>

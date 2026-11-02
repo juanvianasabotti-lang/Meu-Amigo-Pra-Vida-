@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="pt-BR" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Adote um cão ou gato · Meu Amigo Pra Vida</title>
+  <meta name="description" content="Cães e gatos de ONGs, protetores e doadores verificados esperando um lar. Filtre por espécie, porte, idade e cidade.">
+  <meta name="theme-color" content="#FA560A">
+  <meta name="robots" content="index,follow">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="Meu Amigo Pra Vida">
+  <meta property="og:title" content="Adote um cão ou gato · Meu Amigo Pra Vida">
+  <meta property="og:description" content="Cães e gatos de ONGs, protetores e doadores verificados esperando um lar. Filtre por espécie, porte, idade e cidade.">
+  <meta property="og:image" content="/assets/img/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/fonts/poppins-bold.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="/assets/fonts/poppins-regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="stylesheet" href="/assets/css/main.css?v=c3cd168d49">
+  <script type="module" src="/assets/js/pages/adote.js"></script>
+</head>
+<body class="">
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="Meu Amigo Pra Vida — página inicial">
+      <img src="/assets/brand/logo-preta.svg" alt="Meu Amigo Pra Vida" width="150" height="77">
+    </a>
+    <nav class="main-nav" id="menu-principal" aria-label="Menu principal">
+      <a href="/adote">Adote</a>
+      <a href="/doar">Doe</a>
+      <a href="/ongs">ONGs</a>
+      <a href="/parceiros">Parceiros</a>
+      <a href="/eventos">Eventos</a>
+      <a href="/blog">Conscientização</a>
+      <a href="/sobre">Sobre</a>
+      <a class="mobile-only" href="/entrar">Entrar</a>
+    </nav>
+    <div class="header-actions">
+      <div class="header-actions" data-user-area>
+        <a class="btn btn-ghost btn-sm btn-entrar" href="/entrar">Entrar</a>
+        <a class="btn btn-laranja btn-sm" href="/cadastro">Cadastre-se</a>
+      </div>
+      <button class="nav-toggle" type="button" aria-controls="menu-principal" aria-expanded="false" aria-label="Abrir menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="nav-backdrop" aria-hidden="true"></div>
+</header>
+<main id="conteudo">
+<section class="container">
+  <div class="page-hero">
+    <div class="sticker spin-slow" style="width:180px;height:180px;right:28%;top:-50px;color:var(--amarelo)"><svg viewBox="0 0 200 200" aria-hidden="true"><path fill="currentColor" d="M100 0l17 38 38-20-6 42 42 4-32 28 34 26-42 6 10 41-38-18-17 40-17-40-38 18 10-41-42-6 34-26L19 64l42-4-6-42 38 20z"/></svg></div>
+    <img class="ph-pet" src="/assets/img/animais/boiadeiro.webp" alt="" width="1289" height="1400" data-reveal="pet">
+    <span class="eyebrow" data-reveal="down">Adote</span>
+    <h1 data-reveal="up">Seu novo melhor amigo está <span class="hl hl-amarelo">aqui</span></h1>
+    <p class="lead" data-reveal="up" style="--delay:.1s">Todos os anúncios passam por moderação. Encontre, apaixone-se e envie seu pedido de adoção responsável.</p>
+  </div>
+</section>
+
+<section class="section container" style="padding-top:40px">
+  <form class="filters" data-filters role="search" aria-label="Filtrar animais">
+    <div class="seg" role="radiogroup" aria-label="Espécie">
+      <input type="radio" name="especie" id="f-todos" value="" checked><label for="f-todos">Todos</label>
+      <input type="radio" name="especie" id="f-cao" value="cao"><label for="f-cao">🐶 Cães</label>
+      <input type="radio" name="especie" id="f-gato" value="gato"><label for="f-gato">🐱 Gatos</label>
+    </div>
+    <label class="sr-only" for="f-porte">Porte</label>
+    <select class="select" id="f-porte" name="porte" style="width:auto;min-height:44px"><option value="">Qualquer porte</option><option value="pequeno">Pequeno</option><option value="medio">Médio</option><option value="grande">Grande</option></select>
+    <label class="sr-only" for="f-idade">Idade</label>
+    <select class="select" id="f-idade" name="idade" style="width:auto;min-height:44px"><option value="">Qualquer idade</option><option value="filhote">Filhote</option><option value="adulto">Adulto</option><option value="idoso">Idoso</option></select>
+    <label class="sr-only" for="f-sexo">Sexo</label>
+    <select class="select" id="f-sexo" name="sexo" style="width:auto;min-height:44px"><option value="">Macho ou fêmea</option><option value="macho">Macho</option><option value="femea">Fêmea</option></select>
+    <label class="sr-only" for="f-uf">Estado</label>
+    <select class="select" id="f-uf" name="uf" style="width:auto;min-height:44px" data-uf></select>
+    <div class="search" style="position:relative">
+      <label class="sr-only" for="f-busca">Buscar por nome, raça ou cidade</label>
+      <input class="input" id="f-busca" name="q" type="search" placeholder="Buscar por nome, raça ou cidade" style="min-height:44px" maxlength="80">
+    </div>
+    <button class="btn btn-sm btn-laranja" type="submit">Buscar</button>
+  </form>
+  <p class="muted small mb-2" aria-live="polite" data-count></p>
+  <div class="pets-grid" data-results></div>
+  <div class="center mt-4"><button class="btn btn-branco hidden" type="button" data-more>Carregar mais amigos</button></div>
+</section>
+</main>
+<footer class="site-footer">
+  <div class="sticker spin-slow" style="width:220px;height:220px;right:-60px;top:-60px;color:var(--laranja);opacity:.9">
+    <svg viewBox="0 0 200 200" aria-hidden="true"><path fill="currentColor" d="M100 0l17 38 38-20-6 42 42 4-32 28 34 26-42 6 10 41-38-18-17 40-17-40-38 18 10-41-42-6 34-26L19 64l42-4-6-42 38 20z"/></svg>
+  </div>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="/assets/brand/logo-branca.svg" alt="Meu Amigo Pra Vida" width="170" height="87" loading="lazy">
+        <p>Conscientização, adoção e doação de cães e gatos. Uma ponte entre quem precisa de um lar, quem tem amor pra dar, ONGs e empresas do mundo animal.</p>
+        <div class="socials">
+          <a href="https://instagram.com/meuamigopravida" target="_blank" rel="noopener noreferrer" aria-label="Instagram do Meu Amigo Pra Vida"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5v.5"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h3>Adote &amp; doe</h3>
+        <ul>
+          <li><a href="/adote">Encontrar um amigo</a></li>
+          <li><a href="/adote?especie=gato">Gatos para adoção</a></li>
+          <li><a href="/adote?especie=cao">Cães para adoção</a></li>
+          <li><a href="/doar">Doar um animal</a></li>
+          <li><a href="/ongs">Ajudar uma ONG</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Comunidade</h3>
+        <ul>
+          <li><a href="/cadastro?tipo=ong">Cadastrar minha ONG</a></li>
+          <li><a href="/cadastro?tipo=empresa">Seja uma empresa parceira</a></li>
+          <li><a href="/eventos">Campanhas e eventos</a></li>
+          <li><a href="/blog">Conscientização</a></li>
+          <li><a href="/sobre">Sobre nós</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Ajuda</h3>
+        <ul>
+          <li><a href="/contato">Fale conosco</a></li>
+          <li><a href="/contato?assunto=denuncia_anuncio">Denunciar um anúncio</a></li>
+          <li><a href="/privacidade">Política de Privacidade</a></li>
+          <li><a href="/termos">Termos de Uso</a></li>
+          <li><a href="/minha-conta#privacidade">Meus dados (LGPD)</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> Meu Amigo Pra Vida. Feito com amor por quem tem quatro patas.</span>
+      <span>Maus-tratos a animais são crime. Denuncie: <strong>190</strong></span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

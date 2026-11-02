@@ -1,0 +1,14 @@
+<!--meta title="Nova senha" description="Defina uma nova senha." script="auth" robots="noindex,nofollow" -->
+<section class="container-narrow section" data-auth="nova-senha" style="max-width:560px">
+  <div class="auth-card" data-reveal="up">
+    <h1>Crie uma nova senha</h1>
+    <form class="form" novalidate data-form>
+      <div class="field"><label for="password">Nova senha</label>
+        <div class="password-wrap"><input class="input" id="password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="72" required>
+          <button class="password-toggle" type="button" aria-label="Mostrar senha" data-toggle-pass></button></div>
+        <div class="strength" aria-hidden="true"><span></span></div><span class="hint">Mínimo de 8 caracteres, com letras e números.</span></div>
+      <div class="field"><label for="password2">Confirme a nova senha</label><input class="input" id="password2" name="password2" type="password" autocomplete="new-password" required></div>
+      <button class="btn btn-azul btn-block" type="submit">Salvar nova senha</button>
+    </form>
+  </div>
+</section>

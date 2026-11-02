@@ -1,0 +1,21 @@
+<!--meta title="Fale conosco" description="Dúvidas, parcerias, imprensa, privacidade ou denúncias de anúncios. Fale com o Meu Amigo Pra Vida." script="publico" -->
+<section class="container auth-wrap" data-page="contato">
+  <aside class="auth-art" aria-hidden="true" style="background:var(--amarelo)">
+    <div><span class="eyebrow">Fale conosco</span><h2>A gente adora uma boa conversa (e um bom carinho)</h2>
+      <p class="mt-2">Para denúncias de maus-tratos em andamento, ligue <strong>190</strong>.</p></div>
+    <img class="pet" src="/assets/img/animais/gato-preto-branco.webp" alt="" width="701" height="1303" data-reveal="pet">
+  </aside>
+  <div class="auth-card" data-reveal="up">
+    <h1>Envie sua mensagem</h1>
+    <form class="form" novalidate data-contact>
+      <div class="field"><label for="c-name">Seu nome <span class="req">*</span></label><input class="input" id="c-name" name="name" maxlength="120" autocomplete="name"></div>
+      <div class="field"><label for="c-email">E-mail <span class="req">*</span></label><input class="input" id="c-email" name="email" type="email" maxlength="200" autocomplete="email"></div>
+      <div class="field"><label for="c-topic">Assunto</label><select class="select" id="c-topic" name="topic">
+        <option value="duvida">Dúvida</option><option value="parceria">Parceria</option><option value="imprensa">Imprensa</option><option value="privacidade">Privacidade / LGPD</option><option value="denuncia_anuncio">Denunciar um anúncio</option><option value="outro">Outro</option></select></div>
+      <div class="field"><label for="c-msg">Mensagem <span class="req">*</span></label><textarea class="textarea" id="c-msg" name="message" maxlength="3000"></textarea></div>
+      <div class="hidden" aria-hidden="true"><label for="c-site">Não preencha</label><input id="c-site" name="website" tabindex="-1" autocomplete="off"></div>
+      <label class="check"><input type="checkbox" name="consent"> <span>Autorizo o uso dos meus dados para responder a esta mensagem, conforme a <a class="link" href="/privacidade" target="_blank">Política de Privacidade</a>. <span class="req">*</span></span></label>
+      <button class="btn btn-laranja btn-block" type="submit">Enviar mensagem</button>
+    </form>
+  </div>
+</section>
