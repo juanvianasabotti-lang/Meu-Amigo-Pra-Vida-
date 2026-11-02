@@ -6,6 +6,7 @@ import { requireAuth, isAdmin, isStaff, observeReveal } from "../app.js";
 import sb from "../sb.js";
 import { $, $$, esc, L } from "../ui.js";
 import { emptyState, errorState } from "../components.js";
+import { blogAdmin } from "./equipe-blog.js";
 
 const root = $("[data-team]");
 const body = $("[data-team-body]");
@@ -60,6 +61,13 @@ async function start() {
   $("[data-team-refresh]").addEventListener("click", load);
   let rt;
   window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => last && render(last), 200); });
+  if (isAdmin(ctx)) {
+    const sec = document.createElement("section");
+    sec.className = "team-blog-section";
+    sec.id = "blog";
+    root.appendChild(sec);
+    blogAdmin(sec);
+  }
   load();
 }
 
