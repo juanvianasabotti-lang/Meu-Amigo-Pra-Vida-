@@ -50,10 +50,8 @@ async function setupGoogle(root, onClick) {
   const btn = $("[data-google]", root);
   if (!area || !btn) return;
   btn.addEventListener("click", onClick);
-  try {
-    const p = await sb.providers();
-    if (p.google) area.classList.remove("hidden");
-  } catch { /* sem conexão: mantém só o e-mail */ }
+  area.classList.remove("hidden"); // botão sempre visível (teste do login com Google)
+  try { await sb.providers(); } catch { /* sem conexão: o clique mostra o erro */ }
 }
 
 async function googleLogin() {
