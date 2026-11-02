@@ -6,35 +6,35 @@
   "rewrites": [
     {
       "source": "/adote/:slug",
-      "destination": "/animal.html"
+      "destination": "/animal"
     },
     {
       "source": "/adotar/:slug",
-      "destination": "/adotar.html"
+      "destination": "/adotar"
     },
     {
       "source": "/organizacao/:slug",
-      "destination": "/organizacao.html"
+      "destination": "/organizacao"
     },
     {
       "source": "/eventos/:slug",
-      "destination": "/evento.html"
+      "destination": "/evento"
     },
     {
       "source": "/blog/:slug",
-      "destination": "/artigo.html"
+      "destination": "/artigo"
     },
     {
       "source": "/auth/callback",
-      "destination": "/auth-callback.html"
+      "destination": "/auth-callback"
     },
     {
       "source": "/minha-conta/:path*",
-      "destination": "/minha-conta.html"
+      "destination": "/minha-conta"
     },
     {
       "source": "/painel/:path*",
-      "destination": "/painel.html"
+      "destination": "/painel"
     }
   ],
   "headers": [
