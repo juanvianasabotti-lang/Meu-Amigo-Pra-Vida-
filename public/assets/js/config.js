@@ -8,7 +8,7 @@ export const CONFIG = {
   SITE_NAME: "Meu Amigo pra Vida",
   TERMS_VERSION: "1.0",
   PRIVACY_VERSION: "1.0",
-  CONTACT_EMAIL: "diogo@agenciagryd.com",
+  CONTACT_EMAIL: "ola@meuamigopravida.com.br",
   INSTAGRAM: "meuamigopravida",
 };
 
