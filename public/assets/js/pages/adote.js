@@ -1,4 +1,4 @@
-import { observeReveal } from "../app.js";
+import { observeReveal, photos } from "../app.js";
 import sb from "../sb.js";
 import { $, ufOptions, fmtNum } from "../ui.js";
 import { ANIMAL_CARD_COLS, petCard, bindFavorites, emptyState, skeletons, errorState } from "../components.js";
@@ -45,11 +45,17 @@ async function load(reset = true) {
     if (reset) grid.innerHTML = "";
     if (!data?.length && page === 0) {
       grid.style.display = "block";
-      grid.innerHTML = emptyState({
-        title: Object.keys(f).length ? "Nenhum amigo com esses filtros" : "Os primeiros amigos estão chegando!",
-        text: Object.keys(f).length ? "Tente ampliar a busca: outro estado, porte ou idade. Seu amigo pode estar logo ali!" : "Estamos verificando ONGs e protetores. Volte em breve!",
-        cta: Object.keys(f).length ? `<a class="btn btn-branco" href="/adote">Limpar filtros</a>` : "",
+      grid.innerHTML = Object.keys(f).length ? emptyState({
+        title: "Nenhum amigo com esses filtros",
+        text: "Tente ampliar a busca: outro estado, porte ou idade.",
+        cta: `<a class="btn btn-ghost" href="/adote">Limpar filtros</a>`,
+      }) : emptyState({
+        photo: "abrigo-espera", pos: "50% 30%",
+        title: "Os primeiros amigos estão chegando",
+        text: "Estamos verificando as ONGs e os protetores. Assim que os primeiros anúncios forem aprovados, os cães e gatos aparecem aqui. Enquanto isso, conheça o trabalho de quem resgata.",
+        cta: `<a class="btn btn-laranja" href="/ongs">Conhecer as ONGs</a><a class="btn btn-ghost" href="/doar">Anunciar um animal</a>`,
       });
+      photos(grid);
       countEl.textContent = "";
       more.classList.add("hidden");
     } else {

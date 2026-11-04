@@ -18,7 +18,7 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/assets/fonts/poppins-bold.woff" as="font" type="font/woff" crossorigin>
   <link rel="preload" href="/assets/fonts/poppins-regular.woff" as="font" type="font/woff" crossorigin>
-  <link rel="stylesheet" href="/assets/css/main.css?v=50323a26c0">
+  <link rel="stylesheet" href="/assets/css/main.css?v=db5c0c79f1">
   <script type="module" src="/assets/js/app.js"></script>
 </head>
 <body class="">
@@ -68,9 +68,10 @@
     </div>
   </div>
 </section>
-<section class="section container">
+<section class="section container" id="missao" data-chapter="Nossa missão">
   <div class="grid grid-2" style="align-items:center">
     <div data-reveal="left">
+      <p class="eyebrow">Por que existimos</p>
       <h2 class="h2">Nossa missão</h2>
       <p class="lead" style="color:var(--text)">Promover a <strong>conscientização</strong>, facilitar a <strong>adoção responsável</strong> e tornar a <strong>doação</strong> simples e segura, conectando pessoas, ONGs, protetores e empresas do mundo animal.</p>
       <p>Milhões de cães e gatos vivem nas ruas ou em abrigos no Brasil. Do outro lado, existem pessoas querendo adotar, ONGs sobrecarregadas e empresas dispostas a ajudar, mas que nem sempre se encontram. O Meu Amigo pra Vida existe para fazer esse encontro acontecer.</p>
@@ -82,14 +83,42 @@
     </div>
   </div>
 </section>
-<section class="section container" style="padding-top:0">
+<section class="section container" id="onde-estao" data-chapter="Onde eles estão" aria-labelledby="onde-titulo" style="padding-top:0">
+  <div class="sec-head">
+    <div><p class="eyebrow" data-reveal="pop" style="--eyebrow-c:var(--laranja)">Fotos reais</p><h2 class="h2" id="onde-titulo" data-split>Onde eles estão hoje</h2></div>
+    <p class="lead" data-reveal="up" style="max-width:42ch">Nas calçadas, nas praças, nas estradas e nos abrigos. É desse lugar que queremos levar cada um para uma casa.</p>
+  </div>
+  <div class="mosaic">
+    <figure class="foto" data-photo>
+  <img src="/assets/img/fotos/caramelo-cidade-historica.webp" srcset="/assets/img/fotos/caramelo-cidade-historica-sm.webp 640w, /assets/img/fotos/caramelo-cidade-historica.webp 1596w" sizes="(max-width: 760px) 100vw, 60vw" width="1596" height="1064" alt="Cachorro caramelo deitado em um degrau de pedra de uma cidade histórica, com casarões e montanhas ao fundo" loading="lazy" decoding="async" style="--pos: 62% 60%">
+  <figcaption class="foto-credito">Foto: <a href="https://unsplash.com/pt-br/fotografias/um-cachorro-grande-repousa-em-degraus-com-vista-para-uma-cidade--kK675hVOjc" target="_blank" rel="noopener noreferrer">Samuell Morgenstern</a> / Unsplash</figcaption>
+</figure>
+    <figure class="foto" data-photo>
+  <img src="/assets/img/fotos/calcada-na-sombra.webp" srcset="/assets/img/fotos/calcada-na-sombra-sm.webp 640w, /assets/img/fotos/calcada-na-sombra.webp 1064w" sizes="(max-width: 760px) 100vw, 40vw" width="1064" height="798" alt="Cachorro tigrado deitado na calçada, à sombra das árvores, ao lado de um muro" loading="lazy" decoding="async" style="--pos: 30% 60%">
+  <figcaption class="foto-credito">Foto: <a href="https://unsplash.com/pt-br/fotografias/um-cachorro-deitado-no-chao-ao-lado-de-uma-parede-F57258Ve_Uk" target="_blank" rel="noopener noreferrer">Thalysson Santos</a> / Unsplash</figcaption>
+</figure>
+    <figure class="foto" data-photo>
+  <img src="/assets/img/fotos/gato-na-calcada.webp" srcset="/assets/img/fotos/gato-na-calcada-sm.webp 480w, /assets/img/fotos/gato-na-calcada.webp 624w" sizes="(max-width: 760px) 50vw, 25vw" width="624" height="1064" alt="Gato laranja caminha pela calçada de uma rua estreita, entre um muro e um carro estacionado" loading="lazy" decoding="async" style="--pos: 50% 75%">
+  <figcaption class="foto-credito">Foto: <a href="https://unsplash.com/pt-br/fotografias/um-gato-laranja-caminha-por-uma-rua-estreita-N5NNCXkTgEA" target="_blank" rel="noopener noreferrer">arh Lee</a> / Unsplash</figcaption>
+</figure>
+    <figure class="foto" data-photo>
+  <img src="/assets/img/fotos/gatinho-abrigo.webp" srcset="/assets/img/fotos/gatinho-abrigo-sm.webp 480w, /assets/img/fotos/gatinho-abrigo.webp 709w" sizes="(max-width: 760px) 50vw, 18vw" width="709" height="1064" alt="Gatinho rajado e branco apoiado na grade de uma gaiola, olhando para cima" loading="lazy" decoding="async" style="--pos: 50% 30%">
+  <figcaption class="foto-credito">Foto: <a href="https://unsplash.com/pt-br/fotografias/um-gatinho-malhado-tenta-pegar-um-trinco-em-uma-gaiola-x6Mx2mTY-1Y" target="_blank" rel="noopener noreferrer">Eleni Trapp</a> / Unsplash</figcaption>
+</figure>
+  </div>
+</section>
+
+<section class="section container" id="como-trabalhamos" data-chapter="Como trabalhamos" style="padding-top:0">
   <div class="sec-head"><div><p class="eyebrow" style="--eyebrow-c:var(--azul)">Como trabalhamos</p><h2 class="h2" data-split>Regras claras para todo mundo</h2></div></div>
+  <div class="process-wrap" data-process>
+  <div class="process-track" aria-hidden="true"><span></span></div>
   <ol class="process">
     <li><span class="process-dot">1</span><div><h3>Verificação</h3><p>ONGs, protetores e empresas só aparecem depois que a nossa equipe confere documento, responsável e endereço.</p></div></li>
     <li><span class="process-dot">2</span><div><h3>Moderação</h3><p>Todo anúncio de animal passa por revisão antes de ir ao ar. Venda de animais não é permitida.</p></div></li>
     <li><span class="process-dot">3</span><div><h3>Pix direto</h3><p>As doações vão para a chave Pix da própria ONG. O Meu Amigo pra Vida não recebe nem intermedeia valores.</p></div></li>
     <li><span class="process-dot">4</span><div><h3>Seus dados, sob seu controle</h3><p>Coletamos o mínimo, seguimos a LGPD e você pode exportar ou excluir seus dados quando quiser.</p></div></li>
   </ol>
+  </div>
 </section>
 <section class="container">
   <div class="poster laranja" data-poster data-depth-area>
@@ -99,6 +128,32 @@
       <div class="hero-ctas"><a class="btn btn-amarelo" href="/cadastro">Criar minha conta</a><a class="btn btn-branco" href="/contato">Fale com a gente</a></div></div>
     <div class="poster-art" aria-hidden="true"><img class="poster-pet" src="/assets/img/animais/boiadeiro.webp" alt="" loading="lazy" width="1289" height="1400" data-pet></div>
   </div>
+</section>
+
+<section class="section container" id="creditos" data-chapter="Créditos das fotos" aria-labelledby="creditos-titulo">
+  <div class="sec-head">
+    <div><p class="eyebrow">Quem fotografou</p><h2 class="h2" id="creditos-titulo">Créditos das fotos</h2></div>
+    <p class="lead" style="max-width:46ch">As fotos de lugares reais vêm do Unsplash, com licença de uso livre. Os recortes de cães e gatos são da apresentação da marca e de fotos do Unsplash com o fundo removido.</p>
+  </div>
+  <ul class="credits">
+  <li><img src="/assets/img/fotos/petshop-vira-lata-sm.webp" alt="" width="56" height="56" loading="lazy" decoding="async"><span>Cachorro de pelo caramelo em pé dentro de um pet shop, com prateleiras de brinquedos e acessórios ao fundo. Foto: <a href="https://unsplash.com/pt-br/fotografias/um-cachorro-marrom-em-frente-a-uma-loja-xseaK0kISrI" target="_blank" rel="noopener noreferrer">Daisy D</a> / Unsplash</span></li>
+  <li><img src="/assets/img/fotos/petshop-acessorios-sm.webp" alt="" width="56" height="56" loading="lazy" decoding="async"><span>Corgi sentado em uma almofada dentro de um pet shop, com coleiras e guias penduradas atrás. Foto: <a href="https://unsplash.com/pt-br/fotografias/um-filhote-de-corgi-feliz-senta-se-em-uma-superficie-difusa-_Uno-jA_9Ns" target="_blank" rel="noopener noreferrer">Cham Pets Family</a> / Unsplash</span></li>
+  <li><img src="/assets/img/fotos/banho-e-tosa-sm.webp" alt="" width="56" height="56" loading="lazy" decoding="async"><span>Poodle branco tendo o pelo do rosto aparado com tesoura em um banho e tosa. Foto: <a href="https://unsplash.com/pt-br/fotografias/um-pequeno-cao-branco-sendo-cortado-com-uma-tesoura-LpK2xddrElI" target="_blank" rel="noopener noreferrer">Buddy AN</a> / Unsplash</span></li>
+  <li><img src="/assets/img/fotos/clinica-veterinaria-sm.webp" alt="" width="56" height="56" loading="lazy" decoding="async"><span>Veterinário examina um dachshund preto e caramelo na mesa do consultório. Foto: <a href="https://unsplash.com/pt-br/fotografias/um-veterinario-examina-um-dachshund-preto-e-bege-e4f87NzUJsU" target="_blank" rel="noopener noreferrer">Alexander Mass</a> / Unsplash</span></li>
+  <li><img src="/assets/img/fotos/abrigo-espera-sm.webp" alt="" width="56" height="56" loading="lazy" decoding="async"><span>Cachorro sem raça definida sentado atrás da grade de um canil de abrigo. Foto: <a href="https://unsplash.com/pt-br/fotografias/um-cao-pequeno-sentado-atras-de-uma-cerca-de-metal-9oYVq7vCoXg" target="_blank" rel="noopener noreferrer">12photostory</a> / Unsplash</span></li>
+  <li><img src="/assets/img/fotos/cuidado-voluntario-sm.webp" alt="" width="56" height="56" loading="lazy" decoding="async"><span>Mãos fazendo carinho no pescoço e na orelha de um cachorro de olhos fechados, ao ar livre. Foto: <a href="https://unsplash.com/pt-br/fotografias/maos-acariciando-suavemente-a-cabeca-de-um-cachorro-ao-ar-livre-RmuJbMY0u-4" target="_blank" rel="noopener noreferrer">Vinícius Costa</a> / Unsplash</span></li>
+  <li><img src="/assets/img/fotos/gatinho-abrigo-sm.webp" alt="" width="56" height="56" loading="lazy" decoding="async"><span>Gatinho rajado e branco apoiado na grade de uma gaiola, olhando para cima. Foto: <a href="https://unsplash.com/pt-br/fotografias/um-gatinho-malhado-tenta-pegar-um-trinco-em-uma-gaiola-x6Mx2mTY-1Y" target="_blank" rel="noopener noreferrer">Eleni Trapp</a> / Unsplash</span></li>
+  <li><img src="/assets/img/fotos/primeiro-encontro-sm.webp" alt="" width="56" height="56" loading="lazy" decoding="async"><span>Cachorro branco e caramelo cheira a mão estendida de uma pessoa. Foto: <a href="https://unsplash.com/pt-br/fotografias/cao-de-pelagem-curta-branco-e-marrom-cheirando-a-mao-da-pessoa-_IvTz18z_J8" target="_blank" rel="noopener noreferrer">Simon Moog</a> / Unsplash</span></li>
+  <li><img src="/assets/img/fotos/evento-ao-ar-livre-sm.webp" alt="" width="56" height="56" loading="lazy" decoding="async"><span>Cachorro preto e caramelo recebe carinho no colo de uma pessoa durante um evento ao ar livre. Foto: <a href="https://unsplash.com/pt-br/fotografias/uma-pessoa-acaricia-um-cachorro-em-um-evento-ao-ar-livre-gjP_4dtjwlY" target="_blank" rel="noopener noreferrer">T</a> / Unsplash</span></li>
+  <li><img src="/assets/img/fotos/caramelo-cidade-historica-sm.webp" alt="" width="56" height="56" loading="lazy" decoding="async"><span>Cachorro caramelo deitado em um degrau de pedra de uma cidade histórica, com casarões e montanhas ao fundo. Foto: <a href="https://unsplash.com/pt-br/fotografias/um-cachorro-grande-repousa-em-degraus-com-vista-para-uma-cidade--kK675hVOjc" target="_blank" rel="noopener noreferrer">Samuell Morgenstern</a> / Unsplash</span></li>
+  <li><img src="/assets/img/fotos/calcada-na-sombra-sm.webp" alt="" width="56" height="56" loading="lazy" decoding="async"><span>Cachorro tigrado deitado na calçada, à sombra das árvores, ao lado de um muro. Foto: <a href="https://unsplash.com/pt-br/fotografias/um-cachorro-deitado-no-chao-ao-lado-de-uma-parede-F57258Ve_Uk" target="_blank" rel="noopener noreferrer">Thalysson Santos</a> / Unsplash</span></li>
+  <li><img src="/assets/img/fotos/passeio-na-ladeira-sm.webp" alt="" width="56" height="56" loading="lazy" decoding="async"><span>Homem passeia com dois cachorros em uma rua de ladeira, com casas no morro ao fundo. Foto: <a href="https://unsplash.com/pt-br/fotografias/um-homem-passeando-com-dois-cachorros-por-uma-rua-Inwy09Am1ec" target="_blank" rel="noopener noreferrer">gustavo nacht</a> / Unsplash</span></li>
+  <li><img src="/assets/img/fotos/muro-verde-sm.webp" alt="" width="56" height="56" loading="lazy" decoding="async"><span>Cachorro preto descansa na sombra de uma árvore na calçada, em frente a uma casa de muro verde. Foto: <a href="https://unsplash.com/pt-br/fotografias/cao-preto-de-revestimento-curto-no-chao-de-concreto-cinza-perto-da-arvore-verde-durante-o-dia-mR0rmIYHXdw" target="_blank" rel="noopener noreferrer">Paulo Kopzinski</a> / Unsplash</span></li>
+  <li><img src="/assets/img/fotos/estrada-de-terra-sm.webp" alt="" width="56" height="56" loading="lazy" decoding="async"><span>Dois cachorros correm lado a lado em uma estrada de terra ao pôr do sol. Foto: <a href="https://unsplash.com/pt-br/fotografias/dois-caes-marrons-e-brancos-correndo-estrada-de-terra-durante-o-dia-T-0EW-SEbsE" target="_blank" rel="noopener noreferrer">Alvan Nee</a> / Unsplash</span></li>
+  <li><img src="/assets/img/fotos/gato-na-rua-sm.webp" alt="" width="56" height="56" loading="lazy" decoding="async"><span>Gato rajado caminha por uma rua de pedra, com o rabo levantado. Foto: <a href="https://unsplash.com/pt-br/fotografias/gato-tabby-cinza-andando-na-estrada-qeeyFVkHy_U" target="_blank" rel="noopener noreferrer">Gijs Coolen</a> / Unsplash</span></li>
+  <li><img src="/assets/img/fotos/gato-na-calcada-sm.webp" alt="" width="56" height="56" loading="lazy" decoding="async"><span>Gato laranja caminha pela calçada de uma rua estreita, entre um muro e um carro estacionado. Foto: <a href="https://unsplash.com/pt-br/fotografias/um-gato-laranja-caminha-por-uma-rua-estreita-N5NNCXkTgEA" target="_blank" rel="noopener noreferrer">arh Lee</a> / Unsplash</span></li>
+  <li><img src="/assets/img/fotos/gata-nas-folhas-sm.webp" alt="" width="56" height="56" loading="lazy" decoding="async"><span>Gata branca e preta sentada na grama entre folhas secas, olhando para trás. Foto: <a href="https://unsplash.com/pt-br/fotografias/um-gato-preto-e-branco-sentado-na-grama-d6lbhI_ekBk" target="_blank" rel="noopener noreferrer">Tolga Ahmetler</a> / Unsplash</span></li>
+</ul>
 </section>
 </main>
 <footer class="site-footer">
@@ -122,7 +177,7 @@
         <p>Plataforma brasileira de adoção e doação responsável de cães e gatos. Conectamos quem procura um amigo a ONGs, protetores e empresas verificadas.</p>
         <div class="socials">
           <a href="https://instagram.com/meuamigopravida" target="_blank" rel="noopener noreferrer" aria-label="Instagram do Meu Amigo pra Vida"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5v.5"/></svg></a>
-          <a class="footer-contact" href="mailto:ola@meuamigopravida.com.br">ola@meuamigopravida.com.br</a>
+          <a class="footer-contact" href="mailto:ola@meuamigopravida.com.br">ola<wbr>@meuamigopravida<wbr>.com.br</a>
         </div>
       </div>
       <nav aria-label="Adoção">
@@ -150,6 +205,7 @@
           <li><a href="/cadastro?tipo=ong">Cadastrar ONG ou protetor</a></li>
           <li><a href="/cadastro?tipo=empresa">Seja empresa parceira</a></li>
           <li><a href="/parceiros">Empresas parceiras</a></li>
+          <li><a href="/ongs#como-ajudar">Como ajudar uma ONG</a></li>
           <li><a href="/painel">Painel da organização</a></li>
         </ul>
       </nav>
@@ -161,6 +217,7 @@
           <li><a href="/sobre">Sobre nós</a></li>
           <li><a href="/blog">Conscientização</a></li>
           <li><a href="/minha-conta#privacidade">Meus dados (LGPD)</a></li>
+          <li><a href="/sobre#creditos">Créditos das fotos</a></li>
         </ul>
       </nav>
     </div>

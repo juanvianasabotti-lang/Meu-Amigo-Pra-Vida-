@@ -173,7 +173,7 @@ export function countUp(el, to) {
 }
 
 function setupRibbons() {
-  $$(".ribbon-inner").forEach((inner) => {
+  $$(".ribbon-inner, .pb-track").forEach((inner) => {
     if (inner.dataset.cloned) return;
     inner.dataset.cloned = "1";
     const clone = inner.innerHTML;
@@ -316,6 +316,270 @@ function footerFx() {
   io.observe(foot);
 }
 
+// ---------------------------------------------------------------------------
+// Experiência guiada: o site leva a pessoa pelos capítulos de cada página
+// ---------------------------------------------------------------------------
+const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+const clamp01 = (v) => Math.max(0, Math.min(1, v));
+
+// Uma única escuta de rolagem (com requestAnimationFrame) para todos os efeitos
+const scrollFns = [];
+let scrollTicking = false;
+function onScrollFrame(fn) {
+  scrollFns.push(fn);
+  if (scrollFns.length === 1) {
+    const run = () => { scrollTicking = false; const vh = window.innerHeight; scrollFns.forEach((f) => f(vh)); };
+    const req = () => { if (!scrollTicking) { scrollTicking = true; requestAnimationFrame(run); } };
+    window.addEventListener("scroll", req, { passive: true });
+    window.addEventListener("resize", req);
+    requestAnimationFrame(run);
+  }
+}
+
+// Altura do cabeçalho fixo (o guia e as âncoras se posicionam logo abaixo dele)
+function headerHeight() {
+  const header = $(".site-header");
+  if (!header) return;
+  const set = () => document.documentElement.style.setProperty("--header-h", `${Math.round(header.getBoundingClientRect().height)}px`);
+  set();
+  if ("ResizeObserver" in window) new ResizeObserver(set).observe(header);
+}
+
+// Barra fina de progresso no topo
+function pageProgress() {
+  if ($(".read-progress") || document.body.classList.contains("layout-bare")) return;
+  const bar = document.createElement("div");
+  bar.className = "page-progress";
+  bar.setAttribute("aria-hidden", "true");
+  document.body.append(bar);
+  onScrollFrame((vh) => {
+    const max = document.documentElement.scrollHeight - vh;
+    bar.style.setProperty("--p", max > 200 ? clamp01(window.scrollY / max).toFixed(4) : 0);
+  });
+}
+
+// Guia "Nesta página": monta a lista de capítulos ([data-chapter]) e marca onde a pessoa está
+function chapterGuide() {
+  const chapters = $$("main [data-chapter]");
+  if (chapters.length < 3) return;
+  const nav = document.createElement("nav");
+  nav.className = "guide";
+  nav.setAttribute("aria-label", "Nesta página");
+  nav.innerHTML = `<div class="guide-inner"><span class="guide-label">Nesta página</span>${chapters.map((c, i) => {
+    if (!c.id) c.id = `capitulo-${i + 1}`;
+    return `<a href="#${esc(c.id)}"><span class="n">${String(i + 1).padStart(2, "0")}</span>${esc(c.dataset.chapter)}</a>`;
+  }).join("")}</div>`;
+  // logo depois do cabeçalho: entra cedo na ordem do teclado
+  const header = $(".site-header");
+  if (header) header.after(nav); else document.body.append(nav);
+  const inner = $(".guide-inner", nav);
+  const links = $$("a", nav);
+  const footer = $(".site-footer");
+  let current = -1;
+  links.forEach((a) => a.addEventListener("click", () => a.blur()));
+  onScrollFrame((vh) => {
+    const line = vh * 0.38;
+    let idx = -1;
+    chapters.forEach((c, i) => { if (c.getBoundingClientRect().top <= line) idx = i; });
+    const firstTop = chapters[0].getBoundingClientRect().top;
+    const footTop = footer ? footer.getBoundingClientRect().top : Infinity;
+    nav.classList.toggle("is-on", firstTop < vh * 0.7 && footTop > vh * 0.55);
+    if (idx !== current) {
+      links.forEach((a, i) => (i === idx ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current")));
+      current = idx;
+      const a = links[idx];
+      if (a) {
+        // mantém o capítulo atual à vista dentro do guia, sem mexer na rolagem da página
+        const target = a.offsetLeft - (inner.clientWidth - a.offsetWidth) / 2;
+        inner.scrollTo({ left: Math.max(0, target), behavior: reduceMotion ? "auto" : "smooth" });
+      }
+    }
+    if (idx >= 0) {
+      const r = chapters[idx].getBoundingClientRect();
+      links[idx].style.setProperty("--cp", clamp01((line - r.top) / Math.max(1, r.height)).toFixed(3));
+    }
+  });
+}
+
+// Fotos reais: entram subindo dentro da moldura e andam um pouco com a rolagem
+export function photos(root = document) {
+  const list = $$(".foto[data-photo]:not([data-photo-bound])", root);
+  if (!list.length) return;
+  list.forEach((f) => f.setAttribute("data-photo-bound", ""));
+  if (reduceMotion || !("IntersectionObserver" in window)) { list.forEach((f) => f.classList.add("is-in", "is-settled")); return; }
+  const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add("is-in");
+    setTimeout(() => e.target.classList.add("is-settled"), 1400);
+    io.unobserve(e.target);
+  }), { threshold: 0.12, rootMargin: "0px 0px -4% 0px" });
+  list.forEach((f) => io.observe(f));
+  onScrollFrame((vh) => {
+    list.forEach((f) => {
+      if (!f.classList.contains("is-settled")) return;
+      const r = f.getBoundingClientRect();
+      if (r.bottom < -50 || r.top > vh + 50) return;
+      const p = Math.max(-1, Math.min(1, (r.top + r.height / 2 - vh / 2) / vh));
+      f.style.setProperty("--fy", `${(p * r.height * -0.045).toFixed(1)}px`);
+    });
+  });
+}
+
+// Linha do processo que se preenche com a rolagem ([data-process])
+function processLines() {
+  $$("[data-process]").forEach((proc) => {
+    const steps = $$("li", proc);
+    const track = $(".process-track span", proc);
+    if (reduceMotion) { steps.forEach((li) => li.classList.add("is-reached")); track?.style.setProperty("--progress", 1); return; }
+    onScrollFrame((vh) => {
+      const r = proc.getBoundingClientRect();
+      if (r.bottom < -100 || r.top > vh + 100) return;
+      const t = clamp01((vh * 0.75 - r.top) / (r.height + vh * 0.25));
+      track?.style.setProperty("--progress", t.toFixed(3));
+      steps.forEach((li, k) => li.classList.toggle("is-reached", t >= (k / steps.length) + 0.02 || t >= 0.98));
+    });
+  });
+}
+
+// História em etapas ([data-story]): a foto fica parada ao lado e troca conforme o texto passa
+function stories() {
+  $$("[data-story]").forEach((story) => {
+    const steps = $$(".story-step", story);
+    const media = $(".story-media", story);
+    if (!steps.length || !media) return;
+    const imgs = steps.map((s, i) => {
+      const src = $(".foto img", s);
+      const img = document.createElement("img");
+      img.className = "sm-img";
+      img.alt = "";
+      img.loading = i === 0 ? "eager" : "lazy";
+      img.decoding = "async";
+      if (src) { img.src = src.currentSrc || src.getAttribute("src"); if (src.getAttribute("srcset")) { img.srcset = src.getAttribute("srcset"); img.sizes = "50vw"; } img.style.setProperty("--pos", src.style.getPropertyValue("--pos") || "50% 50%"); }
+      return img;
+    });
+    media.setAttribute("aria-hidden", "true");
+    media.innerHTML = `<div class="story-bars">${steps.map(() => "<i><b></b></i>").join("")}</div><p class="foto-tag"><span data-t></span><small data-s></small></p><p class="foto-credito" data-c></p>`;
+    imgs.forEach((img) => media.prepend(img));
+    const bars = $$(".story-bars b", media);
+    const tag = $(".foto-tag", media);
+    const credit = $("[data-c]", media);
+    story.classList.add("is-enhanced");
+    let cur = -1;
+    const show = (i) => {
+      cur = i;
+      imgs.forEach((img, k) => img.classList.toggle("is-on", k === i));
+      steps.forEach((s, k) => s.classList.toggle("is-active", k === i));
+      const s = steps[i];
+      tag.classList.add("swap");
+      setTimeout(() => {
+        $("[data-t]", tag).textContent = s.dataset.tag || "";
+        $("[data-s]", tag).textContent = s.dataset.tagSub || "";
+        tag.hidden = !s.dataset.tag;
+        tag.classList.remove("swap");
+      }, reduceMotion ? 0 : 220);
+      credit.innerHTML = $(".foto-credito", s)?.innerHTML || "";
+    };
+    show(0);
+    onScrollFrame((vh) => {
+      const r = story.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > vh) return;
+      const line = vh * 0.55;
+      let idx = 0;
+      steps.forEach((s, k) => { if (s.getBoundingClientRect().top < line) idx = k; });
+      if (idx !== cur) show(idx);
+      steps.forEach((s, k) => {
+        const sr = s.getBoundingClientRect();
+        bars[k].style.setProperty("--f", k < idx ? 1 : k > idx ? 0 : clamp01((line - sr.top) / Math.max(1, sr.height)).toFixed(3));
+      });
+    });
+  });
+}
+
+// Faixa horizontal ([data-hscroll]): no computador a rolagem para baixo leva os cartões para o lado
+function hscrolls() {
+  $$("[data-hscroll]").forEach((sec) => {
+    const sticky = $(".hscroll-sticky", sec);
+    const track = $(".hscroll-track", sec);
+    if (!sticky || !track) return;
+    const mq = window.matchMedia("(min-width: 900px) and (min-height: 700px)");
+    let dist = 0;
+    const measure = () => {
+      const pin = mq.matches && !reduceMotion;
+      sec.classList.toggle("is-pinned", pin);
+      if (!pin) { sec.style.removeProperty("--hs-h"); track.style.removeProperty("--hs-x"); return; }
+      dist = Math.max(0, track.scrollWidth - track.clientWidth);
+      sec.style.setProperty("--hs-h", `${dist + sticky.clientHeight + 40}px`);
+    };
+    measure();
+    window.addEventListener("resize", () => requestAnimationFrame(measure));
+    mq.addEventListener?.("change", measure);
+    (document.fonts?.ready || Promise.resolve()).then(measure);
+    $$("img", track).forEach((im) => im.complete || im.addEventListener("load", measure, { once: true }));
+    const stickyTop = () => parseFloat(getComputedStyle(sticky).top) || 0;
+    onScrollFrame(() => {
+      if (!sec.classList.contains("is-pinned")) return;
+      const r = sec.getBoundingClientRect();
+      const p = clamp01((stickyTop() - r.top) / Math.max(1, dist));
+      track.style.setProperty("--hs-x", `${(-p * dist).toFixed(1)}px`);
+      sec.style.setProperty("--hs-p", p.toFixed(3));
+    });
+    track.addEventListener("scroll", () => {
+      if (sec.classList.contains("is-pinned")) return;
+      const max = track.scrollWidth - track.clientWidth;
+      sec.style.setProperty("--hs-p", max > 0 ? (track.scrollLeft / max).toFixed(3) : 0);
+    }, { passive: true });
+    // teclado: ao focar um cartão escondido à direita, a página rola até ele aparecer
+    track.addEventListener("focusin", (e) => {
+      if (!sec.classList.contains("is-pinned")) return;
+      const card = e.target.closest(".hs-card");
+      if (!card) return;
+      const p = clamp01((card.offsetLeft - track.offsetLeft - 24) / Math.max(1, dist));
+      window.scrollTo({ top: window.scrollY + sec.getBoundingClientRect().top - stickyTop() + p * dist, behavior: "auto" });
+    });
+  });
+}
+
+// Linhas editoriais com foto que acompanha o cursor ([data-help]) — só com mouse
+function peekRows() {
+  const lists = $$("[data-help]");
+  if (!lists.length || reduceMotion || !finePointer) return;
+  const peek = document.createElement("div");
+  peek.className = "help-peek";
+  peek.setAttribute("aria-hidden", "true");
+  peek.innerHTML = '<img alt="" src="">';
+  document.body.append(peek);
+  const img = $("img", peek);
+  lists.forEach((list) => {
+    $$(".help-row[data-peek]", list).forEach((row) => {
+      const pre = new Image(); pre.src = row.dataset.peek;
+      row.addEventListener("pointerenter", () => {
+        img.src = row.dataset.peek;
+        peek.classList.toggle("is-photo", row.dataset.peek.includes("/fotos/"));
+        peek.classList.add("on");
+      });
+      row.addEventListener("pointerleave", () => peek.classList.remove("on"));
+    });
+    list.addEventListener("pointermove", (e) => {
+      peek.style.setProperty("--x", `${e.clientX}px`);
+      peek.style.setProperty("--y", `${e.clientY}px`);
+    });
+  });
+}
+
+// Números com fonte que contam ao aparecer ([data-count-to])
+function countOnView() {
+  const els = $$("[data-count-to]");
+  if (!els.length) return;
+  if (reduceMotion || !("IntersectionObserver" in window)) { els.forEach((el) => countUp(el, el.dataset.countTo)); return; }
+  els.forEach((el) => { if (el.getBoundingClientRect().top > window.innerHeight) el.textContent = "0"; });
+  const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (!e.isIntersecting) return;
+    countUp(e.target, e.target.dataset.countTo);
+    io.unobserve(e.target);
+  }), { threshold: 0.6 });
+  els.forEach((el) => io.observe(el));
+}
+
 // Contador de visitas próprio: só página e dia, sem cookies e sem identificar ninguém.
 function trackVisit() {
   if (!sb.isConfigured() || navigator.globalPrivacyControl || navigator.doNotTrack === "1") return;
@@ -339,12 +603,21 @@ sb.auth.onChange((event) => {
 });
 
 setupHeader();
+headerHeight();
 setupRibbons();
 splitWords();
 observeReveal();
 drawLoops();
 magnets();
 posters();
+photos();
+processLines();
+stories();
+hscrolls();
+peekRows();
+countOnView();
+chapterGuide();
+pageProgress();
 footerFx();
 trackVisit();
 renderUserArea();

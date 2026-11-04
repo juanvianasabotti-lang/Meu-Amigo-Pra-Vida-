@@ -49,7 +49,7 @@ Pergunte à ONG como o animal convive com cães e gatos e planeje uma apresenta�
 ## 10. Estou pronto para a adaptação?
 Os primeiros dias podem ter medo, xixi fora do lugar e noites agitadas. Isso é normal e passa com rotina e carinho.
 
-Se você respondeu "sim" para quase tudo, **seu novo amigo pra vida está esperando por você**. 🐾$md$,
+Se você respondeu "sim" para quase tudo, **seu novo amigo pra vida está esperando por você**.$md$,
  array['adoção', 'primeiros passos'], true, interval '1 day', 'Pessoa abraçando um cão adotado'),
 
 -- 2 ---------------------------------------------------------------------------

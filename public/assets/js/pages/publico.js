@@ -1,5 +1,5 @@
 // Páginas públicas de conteúdo: Doe, ONGs, Parceiros, Organização, Eventos, Blog, Artigo, Legais e Contato
-import { observeReveal } from "../app.js";
+import { observeReveal, photos } from "../app.js";
 import sb from "../sb.js";
 import {
   $, $$, esc, icons, L, ufOptions, slugFromPath, markdown, fmtDateLong, fmtDateTime, toast, withLoading,
@@ -7,8 +7,9 @@ import {
 } from "../ui.js";
 import {
   orgCard, bindCopy, pixBox, orgLogo, eventCard, postCard, petCard, bindFavorites, ANIMAL_CARD_COLS,
-  emptyState, errorState, skeletons, ORG_PUBLIC_COLS, EVENT_PUBLIC_COLS,
+  emptyState, errorState, skeletons, ORG_PUBLIC_COLS, EVENT_PUBLIC_COLS, fotoFigure,
 } from "../components.js";
+import { FOTOS } from "../fotos.js";
 
 const root = $("[data-page]");
 const page = root?.dataset.page;
@@ -17,11 +18,13 @@ const setMeta = (title, desc) => {
   document.title = `${title} · Meu Amigo pra Vida`;
   if (desc) document.querySelector('meta[name="description"]')?.setAttribute("content", desc.slice(0, 160));
 };
-const done = (el) => observeReveal(el || document);
+const done = (el) => { observeReveal(el || document); photos(el || document); };
 
 // ---------------------------------------------------------------------------
 async function listOrgs(box, { ong, q = "", uf = "", pixOnly = false }) {
   box.innerHTML = skeletons(3, 260);
+  const count = box.closest("section")?.querySelector("[data-count]");
+  const filtered = Boolean(q || uf);
   try {
     let query = sb.from("organizations").select("slug,trade_name,kind,city,state,tagline,logo_url,services,pix_key,pix_key_type")
       .eq("status", "aprovada");
@@ -30,15 +33,47 @@ async function listOrgs(box, { ong, q = "", uf = "", pixOnly = false }) {
     if (q) query = query.ilike("trade_name", `*${q.replace(/[*%,()]/g, "")}*`);
     if (pixOnly) query = query.not("pix_key", "is", "null");
     const { data } = await query.order("trade_name").limit(120);
-    box.style.display = data?.length ? "" : "block";
-    box.innerHTML = data?.length ? data.map((o) => orgCard(o)).join("")
-      : emptyState({
-        title: ong ? "As primeiras ONGs estão em verificação" : "Seja a primeira empresa parceira!",
-        text: ong ? "Em breve você poderá conhecer e apoiar ONGs e protetores verificados aqui." : "Pet shops, clínicas e marcas que apoiam a adoção aparecem aqui.",
-        cta: `<a class="btn btn-laranja" href="/cadastro?tipo=${ong ? "ong" : "empresa"}">${ong ? "Cadastrar minha ONG" : "Quero ser parceiro"}</a>`,
+    const n = data?.length || 0;
+    if (count) {
+      const what = ong ? (n === 1 ? "organização verificada" : "organizações verificadas") : (n === 1 ? "empresa parceira" : "empresas parceiras");
+      count.textContent = n ? `${n} ${what}${filtered ? " com esse filtro" : ""}` : "";
+    }
+    box.style.display = n ? "" : "block";
+    if (n) box.innerHTML = data.map((o) => orgCard(o)).join("");
+    else if (filtered) {
+      box.innerHTML = emptyState({
+        title: "Nada encontrado com esse filtro",
+        text: "Tente outro estado ou outro nome. A lista cresce conforme novas organizações são verificadas.",
+        cta: '<button class="btn btn-ghost" type="button" data-clear-filters>Limpar filtros</button>',
       });
+      box.querySelector("[data-clear-filters]")?.addEventListener("click", () => {
+        const sec = box.closest("section");
+        sec.querySelectorAll("[data-filter-q]").forEach((i) => { i.value = ""; });
+        sec.querySelectorAll("[data-filter-uf]").forEach((i) => { i.value = ""; });
+        listOrgs(box, { ong, pixOnly });
+      });
+    } else if (pixOnly) {
+      box.innerHTML = emptyState({
+        photo: "cuidado-voluntario",
+        title: "As chaves Pix das ONGs aparecem aqui",
+        text: "Assim que as primeiras ONGs forem verificadas, as chaves Pix delas ficam listadas nesta parte. O valor vai direto para a ONG, sem passar pela plataforma.",
+        cta: '<a class="btn btn-laranja" href="/ongs">Conhecer o trabalho das ONGs</a><a class="btn btn-ghost" href="/cadastro?tipo=ong">Cadastrar minha ONG</a>',
+      });
+    } else {
+      box.innerHTML = emptyState(ong ? {
+        photo: "abrigo-espera", pos: "50% 30%",
+        title: "A lista de ONGs está começando",
+        text: "As primeiras ONGs e protetores estão em verificação. Quando a equipe aprovar, eles aparecem aqui com página própria, contatos e chave Pix.",
+        cta: '<a class="btn btn-laranja" href="/cadastro?tipo=ong">Cadastrar minha ONG</a><a class="btn btn-ghost" href="/contato?assunto=parceria">Indicar uma ONG</a>',
+      } : {
+        photo: "petshop-vira-lata", pos: "58% 50%",
+        title: "Seja uma das primeiras empresas parceiras",
+        text: "Pet shops, clínicas, banho e tosa, hotéis e adestradores aparecem aqui depois da verificação, com serviços, contatos e endereço.",
+        cta: '<a class="btn btn-laranja" href="/cadastro?tipo=empresa">Quero ser parceiro</a><a class="btn btn-ghost" href="/contato?assunto=parceria">Indicar uma empresa</a>',
+      });
+    }
     bindCopy(box);
-  } catch (e) { box.style.display = "block"; box.innerHTML = errorState(e); }
+  } catch (e) { box.style.display = "block"; box.innerHTML = errorState(e); if (count) count.textContent = ""; }
   done(box);
 }
 
@@ -84,10 +119,10 @@ async function orgPage() {
         ${o.services?.length ? `<div class="chips mt-2">${o.services.map((s) => `<span class="chip chip-amarelo">${esc(s)}</span>`).join("")}</div>` : ""}</div>
       <div class="card card-pad" data-reveal="up" style="--delay:.1s"><h2 class="h3">Contato</h2>
         <div class="flex gap-1 wrap">
-          ${o.whatsapp ? `<a class="btn btn-sm btn-branco" href="https://wa.me/55${esc(o.whatsapp.replace(/^55/, ""))}" target="_blank" rel="noopener noreferrer">${icons.whatsapp} WhatsApp</a>` : ""}
-          ${o.instagram ? `<a class="btn btn-sm btn-branco" href="https://instagram.com/${esc(o.instagram)}" target="_blank" rel="noopener noreferrer">${icons.instagram} @${esc(o.instagram)}</a>` : ""}
-          ${o.website ? `<a class="btn btn-sm btn-branco" href="${esc(o.website)}" target="_blank" rel="noopener noreferrer">${icons.globe} Site</a>` : ""}
-          ${o.email ? `<a class="btn btn-sm btn-branco" href="mailto:${esc(o.email)}"> E-mail</a>` : ""}
+          ${o.whatsapp ? `<a class="btn btn-sm btn-ghost" href="https://wa.me/55${esc(o.whatsapp.replace(/^55/, ""))}" target="_blank" rel="noopener noreferrer">${icons.whatsapp} WhatsApp</a>` : ""}
+          ${o.instagram ? `<a class="btn btn-sm btn-ghost" href="https://instagram.com/${esc(o.instagram)}" target="_blank" rel="noopener noreferrer">${icons.instagram} @${esc(o.instagram)}</a>` : ""}
+          ${o.website ? `<a class="btn btn-sm btn-ghost" href="${esc(o.website)}" target="_blank" rel="noopener noreferrer">${icons.globe} Site</a>` : ""}
+          ${o.email ? `<a class="btn btn-sm btn-ghost" href="mailto:${esc(o.email)}"> E-mail</a>` : ""}
         </div>
         ${o.public_address ? `<p class="mt-2 mb-0" style="display:flex;gap:6px">${icons.pin} ${esc(o.public_address)}</p>` : ""}
         ${o.accepts_volunteers ? `<div class="notice ok mt-2">${icons.heart}<p>Aceita voluntários e lares temporários!</p></div>` : ""}
@@ -116,7 +151,12 @@ async function eventsPage() {
       sb.from("events").select(cols).in("status", ["publicado", "encerrado"]).lt("starts_at", now).order("starts_at", { ascending: false }).limit(12),
     ]);
     up.style.display = a?.length ? "" : "block";
-    up.innerHTML = a?.length ? a.map(eventCard).join("") : emptyState({ title: "Nenhum evento agendado", text: "ONGs e empresas parceiras divulgam aqui feiras de adoção, castrações e campanhas.", art: icons.calendar });
+    up.innerHTML = a?.length ? a.map(eventCard).join("") : emptyState({
+      photo: "evento-ao-ar-livre", pos: "60% 50%",
+      title: "Nenhum evento agendado agora",
+      text: "ONGs e empresas parceiras divulgam aqui feiras de adoção, mutirões de castração, vacinação e arrecadações. Cada evento passa por moderação antes de aparecer.",
+      cta: '<a class="btn btn-laranja" href="/cadastro?tipo=ong">Cadastrar minha ONG</a><a class="btn btn-ghost" href="/cadastro?tipo=empresa">Sou empresa</a>',
+    });
     past.innerHTML = b?.length ? b.map(eventCard).join("") : `<p class="muted">Nenhum evento anterior.</p>`;
   } catch (e) { up.style.display = "block"; up.innerHTML = errorState(e); }
   done();
@@ -171,7 +211,8 @@ async function blogPage() {
 
 const ART_PETS = ["boiadeiro", "chihuahua", "gato-himalaio", "gato-laranja", "gato-preto-branco", "gato-rajado", "golden", "labrador"];
 const artPet = (seed = "", n = 0) => ART_PETS[([...seed].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) + n) % ART_PETS.length];
-const CAPTIONS = ["Quem espera por você tem pressa de ser feliz.", "Um lar é uma decisão que dura anos.", "Adotar é mudar duas vidas de uma vez."];
+const ART_PHOTOS = ["estrada-de-terra", "gata-nas-folhas", "caramelo-cidade-historica", "gato-na-rua", "calcada-na-sombra", "primeiro-encontro", "muro-verde", "gato-na-calcada"].filter((n) => FOTOS[n]);
+const artPhoto = (seed = "", n = 0) => ART_PHOTOS[([...seed].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 11) + n) % ART_PHOTOS.length];
 
 // Barra de leitura no topo: mostra o quanto do texto já foi lido.
 function readProgress() {
@@ -188,16 +229,16 @@ function readProgress() {
   on();
 }
 
-// Insere fotos de animais entre as seções do texto (a cada 2 subtítulos).
+// Insere fotos reais entre as seções do texto (a cada 2 subtítulos), com descrição e crédito.
 function interleaveImages(main, seed) {
   const h2s = [...main.querySelectorAll("h2")];
   h2s.forEach((h, i) => {
     if (i === 0 || i % 2 !== 0) return;
-    const k = Math.floor(i / 2) - 1;
-    const fig = document.createElement("figure");
-    fig.className = "art-inline";
-    fig.innerHTML = `<img src="/assets/img/animais/${artPet(seed, k + 1)}.webp" alt="" loading="lazy"><figcaption>${esc(CAPTIONS[k % CAPTIONS.length])}</figcaption>`;
-    h.before(fig);
+    const name = artPhoto(seed, Math.floor(i / 2) - 1);
+    const wrap = document.createElement("div");
+    wrap.className = "art-inline";
+    wrap.innerHTML = fotoFigure(name, { cls: "ratio-wide", sizes: "(max-width: 900px) 100vw, 760px" });
+    h.before(wrap);
   });
 }
 

@@ -3,6 +3,7 @@
 // =============================================================================
 import sb from "./sb.js";
 import { esc, icons, stickers, L, fmtDate, initials, toast, $$ } from "./ui.js";
+import { FOTOS } from "./fotos.js";
 
 export const ANIMAL_PUBLIC_COLS = "id,organization_id,publisher_name,name,slug,species,sex,size,age_group,breed,coat_color,weight_kg,description,personality,good_with_children,good_with_dogs,good_with_cats,neutered,vaccinated,dewormed,microchipped,special_needs,special_needs_notes,health_notes,adoption_requirements,city,state,status,is_urgent,approved_at,adopted_at,created_at";
 export const ORG_PUBLIC_COLS = "id,kind,status,trade_name,slug,tagline,description,services,email,whatsapp,website,instagram,logo_url,cover_url,city,state,public_address,pix_key,pix_key_type,accepts_volunteers,founded_year,partner_since";
@@ -146,8 +147,22 @@ export function bindCopy(root = document) {
   }));
 }
 
+// Foto real com crédito (mesma marcação que o build gera a partir de src/data/fotos.json)
+export function fotoFigure(name, { cls = "", sizes = "(max-width: 860px) 100vw, 50vw", pos = "" } = {}) {
+  const f = FOTOS[name];
+  if (!f) return "";
+  const base = `/assets/img/fotos/${name}`;
+  return `<figure class="foto ${esc(cls)}" data-photo>
+    <img src="${base}.webp" srcset="${base}-sm.webp ${f.sw}w, ${base}.webp ${f.w}w" sizes="${esc(sizes)}" width="${f.w}" height="${f.h}" alt="${esc(f.alt)}" loading="lazy" decoding="async"${pos ? ` style="--pos:${esc(pos)}"` : ""}>
+    <figcaption class="foto-credito">Foto: <a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer">${esc(f.autor)}</a> / Unsplash</figcaption>
+  </figure>`;
+}
+
 const LOOP_ART = '<svg class="loop" viewBox="0 0 260 160" aria-hidden="true"><path d="M8 132c40 4 70-18 86-52 14-30 4-62-22-62-30 0-34 46-4 70 30 24 84 18 112-12 26-28 34-58 72-62"/></svg>';
-export function emptyState({ title, text, cta = "", art = null }) {
+export function emptyState({ title, text, cta = "", art = null, photo = null, pos = "" }) {
+  if (photo) {
+    return `<div class="empty has-photo" data-reveal="pop">${fotoFigure(photo, { sizes: "(max-width: 760px) 100vw, 40vw", pos })}<div><h3>${esc(title)}</h3><p>${esc(text)}</p>${cta ? `<div class="empty-cta">${cta}</div>` : ""}</div></div>`;
+  }
   return `<div class="empty" data-reveal="pop"><div class="empty-art${art ? "" : " is-loop"}">${art || LOOP_ART}</div><h3>${esc(title)}</h3><p>${esc(text)}</p>${cta}</div>`;
 }
 export const skeletons = (n = 3, h = 420) => Array.from({ length: n }, () => `<div class="skeleton" style="min-height:${h}px"></div>`).join("");
@@ -156,7 +171,7 @@ export function errorState(err) {
   return emptyState({
     title: "Ops! Não conseguimos carregar agora",
     text: err?.code === "not_configured" ? "O site ainda está sendo conectado ao banco de dados." : (err?.message || "Tente novamente em instantes."),
-    cta: `<button class="btn btn-branco" type="button" data-reload>Tentar de novo</button>`,
+    cta: `<button class="btn btn-ghost" type="button" data-reload>Tentar de novo</button>`,
     art: icons.alert,
   });
 }

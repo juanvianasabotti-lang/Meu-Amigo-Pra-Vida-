@@ -1,5 +1,5 @@
 import "../app.js";
-import { observeReveal, countUp, setPosterWord } from "../app.js";
+import { observeReveal, countUp, setPosterWord, photos } from "../app.js";
 import sb from "../sb.js";
 import { $, $$, esc, ufOptions } from "../ui.js";
 import { ANIMAL_CARD_COLS, petCard, bindFavorites, postCard, eventCard, emptyState, skeletons, orgLogo } from "../components.js";
@@ -28,7 +28,7 @@ function setupHero() {
   let i = 0;
   let timer;
 
-  dots.innerHTML = SLIDES.map((_, k) => `<button type="button" role="tab" aria-label="Destaque ${k + 1} de ${SLIDES.length}"></button>`).join("");
+  dots.innerHTML = SLIDES.map((_, k) => `<button type="button" aria-label="Destaque ${k + 1} de ${SLIDES.length}" aria-pressed="false"></button>`).join("");
   const dotBtns = $$("button", dots);
 
   const show = (n) => {
@@ -49,7 +49,7 @@ function setupHero() {
       $("[data-hero-sub]", nameBox).textContent = s.sub;
       nameBox.classList.remove("swap");
     }, 280);
-    dotBtns.forEach((b, k) => b.setAttribute("aria-current", String(k === i)));
+    dotBtns.forEach((b, k) => b.setAttribute("aria-pressed", String(k === i)));
   };
   const next = () => show(i + 1);
   const start = () => { if (!reduce) { clearInterval(timer); timer = setInterval(next, 5600); } };
@@ -86,53 +86,19 @@ function setupHero() {
 }
 
 // ---------------------------------------------------------------------------
-// Como participar: foto do animal acompanha o cursor sobre cada linha
-// ---------------------------------------------------------------------------
-function setupHelpRows() {
-  const list = $("[data-help]");
-  if (!list || reduce || !finePointer) return;
-  const peek = document.createElement("div");
-  peek.className = "help-peek";
-  peek.setAttribute("aria-hidden", "true");
-  peek.innerHTML = '<img alt="" src="">';
-  document.body.append(peek);
-  const img = $("img", peek);
-  $$(".help-row", list).forEach((row) => {
-    const pre = new Image(); pre.src = row.dataset.peek;
-    row.addEventListener("pointerenter", () => { img.src = row.dataset.peek; peek.classList.add("on"); });
-    row.addEventListener("pointerleave", () => peek.classList.remove("on"));
-  });
-  list.addEventListener("pointermove", (e) => {
-    peek.style.setProperty("--x", `${e.clientX}px`);
-    peek.style.setProperty("--y", `${e.clientY}px`);
-  });
-}
-
-// ---------------------------------------------------------------------------
 // Rolagem: faixa de texto gigante e linha do processo de adoção
 // ---------------------------------------------------------------------------
 function setupScrollEffects() {
-  const proc = $("[data-process]");
   const film = $(".film-frame");
-  if (reduce) { proc?.querySelectorAll("li").forEach((li) => li.classList.add("is-reached")); proc?.style.setProperty("--progress", 1); return; }
-  const steps = proc ? $$("li", proc) : [];
+  if (reduce || !film) return;
   let ticking = false;
   const update = () => {
     ticking = false;
+    // o vídeo "abre" de 0,9 para 1 enquanto chega ao centro da tela
     const vh = window.innerHeight;
-    if (proc) {
-      const r = proc.getBoundingClientRect();
-      const t = Math.min(1, Math.max(0, (vh * 0.75 - r.top) / (r.height + vh * 0.25)));
-      proc.querySelector(".process-track span").style.setProperty("--progress", t.toFixed(3));
-      proc.style.setProperty("--progress", t.toFixed(3));
-      steps.forEach((li, k) => li.classList.toggle("is-reached", t >= (k / steps.length) + 0.02 || t >= 0.98));
-    }
-    if (film) {
-      // o vídeo "abre" de 0,9 para 1 enquanto chega ao centro da tela
-      const r = film.getBoundingClientRect();
-      const t = Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.75)));
-      film.style.setProperty("--film-s", (0.9 + 0.1 * t).toFixed(4));
-    }
+    const r = film.getBoundingClientRect();
+    const t = Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.75)));
+    film.style.setProperty("--film-s", (0.9 + 0.1 * t).toFixed(4));
   };
   const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
   window.addEventListener("scroll", onScroll, { passive: true });
@@ -220,10 +186,12 @@ async function loadPets() {
     if (!data?.length) {
       box.style.display = "block";
       box.innerHTML = emptyState({
-        title: "Os primeiros amigos estão chegando!",
-        text: "Estamos verificando as ONGs e os protetores parceiros. Em breve, cães e gatos incríveis vão aparecer aqui. Que tal cadastrar sua ONG ou anunciar um animal?",
-        cta: `<div class="flex gap-1 wrap justify-center"><a class="btn btn-laranja" href="/cadastro?tipo=ong">Cadastrar ONG</a><a class="btn btn-branco" href="/doar">Anunciar um animal</a></div>`,
+        photo: "abrigo-espera", pos: "50% 30%",
+        title: "Os primeiros amigos estão chegando",
+        text: "Estamos verificando as ONGs e os protetores parceiros. Assim que os primeiros anúncios forem aprovados, cães e gatos aparecem aqui. Tem uma ONG ou um animal para doar?",
+        cta: `<a class="btn btn-laranja" href="/cadastro?tipo=ong">Cadastrar ONG</a><a class="btn btn-ghost" href="/doar">Anunciar um animal</a>`,
       });
+      photos(box);
     } else {
       box.innerHTML = data.map((a) => petCard(a)).join("");
       bindFavorites(box, data.map((a) => a.id));
@@ -291,7 +259,6 @@ async function loadPartners() {
 setupHero();
 setupMarquee();
 setupFilm();
-setupHelpRows();
 setupScrollEffects();
 loadPets();
 loadStats();

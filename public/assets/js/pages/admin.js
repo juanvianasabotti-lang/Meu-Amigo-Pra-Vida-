@@ -134,7 +134,7 @@ async function blog() {
   ]);
   view.innerHTML = `<div class="dash-title"><h1>Blog de conscientização</h1><button class="btn btn-laranja btn-sm" type="button" data-new>${icons.plus} Novo artigo</button></div>
     <div class="list">${(posts || []).map((p) => `<div class="list-item" data-post="${esc(p.id)}"><div class="thumb">${icons.book}</div>
-      <div><h3>${esc(p.title)} ${p.featured ? "⭐" : ""}</h3><p>${esc(p.blog_categories?.name || "Sem categoria")} · atualizado ${esc(timeAgo(p.updated_at))}</p></div>
+      <div><h3>${esc(p.title)} ${p.featured ? `<span class="chip chip-amarelo" style="margin-left:6px;vertical-align:middle">Destaque</span>` : ""}</h3><p>${esc(p.blog_categories?.name || "Sem categoria")} · atualizado ${esc(timeAgo(p.updated_at))}</p></div>
       <div class="actions">${statusPill(p.status === "publicado" ? "publicado" : "rascunho", L.contentStatus)}${p.status === "publicado" ? `<a class="btn btn-sm btn-ghost" href="/blog/${esc(p.slug)}" target="_blank">Ver</a>` : ""}<button class="btn btn-sm btn-branco" type="button" data-edit>${icons.edit} Editar</button><button class="btn btn-sm btn-ghost" type="button" data-del aria-label="Excluir">${icons.trash}</button></div></div>`).join("")}</div>`;
   $("[data-new]", view).addEventListener("click", () => postEditor(null, cats));
   $$("[data-post]", view).forEach((row) => {

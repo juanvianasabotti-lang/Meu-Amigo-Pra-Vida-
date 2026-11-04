@@ -1,0 +1,175 @@
+{
+  "_sobre": "Fotos reais com licença Unsplash (uso livre, inclusive comercial). Os créditos são gerados a partir deste arquivo pelo tools/build.py. Para trocar uma foto: salve <nome>.webp e <nome>-sm.webp em public/assets/img/fotos/ e atualize os dados aqui.",
+  "fotos": {
+    "petshop-vira-lata": {
+      "alt": "Cachorro de pelo caramelo em pé dentro de um pet shop, com prateleiras de brinquedos e acessórios ao fundo",
+      "autor": "Daisy D",
+      "url": "https://unsplash.com/pt-br/fotografias/um-cachorro-marrom-em-frente-a-uma-loja-xseaK0kISrI",
+      "tema": "Pet shop",
+      "w": 1064,
+      "h": 709,
+      "sw": 640,
+      "sh": 426
+    },
+    "petshop-acessorios": {
+      "alt": "Corgi sentado em uma almofada dentro de um pet shop, com coleiras e guias penduradas atrás",
+      "autor": "Cham Pets Family",
+      "url": "https://unsplash.com/pt-br/fotografias/um-filhote-de-corgi-feliz-senta-se-em-uma-superficie-difusa-_Uno-jA_9Ns",
+      "tema": "Pet shop",
+      "w": 1064,
+      "h": 798,
+      "sw": 640,
+      "sh": 480
+    },
+    "banho-e-tosa": {
+      "alt": "Poodle branco tendo o pelo do rosto aparado com tesoura em um banho e tosa",
+      "autor": "Buddy AN",
+      "url": "https://unsplash.com/pt-br/fotografias/um-pequeno-cao-branco-sendo-cortado-com-uma-tesoura-LpK2xddrElI",
+      "tema": "Banho e tosa",
+      "w": 1064,
+      "h": 709,
+      "sw": 640,
+      "sh": 426
+    },
+    "clinica-veterinaria": {
+      "alt": "Veterinário examina um dachshund preto e caramelo na mesa do consultório",
+      "autor": "Alexander Mass",
+      "url": "https://unsplash.com/pt-br/fotografias/um-veterinario-examina-um-dachshund-preto-e-bege-e4f87NzUJsU",
+      "tema": "Clínica veterinária",
+      "w": 709,
+      "h": 1064,
+      "sw": 480,
+      "sh": 720
+    },
+    "abrigo-espera": {
+      "alt": "Cachorro sem raça definida sentado atrás da grade de um canil de abrigo",
+      "autor": "12photostory",
+      "url": "https://unsplash.com/pt-br/fotografias/um-cao-pequeno-sentado-atras-de-uma-cerca-de-metal-9oYVq7vCoXg",
+      "tema": "Abrigo",
+      "w": 709,
+      "h": 1064,
+      "sw": 480,
+      "sh": 720
+    },
+    "cuidado-voluntario": {
+      "alt": "Mãos fazendo carinho no pescoço e na orelha de um cachorro de olhos fechados, ao ar livre",
+      "autor": "Vinícius Costa",
+      "url": "https://unsplash.com/pt-br/fotografias/maos-acariciando-suavemente-a-cabeca-de-um-cachorro-ao-ar-livre-RmuJbMY0u-4",
+      "tema": "Cuidado",
+      "w": 1064,
+      "h": 709,
+      "sw": 640,
+      "sh": 426
+    },
+    "gatinho-abrigo": {
+      "alt": "Gatinho rajado e branco apoiado na grade de uma gaiola, olhando para cima",
+      "autor": "Eleni Trapp",
+      "url": "https://unsplash.com/pt-br/fotografias/um-gatinho-malhado-tenta-pegar-um-trinco-em-uma-gaiola-x6Mx2mTY-1Y",
+      "tema": "Abrigo",
+      "w": 709,
+      "h": 1064,
+      "sw": 480,
+      "sh": 720
+    },
+    "primeiro-encontro": {
+      "alt": "Cachorro branco e caramelo cheira a mão estendida de uma pessoa",
+      "autor": "Simon Moog",
+      "url": "https://unsplash.com/pt-br/fotografias/cao-de-pelagem-curta-branco-e-marrom-cheirando-a-mao-da-pessoa-_IvTz18z_J8",
+      "tema": "Primeiro encontro",
+      "w": 1064,
+      "h": 709,
+      "sw": 640,
+      "sh": 426
+    },
+    "evento-ao-ar-livre": {
+      "alt": "Cachorro preto e caramelo recebe carinho no colo de uma pessoa durante um evento ao ar livre",
+      "autor": "T",
+      "url": "https://unsplash.com/pt-br/fotografias/uma-pessoa-acaricia-um-cachorro-em-um-evento-ao-ar-livre-gjP_4dtjwlY",
+      "tema": "Evento",
+      "w": 1064,
+      "h": 709,
+      "sw": 640,
+      "sh": 426
+    },
+    "caramelo-cidade-historica": {
+      "alt": "Cachorro caramelo deitado em um degrau de pedra de uma cidade histórica, com casarões e montanhas ao fundo",
+      "autor": "Samuell Morgenstern",
+      "url": "https://unsplash.com/pt-br/fotografias/um-cachorro-grande-repousa-em-degraus-com-vista-para-uma-cidade--kK675hVOjc",
+      "tema": "Espaço público",
+      "w": 1596,
+      "h": 1064,
+      "sw": 640,
+      "sh": 427
+    },
+    "calcada-na-sombra": {
+      "alt": "Cachorro tigrado deitado na calçada, à sombra das árvores, ao lado de um muro",
+      "autor": "Thalysson Santos",
+      "url": "https://unsplash.com/pt-br/fotografias/um-cachorro-deitado-no-chao-ao-lado-de-uma-parede-F57258Ve_Uk",
+      "tema": "Espaço público",
+      "w": 1064,
+      "h": 798,
+      "sw": 640,
+      "sh": 480
+    },
+    "passeio-na-ladeira": {
+      "alt": "Homem passeia com dois cachorros em uma rua de ladeira, com casas no morro ao fundo",
+      "autor": "gustavo nacht",
+      "url": "https://unsplash.com/pt-br/fotografias/um-homem-passeando-com-dois-cachorros-por-uma-rua-Inwy09Am1ec",
+      "tema": "Espaço público",
+      "w": 790,
+      "h": 1064,
+      "sw": 480,
+      "sh": 646
+    },
+    "muro-verde": {
+      "alt": "Cachorro preto descansa na sombra de uma árvore na calçada, em frente a uma casa de muro verde",
+      "autor": "Paulo Kopzinski",
+      "url": "https://unsplash.com/pt-br/fotografias/cao-preto-de-revestimento-curto-no-chao-de-concreto-cinza-perto-da-arvore-verde-durante-o-dia-mR0rmIYHXdw",
+      "tema": "Espaço público",
+      "w": 1064,
+      "h": 798,
+      "sw": 640,
+      "sh": 480
+    },
+    "estrada-de-terra": {
+      "alt": "Dois cachorros correm lado a lado em uma estrada de terra ao pôr do sol",
+      "autor": "Alvan Nee",
+      "url": "https://unsplash.com/pt-br/fotografias/dois-caes-marrons-e-brancos-correndo-estrada-de-terra-durante-o-dia-T-0EW-SEbsE",
+      "tema": "Natureza",
+      "w": 1596,
+      "h": 1064,
+      "sw": 640,
+      "sh": 427
+    },
+    "gato-na-rua": {
+      "alt": "Gato rajado caminha por uma rua de pedra, com o rabo levantado",
+      "autor": "Gijs Coolen",
+      "url": "https://unsplash.com/pt-br/fotografias/gato-tabby-cinza-andando-na-estrada-qeeyFVkHy_U",
+      "tema": "Espaço público",
+      "w": 1064,
+      "h": 709,
+      "sw": 640,
+      "sh": 426
+    },
+    "gato-na-calcada": {
+      "alt": "Gato laranja caminha pela calçada de uma rua estreita, entre um muro e um carro estacionado",
+      "autor": "arh Lee",
+      "url": "https://unsplash.com/pt-br/fotografias/um-gato-laranja-caminha-por-uma-rua-estreita-N5NNCXkTgEA",
+      "tema": "Espaço público",
+      "w": 624,
+      "h": 1064,
+      "sw": 480,
+      "sh": 818
+    },
+    "gata-nas-folhas": {
+      "alt": "Gata branca e preta sentada na grama entre folhas secas, olhando para trás",
+      "autor": "Tolga Ahmetler",
+      "url": "https://unsplash.com/pt-br/fotografias/um-gato-preto-e-branco-sentado-na-grama-d6lbhI_ekBk",
+      "tema": "Natureza",
+      "w": 709,
+      "h": 1064,
+      "sw": 480,
+      "sh": 720
+    }
+  }
+}

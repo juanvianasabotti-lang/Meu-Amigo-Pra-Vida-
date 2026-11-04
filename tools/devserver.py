@@ -31,7 +31,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         path, _, query = self.path.partition("?")
         for rx, dest in REWRITES:
             if rx.match(path):
-                return dest
+                path = dest  # como no Vercel: o destino também passa pelas URLs limpas
+                break
         if path != "/" and not pathlib.Path(path).suffix and (PUBLIC / f"{path.lstrip('/')}.html").exists():
             return f"{path}.html"
         if path == "/":

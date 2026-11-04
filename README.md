@@ -1,4 +1,4 @@
-# Meu Amigo pra Vida 🐾
+# Meu Amigo pra Vida
 
 Plataforma de **conscientização, adoção e doação de cães e gatos**, uma ponte entre pessoas, ONGs/protetores e empresas do mundo animal.
 
@@ -22,15 +22,36 @@ public/                 → o site publicado (Vercel serve esta pasta)
     image.js            → editor de fotos (enquadramento padronizado 4:5, WebP)
     chat.js             → chat dos pedidos de adoção
     pages/*.js          → lógica de cada página
+  assets/js/fotos.js    → gerado pelo build a partir de src/data/fotos.json (não edite à mão)
+  assets/img/fotos      → fotos reais (pet shops, abrigos, ruas, natureza) em WebP, com versão -sm para celular
   assets/img, brand, fonts
 src/pages + src/partials → páginas-fonte; o build junta cabeçalho/rodapé
+src/data/fotos.json     → texto alternativo e crédito de cada foto real (fonte única dos créditos)
 tools/build.py          → gera public/*.html a partir de src/
 tools/devserver.py      → servidor local que imita o Vercel
-supabase/migrations     → estrutura completa do banco (8 migrações)
+supabase/migrations     → estrutura completa do banco (12 migrações, iguais às aplicadas no projeto)
 supabase/seed.sql       → categorias, 6 artigos e documentos legais
 supabase/tests          → testes automatizados das regras de segurança (Postgres local)
 vercel.json             → rotas amigáveis + cabeçalhos de segurança (CSP, HSTS…)
 ```
+
+## Experiência guiada (como as páginas "levam" a pessoa)
+
+Peças reutilizáveis, todas com versão sem animação para quem prefere movimento reduzido:
+
+| Marcação | O que faz |
+|---|---|
+| `data-chapter="Nome"` numa `<section>` | Com 3 ou mais capítulos, aparece o guia **Nesta página** abaixo do cabeçalho, marcando onde a pessoa está |
+| `<!--foto nome class="ratio-43" pos="50% 30%" tag="Na rua" sub="…"-->` | O build troca pelo `<figure>` com a foto real, `srcset`, texto alternativo e crédito. A foto entra subindo e anda um pouco com a rolagem |
+| `<!--creditos-->` | Lista de créditos de todas as fotos (usada em Sobre → Créditos das fotos) |
+| `.story` + `data-story` | História em etapas: no computador a foto fica parada ao lado e troca conforme o texto passa |
+| `.hscroll` + `data-hscroll` | Faixa horizontal: no computador a rolagem para baixo leva os cartões para o lado; no celular vira um carrossel de arrastar |
+| `data-process` | Linha numerada que se preenche com a rolagem |
+| `data-help` + `data-peek` | Linhas editoriais com a foto que acompanha o mouse |
+| `data-count-to="184960"` | Número com fonte que conta ao aparecer |
+| `.faq` com `<details>` | Perguntas frequentes |
+
+Para trocar ou incluir uma foto: salve `nome.webp` e `nome-sm.webp` em `public/assets/img/fotos/`, registre o texto alternativo e o crédito em `src/data/fotos.json` e rode o build.
 
 ## Rodar localmente
 
@@ -109,15 +130,17 @@ São mais de 30 verificações de segurança: tentativas de autopromoção a adm
 
 ## Créditos das imagens
 
-- Cães: material da apresentação da marca (PDF).
-- Gatos: fotos do [Unsplash](https://unsplash.com) (licença Unsplash, uso livre), com fundo removido.
+- Cães recortados: material da apresentação da marca (PDF).
+- Gatos recortados: fotos do [Unsplash](https://unsplash.com) (licença Unsplash, uso livre), com fundo removido.
+- Fotos de lugares reais (pet shops, banho e tosa, clínica, abrigo, ruas e natureza): 17 fotos do [Unsplash](https://unsplash.com/license) (licença Unsplash, uso livre inclusive comercial). Autor e link de cada uma em `src/data/fotos.json` e na página **Sobre → Créditos das fotos**.
+- Dado do Instituto Pet Brasil (página ONGs): citado pelo [Jornal do Comércio, jan. 2024](https://www.jornaldocomercio.com/geral/2024/01/1139363-numero-de-animais-abandonados-e-acolhidos-por-ongs-cresce-no-brasil.html).
 - Fonte Poppins: SIL Open Font License.
 
 ---
 
 ### Modelos de e-mail sugeridos (Supabase → Auth → Email Templates)
 
-**Confirmar cadastro**: assunto: `Confirme seu cadastro no Meu Amigo pra Vida 🐾`
+**Confirmar cadastro**: assunto: `Confirme seu cadastro no Meu Amigo pra Vida`
 ```html
 <h2>Que alegria ter você com a gente!</h2>
 <p>Clique no botão abaixo para confirmar seu e-mail e ativar sua conta.</p>
