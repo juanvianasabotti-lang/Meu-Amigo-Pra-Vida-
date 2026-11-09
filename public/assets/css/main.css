@@ -394,6 +394,47 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .prose th { background: var(--preto); color: var(--branco); }
 .prose hr { border: 0; border-top: 3px dashed var(--line); margin: 2em 0; }
 
+/* ---------- Página de artigo (leitura) ---------- */
+.read-progress { position: sticky; top: 0; z-index: 20; height: 8px; background: transparent; margin-inline: -4px; }
+.read-progress span { display: block; height: 100%; width: 0; background: var(--laranja); border-radius: 0 999px 999px 0; transition: width .15s linear; }
+.post-hero { position: relative; overflow: hidden; border-radius: var(--radius-xl); border: 3px solid var(--preto); background: var(--post-bg, var(--laranja)); color: var(--branco); padding: clamp(28px, 5vw, 56px); margin-top: 12px; isolation: isolate; }
+.post-hero.cat-amarelo, .post-hero.cat-amarelo .post-cat { color: var(--preto); }
+.post-hero .h1 { max-width: 20ch; margin-top: .5rem; }
+.post-hero .lead { color: inherit; opacity: .95; margin-top: .8rem; max-width: 60ch; }
+.post-back { color: inherit; }
+.post-cat { display: inline-block; margin-top: 12px; background: var(--branco); color: var(--preto); border: 2px solid var(--preto); box-shadow: 0 3px 0 var(--preto); text-decoration: none; }
+.post-meta { margin: 1.2rem 0 0; font-weight: 700; font-size: .92rem; }
+.post-cover-fig { margin: 28px 0 0; }
+.post-cover-fig img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--radius-lg); border: 3px solid var(--preto); box-shadow: var(--shadow-pop-sm); background: var(--creme); }
+.post-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; margin-top: 40px; }
+.post-body { max-width: 68ch; margin-inline: auto; width: 100%; }
+.post-body > p:first-of-type::first-letter { float: left; font-size: 4.3em; line-height: .85; font-weight: 900; color: var(--laranja); padding: .08em .12em 0 0; }
+.post-body h2 { position: relative; padding-top: .3em; }
+.post-body h2::before { content: ""; position: absolute; left: 0; top: 0; width: 56px; height: 8px; border-radius: 999px; background: var(--rosa); }
+.post-body h2 { margin-top: 2.2em; }
+.post-body blockquote { border-left: 10px solid var(--laranja); }
+.post-body ul { list-style: none; padding-left: 0; }
+.post-body ul li { position: relative; padding-left: 1.9em; }
+.post-body ul li::before { content: ""; position: absolute; left: 0; top: .5em; width: .9em; height: .9em; border-radius: 50%; background: var(--amarelo); border: 2px solid var(--preto); }
+.post-body ol li::marker { color: var(--azul); }
+.post-toc-box { margin-bottom: 8px; }
+.post-toc-box summary { font-weight: 800; cursor: pointer; padding: 10px 0; list-style-position: inside; }
+.post-toc-box nav ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; counter-reset: toc; }
+.post-toc-box nav a { display: block; padding: 8px 12px; border-radius: 12px; font-weight: 600; text-decoration: none; color: var(--preto); border: 2px solid transparent; }
+.post-toc-box nav a:hover, .post-toc-box nav a:focus-visible { border-color: var(--preto); background: var(--branco); }
+.post-toc-box nav li { font-size: .95rem; }
+@media (min-width: 1100px) {
+  .post-layout { grid-template-columns: 220px minmax(0, 1fr); gap: 56px; align-items: start; }
+  .post-toc { display: block; position: sticky; top: 110px; }
+  .post-toc-box summary { display: none; }
+  .post-toc-box nav { border-left: 3px solid var(--preto); padding-left: 14px; }
+  .post-body { margin-inline: 0; }
+}
+.prose-fig { margin: 2.2em 0; }
+.prose-fig img, .prose-fig video { display: block; width: 100%; height: auto; border-radius: var(--radius-lg); border: 3px solid var(--preto); box-shadow: var(--shadow-pop-sm); background: var(--creme); }
+.prose-fig figcaption { margin-top: 10px; font-size: .9rem; color: var(--cinza); font-weight: 600; }
+.prose-video video { aspect-ratio: 16 / 9; object-fit: cover; }
+
 /* ---------- Organizações / parceiros ---------- */
 .org-card { display: flex; flex-direction: column; gap: 14px; text-decoration: none; background: var(--branco); border: 3px solid var(--preto); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-pop); transition: transform .4s var(--ease-bounce); }
 .org-card:hover { transform: translateY(-6px); }

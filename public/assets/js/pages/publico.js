@@ -166,6 +166,48 @@ async function blogPage() {
   } catch (e) { box.style.display = "block"; box.innerHTML = errorState(e); }
 }
 
+// Índice "Neste artigo" a partir dos subtítulos (h2) do texto
+function slugHeading(t) {
+  return String(t).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "secao";
+}
+function decorateArticle(box) {
+  const prose = box.querySelector(".prose");
+  if (!prose) return;
+  const heads = [...prose.querySelectorAll("h2")];
+  heads.forEach((h, k) => { h.id = `${slugHeading(h.textContent)}-${k + 1}`; });
+  const toc = box.querySelector("[data-toc]");
+  if (toc && heads.length >= 2) {
+    const items = heads.map((h) => `<li><a href="#${h.id}">${esc(h.textContent)}</a></li>`).join("");
+    toc.innerHTML = `<details class="post-toc-box" open><summary>Neste artigo</summary><nav aria-label="Neste artigo"><ol>${items}</ol></nav></details>`;
+    const det = toc.querySelector("details");
+    det.open = matchMedia("(min-width: 1100px)").matches;
+  } else if (toc) toc.remove();
+  // Barra de progresso de leitura
+  const bar = box.querySelector(".read-progress span");
+  if (bar && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const r = prose.getBoundingClientRect();
+      const total = r.height - window.innerHeight * 0.4;
+      const done = Math.min(Math.max(-r.top + window.innerHeight * 0.3, 0), Math.max(total, 1));
+      bar.style.width = `${Math.round((done / Math.max(total, 1)) * 100)}%`;
+    };
+    window.addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    update();
+  }
+  // Vídeos tocam só quando estão na tela, e não tocam com movimento reduzido
+  const vids = [...prose.querySelectorAll("video")];
+  if (vids.length && "IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const io = new IntersectionObserver((entries) => entries.forEach((en) => {
+      const v = en.target;
+      if (en.isIntersecting && en.intersectionRatio >= 0.5) v.play().catch(() => {});
+      else v.pause();
+    }), { threshold: [0, 0.5] });
+    vids.forEach((v) => io.observe(v));
+  }
+}
+
 async function postPage() {
   const box = $("[data-post]");
   const slug = slugFromPath("blog");
@@ -174,14 +216,22 @@ async function postPage() {
     if (!p) { box.innerHTML = emptyState({ title: "Artigo não encontrado", text: "Veja os outros conteúdos.", cta: `<a class="btn" href="/blog">Ver artigos</a>` }); return; }
     setMeta(p.title, p.excerpt);
     const color = p.blog_categories?.color || "laranja";
-    box.innerHTML = `<a class="link small" href="/blog">← Conscientização</a>
-      <header class="mt-3 mb-3" data-reveal="up">${p.blog_categories ? `<a class="chip chip-${esc(color)}" href="/blog?categoria=${esc(p.blog_categories.slug)}" style="text-decoration:none;border:2px solid var(--preto)">${esc(p.blog_categories.name)}</a>` : ""}
-        <h1 class="h1 mt-2">${esc(p.title)}</h1><p class="lead">${esc(p.excerpt)}</p>
-        <p class="small muted">${esc(fmtDateLong(p.published_at))} · ${esc(p.reading_minutes)} min de leitura</p></header>
-      ${p.cover_url ? `<img src="${esc(p.cover_url)}" alt="${esc(p.cover_alt || "")}" style="width:100%;border-radius:var(--radius-lg);border:3px solid var(--preto);margin-bottom:32px">` : ""}
-      <div class="prose">${markdown(p.content_md, { allowExternal: true })}</div>
+    box.innerHTML = `<div class="read-progress" aria-hidden="true"><span></span></div>
+      <header class="post-hero cat-${esc(color)}" data-reveal="up">
+        <a class="link small post-back" href="/blog">← Conscientização</a>
+        ${p.blog_categories ? `<a class="chip post-cat" href="/blog?categoria=${esc(p.blog_categories.slug)}">${esc(p.blog_categories.name)}</a>` : ""}
+        <h1 class="h1">${esc(p.title)}</h1>
+        <p class="lead">${esc(p.excerpt)}</p>
+        <p class="post-meta">${esc(fmtDateLong(p.published_at))} · ${esc(p.reading_minutes)} min de leitura</p>
+      </header>
+      ${p.cover_url ? `<figure class="post-cover-fig" data-reveal="up"><img src="${esc(p.cover_url)}" alt="${esc(p.cover_alt || "")}" width="1200" height="800" decoding="async"></figure>` : ""}
+      <div class="post-layout">
+        <aside class="post-toc" data-toc></aside>
+        <div class="prose post-body">${markdown(p.content_md, { allowExternal: true })}</div>
+      </div>
       ${p.tags?.length ? `<div class="chips mt-3">${p.tags.map((t) => `<span class="chip chip-soft">#${esc(t)}</span>`).join("")}</div>` : ""}
       <div class="card card-pad mt-4 flex justify-between items-center wrap gap-2" style="background:var(--amarelo)"><div><h2 class="h3 mb-0">Pronto para mudar uma vida?</h2><p class="mb-0">Conheça os amigos que esperam por um lar.</p></div><a class="btn" href="/adote">Ver animais <span class="arrow">→</span></a></div>`;
+    decorateArticle(box);
     const { data: more } = await sb.from("blog_posts").select("slug,title,excerpt,cover_url,cover_alt,published_at,reading_minutes,blog_categories(name,color)")
       .eq("status", "publicado").neq("id", p.id).order("published_at", { ascending: false }).limit(3);
     if (more?.length) { $("[data-more]").innerHTML = more.map(postCard).join(""); $("[data-more-wrap]").classList.remove("hidden"); }

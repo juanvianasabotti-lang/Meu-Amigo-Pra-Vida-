@@ -357,6 +357,8 @@ function inline(md, allowExternal = false) {
   });
   return s;
 }
+// Mídia local permitida em artigos: só arquivos dentro de /assets/, sem subir pastas
+const safeMedia = (v) => (typeof v === "string" && /^\/assets\/[\w\-./]+$/.test(v) && !v.includes("..") ? v : "");
 export function markdown(md, { allowExternal = false } = {}) {
   const lines = String(md || "").replace(/\r\n?/g, "\n").split("\n");
   const out = [];
@@ -367,6 +369,20 @@ export function markdown(md, { allowExternal = false } = {}) {
     let m;
     if ((m = line.match(/^(#{2,4})\s+(.*)$/))) { const n = m[1].length; out.push(`<h${n}>${inline(m[2], allowExternal)}</h${n}>`); i++; continue; }
     if (/^---+\s*$/.test(line)) { out.push("<hr>"); i++; continue; }
+    // Mídia em artigos: ![legenda](/assets/img/...) e !video[legenda](/assets/video/x.mp4|/assets/img/poster.webp)
+    if ((m = line.match(/^!video\[([^\]]*)\]\(([^)\s|]+)(?:\|([^)\s]+))?\)\s*$/))) {
+      const cap = m[1], src = safeMedia(m[2]), poster = safeMedia(m[3] || "");
+      if (src && /\.mp4$/i.test(src)) {
+        const webm = src.replace(/\.mp4$/i, ".webm");
+        out.push(`<figure class="prose-fig prose-video"><video muted loop playsinline controls preload="metadata"${poster ? ` poster="${esc(poster)}"` : ""} aria-label="${esc(cap)}"><source src="${esc(webm)}" type="video/webm"><source src="${esc(src)}" type="video/mp4"></video><figcaption>${esc(cap)}</figcaption></figure>`);
+      }
+      i++; continue;
+    }
+    if ((m = line.match(/^!\[([^\]]*)\]\(([^)\s]+)\)\s*$/))) {
+      const src = safeMedia(m[2]);
+      if (src) out.push(`<figure class="prose-fig"><img src="${esc(src)}" alt="${esc(m[1])}" loading="lazy" decoding="async"><figcaption>${esc(m[1])}</figcaption></figure>`);
+      i++; continue;
+    }
     if (/^>\s?/.test(line)) {
       const buf = [];
       while (i < lines.length && /^>\s?/.test(lines[i])) { buf.push(lines[i].replace(/^>\s?/, "")); i++; }
