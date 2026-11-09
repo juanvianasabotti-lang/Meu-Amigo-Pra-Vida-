@@ -214,6 +214,8 @@ sb.auth.onChange((event) => {
 setupHeader();
 setupRibbons();
 observeReveal();
+// Entrada do cabeçalho das páginas internas (mesma sequência da página inicial)
+$$(".page-hero").forEach((h) => setTimeout(() => h.classList.add("is-in"), 500));
 renderUserArea();
 $$("[data-year]").forEach((el) => { el.textContent = new Date().getFullYear(); });
 
