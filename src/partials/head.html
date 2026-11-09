@@ -4,18 +4,28 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="google-site-verification" content="x_UG8Rc3jjHF0ajDTEaXFwfx_0qYFaPLfsLJcp1iWQ8" />
+  {{intro_gate}}
   <title>{{title}}</title>
   <meta name="description" content="{{description}}">
+  {{canonical_tag}}
   <meta name="theme-color" content="#FA560A">
   <meta name="robots" content="{{robots}}">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="{{og_type}}">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:site_name" content="Meu Amigo pra Vida">
   <meta property="og:title" content="{{title}}">
   <meta property="og:description" content="{{description}}">
-  <meta property="og:image" content="/assets/img/og-image.jpg">
+  {{og_url_tag}}
+  <meta property="og:image" content="{{og_image}}">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="{{og_image}}">
+  {{extra_head}}
+  <script type="application/ld+json">{{jsonld}}</script>
+  <meta name="application-name" content="Meu Amigo pra Vida">
+  <meta name="apple-mobile-web-app-title" content="Meu Amigo pra Vida">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon-48.png" type="image/png" sizes="48x48">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preload" href="/assets/fonts/poppins-bold.woff" as="font" type="font/woff" crossorigin>
   <link rel="preload" href="/assets/fonts/poppins-regular.woff" as="font" type="font/woff" crossorigin>
   <link rel="stylesheet" href="/assets/css/main.css?v={{version}}">

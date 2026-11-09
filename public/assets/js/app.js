@@ -602,20 +602,41 @@ sb.auth.onChange((event) => {
   if (event === "SIGNED_OUT" || event === "SIGNED_IN") { ctxPromise = null; renderUserArea(); }
 });
 
+// Abertura animada do logo: o intro-gate.js (no <head>) decide se ela toca nesta página.
+// Ela pode ser pulada com clique, Esc, Enter ou espaço; as entradas da página esperam por ela.
+function openingIntro() {
+  const intro = $(".lt-intro");
+  if (!intro || reduceMotion || !document.documentElement.classList.contains("intro-play")) return null;
+  return new Promise((resolve) => {
+    let finished = false;
+    const onKey = (e) => { if (e.key === "Escape" || e.key === "Enter" || e.key === " ") skip(); };
+    const finish = () => { if (!finished) { finished = true; document.removeEventListener("keydown", onKey); resolve(); } };
+    const skip = () => { document.body.style.setProperty("--lt-d", "0s"); document.body.classList.add("lt-skip"); finish(); };
+    intro.addEventListener("click", skip);
+    document.addEventListener("keydown", onKey);
+    setTimeout(finish, 2050); // a abertura começa a subir aos 2,05 s (lti-out no main.css)
+  });
+}
+
+function entrances() {
+  splitWords();
+  observeReveal();
+  drawLoops();
+  posters();
+  photos();
+  countOnView();
+}
+
 setupHeader();
 headerHeight();
 setupRibbons();
-splitWords();
-observeReveal();
-drawLoops();
+const opening = openingIntro();
+if (opening) opening.then(entrances); else entrances();
 magnets();
-posters();
-photos();
 processLines();
 stories();
 hscrolls();
 peekRows();
-countOnView();
 chapterGuide();
 pageProgress();
 footerFx();

@@ -2,7 +2,7 @@
 import { observeReveal, photos } from "../app.js";
 import sb from "../sb.js";
 import {
-  $, $$, esc, icons, L, ufOptions, slugFromPath, markdown, fmtDateLong, fmtDateTime, toast, withLoading,
+  $, $$, esc, noindex, icons, L, ufOptions, slugFromPath, markdown, fmtDateLong, fmtDateTime, toast, withLoading,
   setFieldError, clearErrors, focusFirstError, isValidEmail, masks, qs,
 } from "../ui.js";
 import {
@@ -95,7 +95,7 @@ async function orgPage() {
   const slug = slugFromPath("organizacao");
   try {
     const { data: o } = await sb.from("organizations").select(ORG_PUBLIC_COLS).eq("slug", slug).eq("status", "aprovada").maybeSingle();
-    if (!o) { box.innerHTML = emptyState({ title: "Organização não encontrada", text: "Ela pode não estar mais ativa.", cta: `<a class="btn" href="/ongs">Ver ONGs</a>` }); return; }
+    if (!o) { noindex(); box.innerHTML = emptyState({ title: "Organização não encontrada", text: "Ela pode não estar mais ativa.", cta: `<a class="btn" href="/ongs">Ver ONGs</a>` }); return; }
     const isOng = ["ong", "protetor_independente"].includes(o.kind);
     setMeta(o.trade_name, o.tagline || o.description || "");
     const [{ data: animals }, { data: events }] = await Promise.all([
@@ -167,7 +167,7 @@ async function eventPage() {
   const slug = slugFromPath("eventos");
   try {
     const { data: e } = await sb.from("events").select(`${EVENT_PUBLIC_COLS},organizations(slug,trade_name,logo_url,kind)`).eq("slug", slug).maybeSingle();
-    if (!e || !["publicado", "encerrado"].includes(e.status)) { box.innerHTML = emptyState({ title: "Evento não encontrado", text: "Confira a agenda completa.", cta: `<a class="btn" href="/eventos">Ver eventos</a>` }); return; }
+    if (!e || !["publicado", "encerrado"].includes(e.status)) { noindex(); box.innerHTML = emptyState({ title: "Evento não encontrado", text: "Confira a agenda completa.", cta: `<a class="btn" href="/eventos">Ver eventos</a>` }); return; }
     setMeta(e.title, e.summary);
     const where = e.is_online ? "Online" : [e.location_name, e.address, e.city && `${e.city} - ${e.state}`].filter(Boolean).join(" · ");
     box.innerHTML = `<a class="link small" href="/eventos">← Agenda</a>
@@ -229,6 +229,18 @@ function readProgress() {
   on();
 }
 
+// Vídeos do texto: tocam sem som só quando aparecem na tela e param fora dela;
+// com "menos movimento" ligado, não tocam sozinhos (os controles continuam).
+function articleVideos(main) {
+  const vids = $$("video", main);
+  if (!vids.length || !("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (e.isIntersecting && e.intersectionRatio >= 0.5) e.target.play().catch(() => {});
+    else e.target.pause();
+  }), { threshold: [0, 0.5] });
+  vids.forEach((v) => io.observe(v));
+}
+
 // Insere fotos reais entre as seções do texto (a cada 2 subtítulos), com descrição e crédito.
 function interleaveImages(main, seed) {
   const h2s = [...main.querySelectorAll("h2")];
@@ -247,7 +259,7 @@ async function postPage() {
   const slug = slugFromPath("blog");
   try {
     const { data: p } = await sb.from("blog_posts").select("*,blog_categories(name,slug,color)").eq("slug", slug).maybeSingle();
-    if (!p) { box.innerHTML = emptyState({ title: "Artigo não encontrado", text: "Veja os outros conteúdos.", cta: `<a class="btn" href="/blog">Ver artigos</a>` }); return; }
+    if (!p) { noindex(); box.innerHTML = emptyState({ title: "Artigo não encontrado", text: "Veja os outros conteúdos.", cta: `<a class="btn" href="/blog">Ver artigos</a>` }); return; }
     setMeta(p.title, p.excerpt);
     const color = p.blog_categories?.color || "laranja";
     const seed = p.slug || "x";
@@ -286,6 +298,7 @@ async function postPage() {
     const main = $(".art-main", box);
     interleaveImages(main, seed);
     readProgress();
+    articleVideos(main);
     const { data: more } = await sb.from("blog_posts").select("slug,title,excerpt,cover_url,cover_alt,published_at,reading_minutes,blog_categories(name,color)")
       .eq("status", "publicado").neq("id", p.id).order("published_at", { ascending: false }).limit(3);
     if (more?.length) { $("[data-more]").innerHTML = more.map(postCard).join(""); $("[data-more-wrap]").classList.remove("hidden"); }

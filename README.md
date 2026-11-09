@@ -65,8 +65,24 @@ Depois de editar algo em `src/pages` ou `src/partials`, rode `python3 tools/buil
 ## Publicar no Vercel
 
 1. Em vercel.com → **Add New → Project** → importe o repositório `Meu-Amigo-Pra-Vida-`.
-2. Framework: **Other**. Build command: *(vazio)*. Output directory: **public**.
-3. Deploy. Cada `git push` publica automaticamente.
+2. O `vercel.json` já define tudo: framework **Other**, build `python3 tools/build.py`, saída **public**.
+3. Deploy. Cada `git push` na `main` publica automaticamente.
+
+O build no Vercel lê os artigos e os documentos legais publicados no Supabase (só o que a leitura
+pública permite) e gera as versões estáticas deles. Se a leitura falhar, o deploy segue e essas
+páginas ficam só na versão montada pelo navegador (o log do build mostra um AVISO).
+
+## SEO, buscadores e assistentes de IA
+
+- **Domínio oficial:** `SITE_URL` em `tools/build.py` (hoje `https://www.meuamigopravida.com.br`). Links canônicos, sitemap, `robots.txt`, `llms.txt` e dados estruturados usam esse valor.
+- **Gerado a cada build:** dados estruturados `WebSite` e `Organization` (nome e variações da marca) em todas as páginas; `Article` e `BreadcrumbList` nos artigos; `public/blog/<slug>.html` com o texto do artigo no HTML inicial (a pasta não vai para o git); a lista de artigos em `/blog`; o texto de `/privacidade` e `/termos`; `sitemap.xml`; `robots.txt`; `llms.txt` (modelo em `src/static/llms.txt`).
+- **Artigos novos ou editados:** a versão estática só muda no próximo deploy. Para automatizar, crie um Deploy Hook no Vercel e dispare-o quando `blog_posts` mudar.
+- **Teste sem internet:** `BLOG_JSON_FILE=artigos.json LEGAL_JSON_FILE=docs.json python3 tools/build.py` (mesmo formato da API do Supabase).
+- **Páginas que não existem** (animal, ONG, evento ou artigo removido) recebem `noindex` pelo JavaScript.
+
+## Abertura animada do logo
+
+A mesma abertura da página `/links` toca uma vez por sessão, só na primeira página visitada e só nas páginas de entrada (`INTRO_PAGES` em `tools/build.py`: início, adote, doe, ONGs, parceiros, eventos, conscientização, sobre e links). O `public/assets/js/intro-gate.js`, no `<head>`, decide antes de a página aparecer: não toca para quem chega de um buscador (Google, Bing e outros), para quem pede menos movimento nem em artigos, animais, ONGs e eventos. Ela pode ser pulada com clique, Esc, Enter ou espaço, e as animações de entrada da página esperam a abertura terminar.
 
 ## Configurações obrigatórias no Supabase (painel)
 

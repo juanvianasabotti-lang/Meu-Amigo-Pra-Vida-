@@ -1,0 +1,53 @@
+# Meu Amigo pra Vida
+
+> O Meu Amigo pra Vida (também escrito Meu Amigo Pra Vida ou Meu Amigo para Vida) é uma plataforma brasileira de conscientização, adoção e doação de cães e gatos. Conecta pessoas a animais anunciados por ONGs, protetores e doadores, e a empresas do setor pet, como pet shops, clínicas e hotéis. ONGs, protetores e empresas são verificados pela equipe, e os anúncios passam por moderação antes de ir ao ar.
+
+O site não é uma loja e não vende animais: a venda é proibida e anúncios de venda são removidos. Também não recebe nem repassa doações em dinheiro.
+
+**Como adotar.** É preciso ter 18 anos ou mais e conta de pessoa física. O pedido tem um questionário sobre moradia, rotina, motivação e custos, e segue as etapas de análise, entrevista, visita e decisão. O CPF é pedido só no envio do pedido, e o responsável pelo anúncio o vê a partir da entrevista, com registro de acesso.
+
+**Como doar um animal.** Doar é gratuito. O anúncio passa por moderação, recebe pedidos com o questionário de adoção, e a família é escolhida pelo chat, sem expor o telefone de quem anuncia. Pessoas físicas podem manter até 5 anúncios ativos.
+
+**ONGs e protetores.** Anunciam animais, recebem pedidos com o questionário, conversam com os interessados pelo chat, podem exibir chave Pix e divulgar campanhas e eventos. O cadastro tem duas etapas: CNPJ (ou CPF, para protetor independente), endereço e, se quiserem, chave Pix. A organização só aparece após a aprovação da equipe.
+
+**Empresas.** Pet shops, clínicas, banho e tosa, hotéis e outras empresas do setor participam pela vitrine de parceiros, campanhas e eventos. Empresas não cadastram animais. A vitrine é publicada depois da verificação pela equipe, e a participação não tem planos pagos.
+
+**Privacidade.** Os dados pessoais seguem a Lei Geral de Proteção de Dados (LGPD). Controlador: Meu Amigo pra Vida. Encarregado (DPO): diogo@agenciagryd.com. Em Minha conta, o titular baixa seus dados, revoga consentimentos e exclui a conta.
+
+**Perguntas frequentes**
+
+- **O que é o Meu Amigo pra Vida?** Uma plataforma de conscientização, adoção e doação de cães e gatos, que conecta pessoas a animais de ONGs, protetores e doadores verificados e a empresas do setor pet.
+- **O site cobra para adotar?** Não. A doação de animais é gratuita. O responsável pelo anúncio só pode pedir reembolso comprovado de despesas veterinárias, de forma transparente, se a ONG adotar essa prática.
+- **O site vende animais?** Não. É proibido vender animais ou cobrar qualquer valor pela doação, e anúncios de venda são removidos.
+- **Quem pode adotar?** Pessoas físicas com 18 anos ou mais, com conta e pedido enviado pelo questionário.
+- **Como sei que uma ONG é verificada?** Toda ONG, protetor ou empresa passa por análise manual da equipe, com documento e endereço. Só as aprovadas aparecem publicamente.
+- **Posso doar dinheiro pelo site?** Não diretamente. Doações em dinheiro vão via Pix para a chave da própria ONG, quando ela a exibe na página; o Meu Amigo pra Vida não recebe nem repassa esses valores.
+- **Posso anunciar um animal que preciso doar?** Sim. O anúncio passa por moderação antes de ir ao ar, e você recebe os pedidos com o questionário de adoção responsável.
+
+Contato geral: ola@meuamigopravida.com.br. Instagram oficial: @meuamigopravida.
+
+## Páginas principais
+
+- [Início](https://www.meuamigopravida.com.br/): o que é a plataforma e como ela funciona.
+- [Adote](https://www.meuamigopravida.com.br/adote): cães e gatos disponíveis, com filtros por espécie, porte, idade, sexo, estado e busca.
+- [Doe](https://www.meuamigopravida.com.br/doar): como anunciar um animal com segurança e como apoiar uma ONG.
+- [ONGs e protetores](https://www.meuamigopravida.com.br/ongs): organizações verificadas, com chave Pix quando disponível.
+- [Empresas parceiras](https://www.meuamigopravida.com.br/parceiros): vitrine das empresas que apoiam a adoção responsável.
+- [Campanhas e eventos](https://www.meuamigopravida.com.br/eventos): feiras de adoção, castrações e vacinação.
+- [Sobre nós](https://www.meuamigopravida.com.br/sobre): missão, valores e como a plataforma funciona.
+- [Criar conta](https://www.meuamigopravida.com.br/cadastro): cadastro de pessoa, ONG/protetor ou empresa.
+- [Fale conosco](https://www.meuamigopravida.com.br/contato): dúvidas, parcerias, imprensa, privacidade e denúncias de anúncios.
+
+## Guias do blog
+
+- [Conscientização](https://www.meuamigopravida.com.br/blog): todos os artigos do blog.
+
+## Privacidade e termos
+
+- [Política de Privacidade](https://www.meuamigopravida.com.br/privacidade): dados coletados, finalidades e direitos do titular.
+- [Termos de Uso](https://www.meuamigopravida.com.br/termos): regras de uso da plataforma, de adoção, de anúncios e de parcerias.
+
+## Optional
+
+- [Instagram @meuamigopravida](https://www.instagram.com/meuamigopravida): perfil oficial.
+- [Links](https://www.meuamigopravida.com.br/links): atalhos para adotar, doar, apoiar uma ONG e falar com a equipe.

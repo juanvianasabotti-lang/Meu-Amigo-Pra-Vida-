@@ -1,7 +1,8 @@
+# Meu Amigo pra Vida
+# Buscadores e assistentes de IA podem ler todo o site. Páginas de conta, painel,
+# login e cadastro ficam fora dos resultados com a meta robots noindex (por isso não
+# são bloqueadas aqui: o buscador precisa abri-las para ler o noindex).
 User-agent: *
 Allow: /
-Disallow: /minha-conta
-Disallow: /painel
-Disallow: /admin
-Disallow: /adotar/
-Disallow: /auth/
+
+Sitemap: https://www.meuamigopravida.com.br/sitemap.xml

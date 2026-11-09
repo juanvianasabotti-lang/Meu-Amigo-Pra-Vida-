@@ -1,6 +1,6 @@
 import { observeReveal, getContext } from "../app.js";
 import sb from "../sb.js";
-import { $, $$, esc, icons, L, slugFromPath, fmtDate, markdown } from "../ui.js";
+import { $, $$, esc, noindex, icons, L, slugFromPath, fmtDate, markdown } from "../ui.js";
 import { ANIMAL_CARD_COLS, ANIMAL_PUBLIC_COLS, petCard, bindFavorites, photoUrl, errorState, emptyState, pixBox, bindCopy } from "../components.js";
 
 const root = $("[data-animal]");
@@ -13,7 +13,7 @@ function healthItem(ok, label) {
 }
 
 async function render() {
-  if (!slug) { root.innerHTML = emptyState({ title: "Animal não encontrado", text: "Confira o endereço ou volte para a lista.", cta: `<a class="btn" href="/adote">Ver todos</a>` }); return; }
+  if (!slug) { noindex(); root.innerHTML = emptyState({ title: "Animal não encontrado", text: "Confira o endereço ou volte para a lista.", cta: `<a class="btn" href="/adote">Ver todos</a>` }); return; }
   let a;
   try {
     const r = await sb.from("animals")
@@ -22,6 +22,7 @@ async function render() {
     a = r.data;
   } catch (e) { root.innerHTML = errorState(e); return; }
   if (!a) {
+    noindex();
     root.innerHTML = emptyState({ title: "Esse amigo não está mais disponível", text: "Ele pode já ter encontrado um lar ou o anúncio foi retirado. Que tal conhecer outros?", cta: `<a class="btn btn-laranja" href="/adote">Ver outros amigos</a>` });
     return;
   }

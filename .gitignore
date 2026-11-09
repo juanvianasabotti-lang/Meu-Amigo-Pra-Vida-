@@ -8,3 +8,5 @@ __pycache__/
 .vercel
 supabase/.temp/
 graphify-out/
+# páginas estáticas dos artigos: geradas no build do Vercel a partir do banco
+public/blog/
