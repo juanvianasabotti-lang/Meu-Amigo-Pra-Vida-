@@ -233,7 +233,7 @@ async function loadPosts() {
 
 async function loadEvents() {
   try {
-    const { data } = await sb.from("events").select("slug,title,summary,kind,starts_at,is_online,location_name,city,state,organizations(trade_name)")
+    const { data } = await sb.from("events").select("slug,title,summary,kind,starts_at,is_online,location_name,city,state,organizer_name,organizations(trade_name)")
       .eq("status", "publicado").gte("starts_at", new Date(Date.now() - 86400000).toISOString()).order("starts_at").limit(3);
     if (data?.length) {
       $("[data-home-events]").innerHTML = data.map(eventCard).join("");

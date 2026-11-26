@@ -1,7 +1,7 @@
 import { observeReveal, getContext } from "../app.js";
 import sb from "../sb.js";
 import { $, $$, esc, noindex, icons, L, slugFromPath, fmtDate, markdown } from "../ui.js";
-import { ANIMAL_CARD_COLS, ANIMAL_PUBLIC_COLS, petCard, bindFavorites, photoUrl, errorState, emptyState, pixBox, bindCopy } from "../components.js";
+import { ANIMAL_CARD_COLS, ANIMAL_PUBLIC_COLS, petCard, bindFavorites, photoUrl, errorState, emptyState, pixBox, bindCopy, teamContact } from "../components.js";
 
 const root = $("[data-animal]");
 const slug = slugFromPath("adote");
@@ -32,7 +32,8 @@ async function render() {
   const photos = (a.animal_photos || []).sort((x, y) => (y.is_cover - x.is_cover) || (x.position - y.position));
   const ctx = await getContext();
   const isOwner = Boolean(a.owner_id) && ctx.profile?.id === a.owner_id;
-  const canApply = ["disponivel", "em_processo"].includes(a.status) && !isOwner;
+  const team = a.posted_by_team;
+  const canApply = ["disponivel", "em_processo"].includes(a.status) && (team || !isOwner);
   const traits = (a.personality || []).map((t) => `<span class="chip chip-amarelo">${esc(t)}</span>`).join("");
   const comp = [
     yesNo(a.good_with_children, "Convive bem com crianças", "Melhor sem crianças pequenas"),
@@ -65,7 +66,8 @@ async function render() {
         <div class="fact"><small>Raça</small><strong>${esc(a.breed)}</strong></div>
       </div>
       ${traits ? `<div class="chips mb-3">${traits}</div>` : ""}
-      ${canApply ? `<div class="flex gap-1 wrap">
+      ${canApply && team ? `${teamContact(a)}<div class="flex gap-1 wrap mt-2"><button class="btn btn-branco btn-sm" type="button" data-share>${icons.heart} Compartilhar</button></div>`
+        : canApply ? `<div class="flex gap-1 wrap">
           <a class="btn btn-laranja" href="/adotar/${esc(a.slug)}" data-paws>Quero adotar ${esc(a.name)} <span class="arrow">→</span></a>
           <button class="btn btn-branco" type="button" data-share>${icons.heart} Compartilhar</button>
         </div>
@@ -75,7 +77,7 @@ async function render() {
       <div class="card card-pad mt-3" style="box-shadow:var(--shadow-pop-sm)">
         <p class="small muted mb-0">Anunciado por</p>
         <p class="bold mb-0">${org ? `<a class="link" href="/organizacao/${esc(org.slug)}">${esc(org.trade_name)}</a> · ${esc(L.orgKind[org.kind])}` : esc(a.publisher_name)}</p>
-        ${org ? `<p class="small muted mb-0">Organização verificada pela nossa equipe</p>` : `<p class="small muted mb-0">Anúncio de pessoa física revisado pela moderação.</p>`}
+        ${org ? `<p class="small muted mb-0">Organização verificada pela nossa equipe</p>` : team ? `<p class="small muted mb-0">Anúncio publicado pela equipe do site.</p>` : `<p class="small muted mb-0">Anúncio de pessoa física revisado pela moderação.</p>`}
       </div>
     </div>
   </div>
