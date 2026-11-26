@@ -105,6 +105,8 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .h2 { font-size: var(--fs-h2); }
 .h3 { font-size: var(--fs-h3); }
 .lead { font-size: clamp(1.05rem, 1.5vw, 1.25rem); color: var(--muted); max-width: 60ch; }
+/* ícones soltos em linhas de texto (local, data) acompanham o tamanho da letra */
+p > .icon { width: 1.15em; height: 1.15em; flex: none; vertical-align: -0.18em; }
 .center .lead, .lead.center { margin-inline: auto; }
 .eyebrow {
   display: inline-flex; align-items: center; gap: .7em;
