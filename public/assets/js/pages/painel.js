@@ -303,6 +303,7 @@ async function renderAnimais(mode) {
         ${a.status === "disponivel" ? `<button class="btn btn-sm btn-rosa" type="button" data-status="adotado">Foi adotado!</button>` : ""}
         ${["rascunho", "rejeitado"].includes(a.status) ? `<button class="btn btn-sm btn-azul" type="button" data-status="em_analise">Enviar para análise</button>` : ""}
         ${["disponivel", "em_processo"].includes(a.status) ? `<a class="btn btn-sm btn-ghost" href="/adote/${esc(a.slug)}">Ver</a>` : ""}
+        ${["disponivel", "em_processo", "adotado"].includes(a.status) ? `<a class="btn btn-sm btn-ghost" href="/termo-adocao?animal=${esc(a.slug)}">${icons.download} Termo</a>` : ""}
         ${a.status !== "arquivado" ? `<button class="btn btn-sm btn-ghost" type="button" data-status="arquivado">Arquivar</button>` : ""}
         <button class="btn btn-sm btn-ghost" type="button" data-del aria-label="Excluir ${esc(a.name)}">${icons.trash}</button>
       </div></div>`;
@@ -549,6 +550,7 @@ async function renderPedido(id) {
      ${nextSteps.map((s) => `<button class="btn btn-sm ${s === "concluido" ? "btn-rosa" : "btn-azul"}" type="button" data-step="${s}">${esc(L.adoption[s])}</button>`).join("")}
      <button class="btn btn-sm btn-ghost" type="button" data-step="recusado">Não aprovar</button></div>
      <p class="small muted mt-1 mb-0">O candidato é avisado a cada mudança. "Adoção concluída" marca o animal como adotado e encerra os outros pedidos.</p></div>` : ""}
+  ${["aprovado", "concluido"].includes(a.status) ? `<div class="notice info mb-3">${icons.info}<p>O candidato já pode baixar o termo pelo pedido. <a class="link" href="/termo-adocao?animal=${esc(a.animals.slug)}">Abrir termo de adoção de ${esc(a.animals.name)}</a></p></div>` : ""}
   <div class="grid grid-2" style="align-items:start">
     <div class="card card-pad">
       <h2 class="h3">Candidato(a)</h2>

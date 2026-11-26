@@ -31,6 +31,7 @@ export async function teamAnimals(view, ctx, { admin }) {
         <div><h3>${esc(a.name)}</h3><p>${statusPill(a.status, L.animalStatus)} · ${esc(contactLabel(a))} · criado ${esc(timeAgo(a.created_at))}</p></div>
         <div class="actions">
           ${["disponivel", "em_processo"].includes(a.status) ? `<a class="btn btn-sm btn-ghost" href="/adote/${esc(a.slug)}" target="_blank">Ver</a>` : ""}
+          ${["disponivel", "em_processo", "adotado"].includes(a.status) ? `<a class="btn btn-sm btn-ghost" href="/termo-adocao?animal=${esc(a.slug)}">${icons.download} Termo</a>` : ""}
           <button class="btn btn-sm btn-branco" type="button" data-edit>${icons.edit} Editar</button>
           ${["disponivel", "em_processo"].includes(a.status) ? `<button class="btn btn-sm btn-rosa" type="button" data-status="adotado">Foi adotado!</button>` : ""}
           ${["rascunho", "arquivado"].includes(a.status) ? `<button class="btn btn-sm btn-azul" type="button" data-status="disponivel">Publicar</button>` : ""}

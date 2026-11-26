@@ -181,6 +181,7 @@ async function renderPedido(id) {
   <div class="dash-title mt-2"><div class="flex items-center gap-2"><div class="org-logo">${c ? `<img src="${esc(photoUrl(c))}" alt="">` : ""}</div>
     <div><h1>${esc(a.animals.name)}</h1><p class="muted mb-0">Anunciado por ${esc(a.animals.publisher_name)} · ${esc(a.animals.city)} - ${esc(a.animals.state)}</p></div></div>
     ${statusPill(a.status, L.adoption)}</div>
+  ${["aprovado", "concluido"].includes(a.status) ? `<div class="notice ok mb-3">${icons.check}<p>Seu pedido foi aprovado! Baixe o termo, leia com calma, preencha seus dados e leve assinado na entrega. <a class="btn btn-sm btn-laranja" style="margin-left:8px" href="/termo-adocao?animal=${esc(a.animals.slug)}">${icons.download} Termo de adoção de ${esc(a.animals.name)}</a></p></div>` : ""}
   <div class="grid grid-2" style="align-items:start">
     <div class="card card-pad"><h2 class="h3">Conversa</h2><div class="chat" data-chat aria-live="polite"></div>
       ${open ? `<form class="flex gap-1 mt-2" data-msg-form><label class="sr-only" for="msg">Mensagem</label><input class="input" id="msg" name="body" maxlength="2000" placeholder="Escreva uma mensagem…" autocomplete="off" required><button class="btn btn-azul" type="submit">Enviar</button></form>

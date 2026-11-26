@@ -98,7 +98,7 @@ async function main() {
       <label class="check"><input type="checkbox" name="aware_of_costs" required> Entendo os custos com alimentação, vacinas, veterinário e cuidados ao longo da vida dele. <span class="req">*</span></label>
       <label class="check"><input type="checkbox" name="agrees_to_follow_up" required> Aceito que o responsável acompanhe a adaptação nas primeiras semanas. <span class="req">*</span></label>
       <label class="check"><input type="checkbox" name="agrees_to_neuter" checked> Me comprometo a castrar o animal, se ainda não for castrado.</label>
-      <p class="small mb-0">Na entrega, você e o responsável assinam o <a class="link" href="/termo-adocao?animal=${esc(animal.slug)}" target="_blank">Termo de Adoção e Ciência</a>. Leia antes de enviar o pedido.</p>
+      <p class="small mb-0">Na entrega, você e o responsável assinam o <a class="link" href="/termo-adocao" target="_blank">Termo de Adoção e Ciência</a>. Leia antes de enviar o pedido; se ele for aprovado, o termo de ${esc(animal.name)} fica disponível em "Meus pedidos".</p>
     </section>
 
     <section data-step="4" class="form hidden">
