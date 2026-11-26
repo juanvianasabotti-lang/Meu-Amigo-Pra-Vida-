@@ -9,3 +9,4 @@ for f in migrations/*.sql; do $PG -d mapv_test -v ON_ERROR_STOP=1 -q -f "$f" 2>&
 if [ -f seed.sql ]; then $PG -d mapv_test -v ON_ERROR_STOP=1 -q -f seed.sql; fi
 $PG -d mapv_test -v ON_ERROR_STOP=1 -f tests/01_rls_flows.sql
 $PG -d mapv_test -v ON_ERROR_STOP=1 -f tests/02_team_posts.sql
+$PG -d mapv_test -v ON_ERROR_STOP=1 -f tests/03_admin_self_review.sql
