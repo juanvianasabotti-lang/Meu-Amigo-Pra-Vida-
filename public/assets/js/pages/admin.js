@@ -6,12 +6,17 @@ import {
 } from "../ui.js";
 import { emptyState, errorState, photoUrl } from "../components.js";
 import { processImage } from "../image.js";
+import { teamAnimals, teamEvents } from "./admin-cadastro.js";
 
 const view = $("[data-view]");
 let ctx;
 let admin = false;
 
-const routes = { fila, organizacoes, animais, eventos, blog, contatos, lgpd, equipe, auditoria };
+const routes = {
+  fila, organizacoes, animais, eventos, blog, contatos, lgpd, equipe, auditoria,
+  "equipe-animais": () => teamAnimals(view, ctx, { admin }),
+  "equipe-eventos": () => teamEvents(view, ctx, { admin }),
+};
 async function route() {
   const name = routes[location.hash.slice(1)] ? location.hash.slice(1) : "fila";
   if (["blog", "equipe", "auditoria"].includes(name) && !admin) { location.hash = "#fila"; return; }
@@ -35,6 +40,7 @@ async function fila() {
   view.innerHTML = `<div class="dash-title"><h1>Painel da equipe</h1></div>
     <div class="grid grid-3">${card("organizacoes", "organizações para verificar", "#organizacoes", "step-laranja")}${card("animais", "anúncios em análise", "#animais", "step-azul")}${card("eventos", "eventos em análise", "#eventos", "step-rosa")}
     ${card("contatos", "mensagens novas", "#contatos", "step-amarelo")}${card("lgpd", "solicitações LGPD abertas", "#lgpd", "step-laranja")}</div>
+    <div class="flex gap-1 wrap mt-3"><a class="btn btn-laranja" href="#equipe-animais">${icons.plus} Cadastrar animal para adoção</a><a class="btn btn-azul" href="#equipe-eventos">${icons.plus} Cadastrar evento</a></div>
     <div class="notice info mt-3">${icons.info}<p>Boas práticas: verifique o CNPJ na Receita Federal, confira se as fotos são reais e recuse anúncios com indício de venda ou maus-tratos. Toda ação fica registrada na auditoria.</p></div>`;
 }
 

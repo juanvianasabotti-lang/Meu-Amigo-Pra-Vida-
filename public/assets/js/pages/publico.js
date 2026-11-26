@@ -143,7 +143,7 @@ async function eventsPage() {
   const up = $('[data-list="eventos"]');
   const past = $('[data-list="eventos-passados"]');
   up.innerHTML = skeletons(3, 180);
-  const cols = "slug,title,summary,kind,starts_at,is_online,location_name,city,state,organizations(trade_name)";
+  const cols = "slug,title,summary,kind,starts_at,is_online,location_name,city,state,organizer_name,organizations(trade_name)";
   const now = new Date(Date.now() - 86400000).toISOString();
   try {
     const [{ data: a }, { data: b }] = await Promise.all([
@@ -176,7 +176,7 @@ async function eventPage() {
       <h1 class="h1 mt-1">${esc(e.title)}</h1><p class="lead">${esc(e.summary)}</p>
       <div class="card card-pad mb-3"><p class="mb-1" style="display:flex;gap:8px">${icons.calendar} <strong>${esc(fmtDateTime(e.starts_at))}${e.ends_at ? ` até ${esc(fmtDateTime(e.ends_at))}` : ""}</strong></p>
         <p class="mb-0" style="display:flex;gap:8px">${icons.pin} ${esc(where)}</p>
-        ${e.organizations ? `<p class="mt-2 mb-0">Organizado por <a class="link" href="/organizacao/${esc(e.organizations.slug)}">${esc(e.organizations.trade_name)}</a></p>` : ""}
+        ${e.organizations ? `<p class="mt-2 mb-0">Organizado por <a class="link" href="/organizacao/${esc(e.organizations.slug)}">${esc(e.organizations.trade_name)}</a></p>` : e.organizer_name ? `<p class="mt-2 mb-0">Organizado por <strong>${esc(e.organizer_name)}</strong></p>` : ""}
         ${e.external_url ? `<a class="btn btn-laranja mt-2" href="${esc(e.external_url)}" target="_blank" rel="noopener noreferrer">Inscrever-se / saber mais ↗</a>` : ""}</div>
       ${e.description ? `<div class="prose">${markdown(e.description)}</div>` : ""}`;
   } catch (er) { box.innerHTML = errorState(er); }

@@ -4,10 +4,28 @@
 import sb from "./sb.js";
 import { esc, icons, stickers, L, fmtDate, initials, toast, $$ } from "./ui.js";
 import { FOTOS } from "./fotos.js";
+import { CONFIG } from "./config.js";
 
-export const ANIMAL_PUBLIC_COLS = "id,organization_id,publisher_name,name,slug,species,sex,size,age_group,breed,coat_color,weight_kg,description,personality,good_with_children,good_with_dogs,good_with_cats,neutered,vaccinated,dewormed,microchipped,special_needs,special_needs_notes,health_notes,adoption_requirements,city,state,status,is_urgent,approved_at,adopted_at,created_at";
+// Contato de um anúncio publicado pela equipe (doador ou e-mail institucional)
+export function teamContact(a) {
+  const msg = `Olá! Vi ${a.name} no site Meu Amigo pra Vida e tenho interesse em adotar.`;
+  if (a.contact_mode === "doador") {
+    const tel = a.contact_phone ? a.contact_phone.replace(/^55/, "") : "";
+    return `<p class="small muted mb-1">Fale direto com quem está doando${a.contact_name ? `: <strong style="color:var(--preto)">${esc(a.contact_name)}</strong>` : ""}</p>
+      <div class="flex gap-1 wrap">
+        ${tel ? `<a class="btn btn-laranja" href="https://wa.me/55${esc(tel)}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener noreferrer">${icons.whatsapp} Chamar no WhatsApp</a>
+        <a class="btn btn-branco" href="tel:+55${esc(tel)}">${icons.phone} Ligar</a>` : ""}
+        ${a.contact_email ? `<a class="btn ${tel ? "btn-ghost" : "btn-laranja"}" href="mailto:${esc(a.contact_email)}?subject=${encodeURIComponent(`Adoção de ${a.name}`)}&body=${encodeURIComponent(msg)}">E-mail</a>` : ""}
+      </div>`;
+  }
+  return `<p class="small muted mb-1">A adoção é combinada com a equipe do Meu Amigo pra Vida.</p>
+    <div class="flex gap-1 wrap"><a class="btn btn-laranja" href="mailto:${esc(CONFIG.CONTACT_EMAIL)}?subject=${encodeURIComponent(`Quero adotar ${a.name}`)}&body=${encodeURIComponent(msg)}">Quero adotar ${esc(a.name)} <span class="arrow">→</span></a></div>
+    <p class="small muted mt-1 mb-0">Escreva para <a class="link" href="mailto:${esc(CONFIG.CONTACT_EMAIL)}">${esc(CONFIG.CONTACT_EMAIL)}</a></p>`;
+}
+
+export const ANIMAL_PUBLIC_COLS = "id,organization_id,publisher_name,name,slug,species,sex,size,age_group,breed,coat_color,weight_kg,description,personality,good_with_children,good_with_dogs,good_with_cats,neutered,vaccinated,dewormed,microchipped,special_needs,special_needs_notes,health_notes,adoption_requirements,city,state,status,is_urgent,approved_at,adopted_at,created_at,posted_by_team,contact_mode,contact_name,contact_phone,contact_email";
 export const ORG_PUBLIC_COLS = "id,kind,status,trade_name,slug,tagline,description,services,email,whatsapp,website,instagram,logo_url,cover_url,city,state,public_address,pix_key,pix_key_type,accepts_volunteers,founded_year,partner_since";
-export const EVENT_PUBLIC_COLS = "id,organization_id,kind,title,slug,summary,description,cover_url,starts_at,ends_at,is_online,location_name,address,city,state,external_url,status";
+export const EVENT_PUBLIC_COLS = "id,organization_id,kind,title,slug,summary,description,cover_url,starts_at,ends_at,is_online,location_name,address,city,state,external_url,status,posted_by_team,organizer_name";
 export const ANIMAL_CARD_COLS = "id,slug,name,species,sex,size,age_group,breed,city,state,status,is_urgent,personality,publisher_name,animal_photos(storage_path,is_cover,position)";
 
 export function coverPath(animal) {
@@ -115,7 +133,7 @@ export function eventCard(e) {
       <h3>${esc(e.title)}</h3>
       <p>${esc(e.summary)}</p>
       <p class="small mt-1" style="display:flex;gap:6px;align-items:center">${icons.pin}${esc(where)}</p>
-      ${e.organizations ? `<p class="small muted mt-1">Por ${esc(e.organizations.trade_name)}</p>` : ""}
+      ${e.organizations || e.organizer_name ? `<p class="small muted mt-1">Por ${esc(e.organizations?.trade_name || e.organizer_name)}</p>` : ""}
     </div>
   </a>`;
 }

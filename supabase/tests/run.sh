@@ -8,3 +8,4 @@ $PG -d mapv_test -v ON_ERROR_STOP=1 -q -f tests/00_supabase_stub.sql
 for f in migrations/*.sql; do $PG -d mapv_test -v ON_ERROR_STOP=1 -q -f "$f" 2>&1 | grep -v NOTICE || true; done
 if [ -f seed.sql ]; then $PG -d mapv_test -v ON_ERROR_STOP=1 -q -f seed.sql; fi
 $PG -d mapv_test -v ON_ERROR_STOP=1 -f tests/01_rls_flows.sql
+$PG -d mapv_test -v ON_ERROR_STOP=1 -f tests/02_team_posts.sql

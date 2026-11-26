@@ -19,12 +19,13 @@ async function main() {
   if (!ctx) { root.innerHTML = errorState({ code: "not_configured" }); return; }
   let animal;
   try {
-    animal = (await sb.from("animals").select("id,slug,name,species,status,city,state,owner_id,adoption_requirements,animal_photos(storage_path,is_cover,position)").eq("slug", slug).maybeSingle()).data;
+    animal = (await sb.from("animals").select("id,slug,name,species,status,city,state,owner_id,posted_by_team,adoption_requirements,animal_photos(storage_path,is_cover,position)").eq("slug", slug).maybeSingle()).data;
   } catch (e) { root.innerHTML = errorState(e); return; }
   if (!animal || !["disponivel", "em_processo"].includes(animal.status)) {
     root.innerHTML = emptyState({ title: "Este animal não está disponível", text: "Ele pode já ter sido adotado. Conheça outros amigos!", cta: `<a class="btn btn-laranja" href="/adote">Ver animais</a>` });
     return;
   }
+  if (animal.posted_by_team) { location.replace(`/adote/${encodeURIComponent(animal.slug)}`); return; }
   const p = ctx.profile;
   if (p.account_type !== "pessoa") {
     root.innerHTML = emptyState({ title: "A adoção é feita por pessoa física", text: "Contas de ONG e de empresa não enviam pedidos de adoção. Use uma conta pessoal para adotar.", art: icons.user });
