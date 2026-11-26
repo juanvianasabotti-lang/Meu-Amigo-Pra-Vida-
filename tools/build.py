@@ -42,7 +42,7 @@ DESCRIPTION = ("Plataforma de adoção e doação de cães e gatos que conecta p
                "verificados e a empresas do setor pet.")
 # Páginas públicas: recebem link canônico e entram no sitemap
 PUBLIC_PAGES = {"index", "adote", "doar", "ongs", "parceiros", "eventos", "blog", "sobre", "contato",
-                "privacidade", "termos", "links"}
+                "privacidade", "termos", "links", "termo-adocao"}
 # Páginas de entrada que tocam a abertura animada do logo (uma vez por sessão; veja intro-gate.js).
 # Artigos, animais, ONGs e eventos ficam de fora: são os links que chegam pelos buscadores.
 INTRO_PAGES = {"index", "adote", "doar", "ongs", "parceiros", "eventos", "blog", "sobre", "links"}

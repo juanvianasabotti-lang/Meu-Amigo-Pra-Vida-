@@ -66,11 +66,12 @@ async function render() {
         <div class="fact"><small>Raça</small><strong>${esc(a.breed)}</strong></div>
       </div>
       ${traits ? `<div class="chips mb-3">${traits}</div>` : ""}
-      ${canApply && team ? `${teamContact(a)}<div class="flex gap-1 wrap mt-2"><button class="btn btn-branco btn-sm" type="button" data-share>${icons.heart} Compartilhar</button></div>`
+      ${canApply && team ? `${teamContact(a)}<div class="flex gap-1 wrap mt-2"><button class="btn btn-branco btn-sm" type="button" data-share>${icons.heart} Compartilhar</button><a class="btn btn-ghost btn-sm" href="/termo-adocao?animal=${esc(a.slug)}">${icons.download} Termo de adoção</a></div>`
         : canApply ? `<div class="flex gap-1 wrap">
           <a class="btn btn-laranja" href="/adotar/${esc(a.slug)}" data-paws>Quero adotar ${esc(a.name)} <span class="arrow">→</span></a>
           <button class="btn btn-branco" type="button" data-share>${icons.heart} Compartilhar</button>
         </div>
+        <p class="small mt-2 mb-0"><a class="link" href="/termo-adocao?animal=${esc(a.slug)}">Baixe o Termo de Adoção e Ciência</a> e saiba tudo o que você assume ao adotar.</p>
         ${a.status === "em_processo" ? `<p class="small muted mt-2">Já existe um pedido em andamento, mas você ainda pode se candidatar caso ele não se concretize.</p>` : ""}`
         : isOwner ? `<div class="notice info">${icons.info}<p>Este é o seu anúncio. <a class="link" href="/painel#animais">Gerenciar no painel</a></p></div>`
         : `<div class="notice ok">${icons.heart}<p>${esc(a.name)} já encontrou um lar. Que tal conhecer outros amigos?</p></div>`}
