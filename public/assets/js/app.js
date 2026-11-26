@@ -87,6 +87,8 @@ function setupHeader() {
 }
 
 async function renderUserArea() {
+  const logged = Boolean(sb.isConfigured() && sb.auth.session);
+  document.documentElement.classList.toggle("logado", logged);
   const slot = $("[data-user-area]");
   if (!slot) return;
   if (!sb.isConfigured() || !sb.auth.session) {
@@ -96,7 +98,7 @@ async function renderUserArea() {
   }
   const ctx = await getContext();
   const p = ctx.profile;
-  if (!p) { slot.innerHTML = `<a class="btn btn-laranja btn-sm" href="/entrar">Entrar</a>`; return; }
+  if (!p) { document.documentElement.classList.remove("logado"); slot.innerHTML = `<a class="btn btn-laranja btn-sm" href="/entrar">Entrar</a>`; return; }
   let unread = 0;
   try {
     const r = await sb.from("notifications").select("id", { count: true }).is("read_at", null).limit(1);

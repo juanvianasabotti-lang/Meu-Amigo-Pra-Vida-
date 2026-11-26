@@ -107,6 +107,9 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .lead { font-size: clamp(1.05rem, 1.5vw, 1.25rem); color: var(--muted); max-width: 60ch; }
 /* ícones soltos em linhas de texto (local, data) acompanham o tamanho da letra */
 p > .icon { width: 1.15em; height: 1.15em; flex: none; vertical-align: -0.18em; }
+/* Conta logada: somem "Entrar" e as opções de cadastro; aparecem os atalhos da conta */
+html.logado a[href^="/cadastro"], html.logado a[href="/entrar"], html.logado li:has(> a[href^="/cadastro"]),
+html.logado [data-so-visitante], html:not(.logado) [data-so-logado] { display: none !important; }
 .center .lead, .lead.center { margin-inline: auto; }
 .eyebrow {
   display: inline-flex; align-items: center; gap: .7em;
