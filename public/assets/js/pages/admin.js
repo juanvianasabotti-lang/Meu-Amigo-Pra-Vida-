@@ -40,7 +40,7 @@ async function fila() {
   view.innerHTML = `<div class="dash-title"><h1>Painel da equipe</h1></div>
     <div class="grid grid-3">${card("organizacoes", "organizações para verificar", "#organizacoes", "step-laranja")}${card("animais", "anúncios em análise", "#animais", "step-azul")}${card("eventos", "eventos em análise", "#eventos", "step-rosa")}
     ${card("contatos", "mensagens novas", "#contatos", "step-amarelo")}${card("lgpd", "solicitações LGPD abertas", "#lgpd", "step-laranja")}</div>
-    <div class="flex gap-1 wrap mt-3"><a class="btn btn-laranja" href="#equipe-animais">${icons.plus} Cadastrar animal para adoção</a><a class="btn btn-azul" href="#equipe-eventos">${icons.plus} Cadastrar evento</a></div>
+    <div class="flex gap-1 wrap mt-3"><a class="btn btn-laranja" href="#equipe-animais">${icons.plus} Cadastrar animal para adoção</a><a class="btn btn-azul" href="#equipe-eventos">${icons.calendar} Gerenciar eventos</a></div>
     <div class="notice info mt-3">${icons.info}<p>Boas práticas: verifique o CNPJ na Receita Federal, confira se as fotos são reais e recuse anúncios com indício de venda ou maus-tratos. Toda ação fica registrada na auditoria.</p></div>`;
 }
 
@@ -114,7 +114,7 @@ async function animais() {
 // ---------------------------------------------------------------------------
 async function eventos() {
   const { data } = await sb.from("events").select("*,organizations(trade_name)").eq("status", "em_analise").order("starts_at").limit(60);
-  view.innerHTML = `<div class="dash-title"><h1>Eventos em análise</h1></div>
+  view.innerHTML = `<div class="dash-title"><h1>Eventos em análise</h1><a class="btn btn-sm btn-branco" href="#equipe-eventos">${icons.calendar} Gerenciar todos os eventos</a></div>
   ${data?.length ? data.map((e) => `<article class="card card-pad mb-3" data-ev="${esc(e.id)}">
     ${e.cover_url ? `<img src="${esc(e.cover_url)}" alt="" style="border-radius:16px;border:2px solid var(--preto);max-height:220px;width:100%;object-fit:cover">` : ""}
     <h2 class="h3 mt-2 mb-0">${esc(e.title)}</h2><p class="muted">${esc(L.eventKind[e.kind])} · ${esc(e.organizations?.trade_name || "")} · ${esc(fmtDateTime(e.starts_at))} · ${e.is_online ? "Online" : `${esc(e.city || "")} - ${esc(e.state || "")}`}</p>

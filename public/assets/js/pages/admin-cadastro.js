@@ -264,22 +264,28 @@ async function teamAnimalForm(view, ctx, id, back) {
 // ---------------------------------------------------------------------------
 // Eventos da equipe
 // ---------------------------------------------------------------------------
-export async function teamEvents(view, ctx, { admin }) {
-  const { data } = await sb.from("events").select("*").eq("posted_by_team", true).order("starts_at", { ascending: false }).limit(200);
-  view.innerHTML = `<div class="dash-title"><h1>Eventos cadastrados pela equipe</h1><button class="btn btn-laranja btn-sm" type="button" data-new>${icons.plus} Cadastrar evento</button></div>
-    <div class="notice info mb-3">${icons.info}<p>Feiras de adoção, mutirões, campanhas e encontros que a própria equipe divulga, sem precisar de uma ONG cadastrada. Publicam direto na agenda.</p></div>
+export async function teamEvents(view, ctx, { admin }, filtro = "proximos") {
+  const agora = new Date().toISOString();
+  let q = sb.from("events").select("*,organizations(trade_name)").limit(300);
+  q = filtro === "passados" ? q.lt("starts_at", agora).order("starts_at", { ascending: false }) : q.gte("starts_at", agora).order("starts_at", { ascending: true });
+  const { data } = await q;
+  const por = (ev) => ev.organizations?.trade_name || ev.organizer_name || "Meu Amigo pra Vida";
+  view.innerHTML = `<div class="dash-title"><h1>Eventos do site</h1><button class="btn btn-laranja btn-sm" type="button" data-new>${icons.plus} Novo evento</button></div>
+    <div class="notice info mb-3">${icons.info}<p>Todos os eventos da agenda, da equipe e das organizações. A equipe pode criar, editar, encerrar e excluir qualquer um. Eventos novos da equipe publicam direto na agenda.</p></div>
+    <div class="flex gap-1 wrap mb-3"><button class="btn btn-sm ${filtro === "proximos" ? "btn-azul" : "btn-branco"}" type="button" data-filtro="proximos">Próximos</button><button class="btn btn-sm ${filtro === "passados" ? "btn-azul" : "btn-branco"}" type="button" data-filtro="passados">Já aconteceram</button></div>
     ${data?.length ? `<div class="list">${data.map((ev) => `<div class="list-item" data-ev="${esc(ev.id)}">
       <div class="thumb">${ev.cover_url ? `<img src="${esc(ev.cover_url)}" alt="">` : icons.calendar}</div>
-      <div><h3>${esc(ev.title)}</h3><p>${statusPill(ev.status, L.contentStatus)} · ${esc(L.eventKind[ev.kind])} · ${esc(fmtDateTime(ev.starts_at))} · por ${esc(ev.organizer_name || "Meu Amigo pra Vida")}</p></div>
+      <div><h3>${esc(ev.title)}</h3><p>${statusPill(ev.status, L.contentStatus)} · ${esc(L.eventKind[ev.kind])} · ${esc(fmtDateTime(ev.starts_at))} · por ${esc(por(ev))}${ev.posted_by_team ? "" : " (organização)"}</p></div>
       <div class="actions">
         ${ev.status === "publicado" ? `<a class="btn btn-sm btn-ghost" href="/eventos/${esc(ev.slug)}" target="_blank">Ver</a>` : ""}
         <button class="btn btn-sm btn-branco" type="button" data-edit>${icons.edit} Editar</button>
         ${ev.status === "publicado" ? `<button class="btn btn-sm btn-ghost" type="button" data-st="encerrado">Encerrar</button>` : ""}
-        ${["rascunho", "encerrado"].includes(ev.status) ? `<button class="btn btn-sm btn-azul" type="button" data-st="publicado">Publicar</button>` : ""}
+        ${["rascunho", "encerrado", "em_analise", "rejeitado"].includes(ev.status) ? `<button class="btn btn-sm btn-azul" type="button" data-st="publicado">Publicar</button>` : ""}
         <button class="btn btn-sm btn-ghost" type="button" data-del aria-label="Excluir">${icons.trash}</button>
       </div></div>`).join("")}</div>`
-    : emptyState({ title: "Nenhum evento cadastrado pela equipe", text: "Divulgue aqui feiras de adoção, mutirões de castração, vacinação e arrecadações.", art: icons.megaphone, cta: `<button class="btn btn-laranja" type="button" data-new>Cadastrar evento</button>` })}`;
-  const reload = () => teamEvents(view, ctx, { admin });
+    : emptyState({ title: filtro === "passados" ? "Nenhum evento passado" : "Nenhum evento marcado", text: "Divulgue feiras de adoção, mutirões de castração, vacinação, arrecadações e encontros.", art: icons.megaphone, cta: `<button class="btn btn-laranja" type="button" data-new>Novo evento</button>` })}`;
+  const reload = () => teamEvents(view, ctx, { admin }, filtro);
+  $$("[data-filtro]", view).forEach((b) => b.addEventListener("click", () => teamEvents(view, ctx, { admin }, b.dataset.filtro)));
   $$("[data-new]", view).forEach((b) => b.addEventListener("click", () => teamEventForm(ctx, null, reload)));
   $$("[data-ev]", view).forEach((row) => {
     const ev = data.find((x) => x.id === row.dataset.ev);
@@ -301,7 +307,8 @@ function teamEventForm(ctx, ev, done) {
   body.noValidate = true;
   body.innerHTML = `
     <div class="form-row"><div class="field"><label for="te-kind">Tipo</label><select class="select" id="te-kind" name="kind">${Object.entries(L.eventKind).map(([k, v]) => `<option value="${k}" ${e0.kind === k ? "selected" : ""}>${v}</option>`).join("")}</select></div>
-      <div class="field"><label for="te-org">Organizado por</label><input class="input" id="te-org" name="organizer_name" maxlength="120" value="${esc(e0.organizer_name || "Meu Amigo pra Vida")}"><span class="hint">Nome que aparece no evento.</span></div></div>
+      ${ev && !ev.posted_by_team ? `<div class="field"><span class="label">Organizado por</span><p class="mb-0"><strong>${esc(ev.organizations?.trade_name || "Organização")}</strong></p><span class="hint">Evento de organização cadastrada.</span></div>`
+        : `<div class="field"><label for="te-org">Organizado por</label><input class="input" id="te-org" name="organizer_name" maxlength="120" value="${esc(e0.organizer_name || "Meu Amigo pra Vida")}"><span class="hint">Nome que aparece no evento.</span></div>`}</div>
     <div class="field"><label for="te-title">Título <span class="req">*</span></label><input class="input" id="te-title" name="title" maxlength="120" value="${esc(e0.title || "")}"></div>
     <div class="field"><label for="te-sum">Resumo <span class="req">*</span></label><input class="input" id="te-sum" name="summary" maxlength="280" value="${esc(e0.summary || "")}" placeholder="Uma frase que aparece nos cartões da agenda"></div>
     <div class="field"><label for="te-desc">Descrição</label><textarea class="textarea" id="te-desc" name="description" maxlength="6000" placeholder="Programação, o que levar, regras de adoção… Aceita **negrito**, listas com - e links.">${esc(e0.description || "")}</textarea></div>
@@ -341,6 +348,7 @@ function teamEventForm(ctx, ev, done) {
     if (!body.is_online.checked && (!(v.city || "").trim() || !v.state)) err("city", "Informe cidade e UF (ou marque online).");
     if (v.external_url && !/^https:\/\//i.test(v.external_url)) err("external_url", "Use um link que comece com https://");
     if ((v.organizer_name || "").trim() && v.organizer_name.trim().length < 2) err("organizer_name", "Nome muito curto.");
+    if (ev && !ev.posted_by_team) delete v.organizer_name;
     if (!ok) { focusFirstError(body); return; }
     await withLoading(e.submitter || $('button[type="submit"]', body), async () => {
       try {
@@ -349,8 +357,9 @@ function teamEventForm(ctx, ev, done) {
           starts_at: new Date(v.starts_at).toISOString(), ends_at: v.ends_at ? new Date(v.ends_at).toISOString() : null,
           is_online: body.is_online.checked, location_name: v.location_name?.trim() || null, address: v.address?.trim() || null,
           city: v.city?.trim() || null, state: v.state || null, external_url: v.external_url?.trim() || null,
-          organizer_name: (v.organizer_name || "").trim() || null, status: mode,
+          status: mode,
         };
+        if (!ev || ev.posted_by_team) row.organizer_name = (v.organizer_name || "").trim() || null;
         if (cover) {
           const path = `${ctx.profile.id}/evento-${Date.now()}.webp`;
           await sb.storage.upload("event-media", path, cover, { contentType: cover.type });
