@@ -11,7 +11,7 @@ export function teamContact(a) {
   const msg = `Olá! Vi ${a.name} no site Meu Amigo pra Vida e tenho interesse em adotar.`;
   if (a.contact_mode === "doador") {
     const tel = a.contact_phone ? a.contact_phone.replace(/^55/, "") : "";
-    return `<p class="small muted mb-1">Fale direto com quem está doando${a.contact_name ? `: <strong style="color:var(--preto)">${esc(a.contact_name)}</strong>` : ""}</p>
+    return `<p class="small muted mb-1">Fale direto com quem está anunciando${a.contact_name ? `: <strong style="color:var(--preto)">${esc(a.contact_name)}</strong>` : ""}</p>
       <div class="flex gap-1 wrap">
         ${tel ? `<a class="btn btn-laranja" href="https://wa.me/55${esc(tel)}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener noreferrer">${icons.whatsapp} Chamar no WhatsApp</a>
         <a class="btn btn-branco" href="tel:+55${esc(tel)}">${icons.phone} Ligar</a>` : ""}

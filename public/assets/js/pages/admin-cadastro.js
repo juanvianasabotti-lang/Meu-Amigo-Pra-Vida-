@@ -21,9 +21,9 @@ export async function teamAnimals(view, ctx, { admin }) {
   const { data } = await sb.from("animals")
     .select("id,slug,name,species,status,owner_id,contact_mode,contact_name,created_at,approved_at,animal_photos(storage_path,is_cover,position)")
     .eq("posted_by_team", true).order("created_at", { ascending: false }).limit(200);
-  const contactLabel = (a) => (a.contact_mode === "doador" ? `Contato do doador${a.contact_name ? `: ${a.contact_name}` : ""}` : `E-mail institucional`);
+  const contactLabel = (a) => (a.contact_mode === "doador" ? `Contato de quem anuncia${a.contact_name ? `: ${a.contact_name}` : ""}` : `E-mail institucional`);
   view.innerHTML = `<div class="dash-title"><h1>Animais cadastrados pela equipe</h1><button class="btn btn-laranja btn-sm" type="button" data-new>${icons.plus} Cadastrar animal</button></div>
-    <div class="notice info mb-3">${icons.info}<p>Para animais de doadores que não têm conta no site. O anúncio aparece em nome do <strong>Meu Amigo pra Vida</strong> e quem quiser adotar fala direto com o doador (WhatsApp, telefone ou e-mail) ou com o nosso e-mail ${esc(CONFIG.CONTACT_EMAIL)}.</p></div>
+    <div class="notice info mb-3">${icons.info}<p>Para animais de quem não tem conta no site. O anúncio aparece em nome do <strong>Meu Amigo pra Vida</strong> e quem quiser adotar fala direto com o doador (WhatsApp, telefone ou e-mail) ou com o nosso e-mail ${esc(CONFIG.CONTACT_EMAIL)}.</p></div>
     ${data?.length ? `<div class="list">${data.map((a) => {
       const c = coverPath(a);
       return `<div class="list-item" data-id="${esc(a.id)}">
@@ -38,7 +38,7 @@ export async function teamAnimals(view, ctx, { admin }) {
           ${admin ? `<button class="btn btn-sm btn-ghost" type="button" data-del aria-label="Excluir ${esc(a.name)}">${icons.trash}</button>` : ""}
         </div></div>`;
     }).join("")}</div>`
-    : emptyState({ title: "Nenhum animal cadastrado pela equipe", text: "Cadastre aqui os animais de doadores que entraram em contato com a gente.", cta: `<button class="btn btn-laranja" type="button" data-new>Cadastrar animal</button>` })}`;
+    : emptyState({ title: "Nenhum animal cadastrado pela equipe", text: "Cadastre aqui os animais de quem entrou em contato com a gente.", cta: `<button class="btn btn-laranja" type="button" data-new>Cadastrar animal</button>` })}`;
 
   const reload = () => teamAnimals(view, ctx, { admin });
   $$("[data-new]", view).forEach((b) => b.addEventListener("click", () => teamAnimalForm(view, ctx, null, reload)));
@@ -81,14 +81,14 @@ async function teamAnimalForm(view, ctx, id, back) {
       <h2 class="h3">Contato para adoção</h2>
       <p class="small muted">Quem quiser adotar vai falar com este contato. O anúncio aparece em nome do Meu Amigo pra Vida, sem precisar de conta de ONG ou petshop.</p>
       <fieldset class="field"><legend class="label">Quem atende os interessados? <span class="req">*</span></legend>
-        <div class="choice-grid">${radio("contact_mode", [["doador", "O próprio doador"], ["institucional", `Nosso e-mail (${esc(CONFIG.CONTACT_EMAIL)})`]], a.contact_mode)}</div></fieldset>
+        <div class="choice-grid">${radio("contact_mode", [["doador", "Quem está anunciando"], ["institucional", `Nosso e-mail (${esc(CONFIG.CONTACT_EMAIL)})`]], a.contact_mode)}</div></fieldset>
       <div data-donor class="form">
         <div class="form-row">
-          <div class="field"><label for="t-cn">Nome do doador <span class="req">*</span></label><input class="input" id="t-cn" name="contact_name" maxlength="80" value="${esc(a.contact_name || "")}" placeholder="Como ele quer ser chamado"></div>
+          <div class="field"><label for="t-cn">Nome de quem anuncia <span class="req">*</span></label><input class="input" id="t-cn" name="contact_name" maxlength="80" value="${esc(a.contact_name || "")}" placeholder="Como ele quer ser chamado"></div>
           <div class="field"><label for="t-cp">WhatsApp ou telefone</label><input class="input" id="t-cp" name="contact_phone" inputmode="tel" data-mask="phone" value="${esc(a.contact_phone ? masks.phone(a.contact_phone) : "")}" placeholder="(11) 99999-9999"></div>
         </div>
-        <div class="field"><label for="t-ce">E-mail do doador</label><input class="input" id="t-ce" name="contact_email" type="email" maxlength="200" value="${esc(a.contact_email || "")}"><span class="hint">Informe o telefone, o e-mail ou os dois.</span></div>
-        <label class="check"><input type="checkbox" name="consent" ${a.contact_consent_at ? "checked" : ""}> O doador autorizou mostrar esse contato publicamente no anúncio (LGPD). <span class="req">*</span></label>
+        <div class="field"><label for="t-ce">E-mail de quem anuncia</label><input class="input" id="t-ce" name="contact_email" type="email" maxlength="200" value="${esc(a.contact_email || "")}"><span class="hint">Informe o telefone, o e-mail ou os dois.</span></div>
+        <label class="check"><input type="checkbox" name="consent" ${a.contact_consent_at ? "checked" : ""}> A pessoa autorizou mostrar esse contato publicamente no anúncio (LGPD). <span class="req">*</span></label>
       </div>
     </div>
     <div class="card card-pad form mt-3">
@@ -125,7 +125,7 @@ async function teamAnimalForm(view, ctx, id, back) {
         <div class="field"><label for="t-state">UF <span class="req">*</span></label><select class="select" id="t-state" name="state">${ufOptions(a.state || ctx.profile.state || "SP")}</select></div>
       </div>
       <label class="check"><input type="checkbox" name="is_urgent" ${a.is_urgent ? "checked" : ""}> Precisa de lar com urgência</label>
-      <label class="check"><input type="checkbox" name="no_sale" ${id ? "checked" : ""}> Confirmo que é uma doação gratuita, sem venda, e que as informações foram conferidas com o doador. <span class="req">*</span></label>
+      <label class="check"><input type="checkbox" name="no_sale" ${id ? "checked" : ""}> Confirmo que é uma doação gratuita, sem venda, e que as informações foram conferidas com quem anuncia. <span class="req">*</span></label>
     </div>
     <div class="flex gap-1 wrap mt-3">
       <button class="btn btn-laranja" type="submit" data-mode="disponivel">${live ? "Salvar alterações" : "Salvar e publicar"}</button>
@@ -210,13 +210,13 @@ async function teamAnimalForm(view, ctx, id, back) {
     const cm = v.contact_mode;
     if (!cm) err("contact_mode", "Escolha quem atende os interessados.");
     if (cm === "doador") {
-      if ((v.contact_name || "").trim().length < 2) err("contact_name", "Informe o nome do doador.");
+      if ((v.contact_name || "").trim().length < 2) err("contact_name", "Informe o nome de quem anuncia.");
       const hasPhone = Boolean(digits(v.contact_phone));
       const hasMail = Boolean((v.contact_email || "").trim());
-      if (!hasPhone && !hasMail) err("contact_phone", "Informe telefone ou e-mail do doador.");
+      if (!hasPhone && !hasMail) err("contact_phone", "Informe telefone ou e-mail de quem anuncia.");
       if (hasPhone && !isValidPhone(v.contact_phone)) err("contact_phone", "Telefone com DDD, ex.: (11) 99999-9999.");
       if (hasMail && !isValidEmail(v.contact_email)) err("contact_email", "E-mail inválido.");
-      if (!form.consent.checked) err("consent", "É preciso a autorização do doador para mostrar o contato.");
+      if (!form.consent.checked) err("consent", "É preciso a autorização da pessoa para mostrar o contato.");
     }
     if (!(v.name || "").trim()) err("name", "Informe o nome.");
     for (const [n, m] of [["species", "Escolha a espécie."], ["sex", "Escolha o sexo."], ["size", "Escolha o porte."], ["age_group", "Escolha a idade."]]) if (!v[n]) err(n, m);
